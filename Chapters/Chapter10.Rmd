@@ -1,0 +1,103 @@
+
+# Generalized Linear Models
+
+## Import Data
+
+```{r comment = ""}
+#tfiling=read.table("c:\\data\\tfiling.txt", header=TRUE, sep="\t") # the two missing observations were already removed
+
+tfiling.na=read.table("TXTData/TFiling.txt", sep ="\t", quote = "",header=TRUE)
+tfiling<-na.omit(tfiling.na)
+tfiling$GSTATEP=tfiling$GSTATEP/10000
+tfiling$POP=tfiling$POPULATI/1000
+tfiling$YEAR=tfiling$TIME+1983
+```
+
+ There is a widespread belief that, in the United States, parties have become increasingly willing to go to the judicial system to settle disputes. This is particularly true in the insurance industry, an industry designed to spread risk among individuals who are subject to unfortunate events that threaten their livelihoods. Litigation in the insurance industry arises from two types of disagreement among parties, breach of faith and tort. A breach of faith is a failure by a party to the contract to perform according to its terms. This type of dispute is relatively confined to issues of facts including the nature of the duties and the action of each party. A tort action is a civil wrong, other than breach of contract, for which the court will provide a remedy in the form of action for damages. A civil wrong may include malice, wantonness oppression or capricious behavior by a party. Generally, much larger damages can be collected for tort actions because the award may be large enough to "sting" the guilty party. Since large insurance companies are viewed as having "deep pockets," these awards can be quite large indeed.
+
+Variable | Description
+---- | --- 
+FILINGS | Number of filings of tort actions against insurance companies.
+POPLAWYR | The population per lawyer.
+VEHCMILE | Number of automobiles miles per mile of road, in thousands. 
+GSTATEP | Percentage of gross state product from manufacturing and construction.
+POPDENSY | Number of people per ten square miles of land.
+WCMPMAX | Maximum workers’ compensation weekly benefit.
+URBAN | Percentage of population living in urban areas.
+UNEMPLOY | State unemployment rate, in percentages.
+J&SLIAB | An indicator of joint and several liability reform.
+COLLRULE | An indicator of collateral source reform.
+CAPS | An indicator of caps on non-economic reform.
+PUNITIVE | An indicator of limits of punitive damage.
+TIME | Year identifier, 1-6
+STATE | State identifier, 1-19.
+
+## Example: Tort Filings (Page 356)
+
+ There is a widespread belief that, in the United States, contentious parties have become increasingly willing to go to the judicial system to settle disputes. This is particularly true when one party is from the insurance industry, an industry designed to spread risk among individuals. Litigation in the insurance industry arises from two types of disagreement among parties, breach of faith and tort. A breach of faith is a failure by a party to the contract to perform according to its terms. A tort action is a civil wrong, other than breach of contract, for which the court will provide a remedy in the form of action for damages. A civil wrong may include malice, wantonness, oppression, or capricious behavior by a party. Generally, large damages can be collected for tort actions because the award may be large enough to “sting” the guilty party. Because large insurance companies are viewed as having “deep pockets,” these awards can be quite large.
+
+### TABLE 10.3 Averages with explanatory binary variables
+
+```{r comment = ""}
+library(Hmisc)
+summary(tfiling[, c("JSLIAB", "COLLRULE", "CAPS", "PUNITIVE")])
+summarize(tfiling$NUMFILE, tfiling$JSLIAB, mean)
+summarize(tfiling$NUMFILE, tfiling$COLLRULE, mean)
+summarize(tfiling$NUMFILE, tfiling$CAPS, mean)
+summarize(tfiling$NUMFILE, tfiling$PUNITIVE, mean)
+```
+
+ In Table 10.3 we see that 23.2% of the 112 stateyear observations were under limits (caps) on noneconomic reform. Those observations not under limits on noneconomic reforms had a larger average number of filings. 
+
+### TABLE 10.4 Summary statistics for other variables
+
+```{r comment = ""}
+summary(tfiling[,c("NUMFILE", "POP", "POPLAWYR", "VEHCMILE", "GSTATEP", "POPDENSY", "WCMPMAX", "URBAN", "UNEMPLOY")])
+
+cor(tfiling$NUMFILE, tfiling[, c("POP", "POPLAWYR", "VEHCMILE", "GSTATEP", "POPDENSY", "WCMPMAX", "URBAN", "UNEMPLOY", "JSLIAB", "COLLRULE", "CAPS", "PUNITIVE")], use="pairwise.complete.obs")
+```
+
+The correlations in Table 10.4 show that several of the economic and demographic variables appear to be related to the number of filings. In particular, we note that the number of filings is highly related to the state population.
+
+## Section 10.2 Homogeneous model
+
+```{r comment = ""}
+tfiling$POPLAWYR <- tfiling$POPLAWYR/1000
+tfiling$VEHCMILE <- tfiling$VEHCMILE/1000
+tfiling$GSTATEP<- tfiling$GSTATEP/1000
+tfiling$POPDENSY<-tfiling$POPDENSY/1000
+tfiling$WCMPMAX<-tfiling$WCMPMAX/1000
+tfiling$URBAN<-tfiling$URBAN/1000
+tfiling$LNPOP<-log(tfiling$POPULATI*1000)
+```
+
+### TABLE 10.5 Tort filings model coefficient estimates
+
+```{r comment = ""}
+glm(NUMFILE ~ POPLAWYR+VEHCMILE+POPDENSY+WCMPMAX+URBAN+UNEMPLOY+JSLIAB+COLLRULE+CAPS+PUNITIVE, data=tfiling, family=poisson(link="log"), offset=LNPOP)
+
+tfiling$TIMEFAC<-factor(tfiling$TIME)
+glm(NUMFILE ~ TIMEFAC+POPLAWYR+VEHCMILE+POPDENSY+WCMPMAX+URBAN+UNEMPLOY+JSLIAB+COLLRULE+CAPS+PUNITIVE-1, data=tfiling, family=poisson(link="log"), offset=LNPOP)
+```
+
+Table 10.5 summarizes the fit of three Poisson models. With the basic homogeneous Poisson model, all explanatory variables turn out to be statistically significant, as evidenced by the small p-values. However, the Poisson model assumes that the variance equals the mean; this is often a restrictive assumption for empirical work. Thus, to account for potential overdispersion, Table 10.5 also summarizes a homogenous Poisson model with an estimated scale parameter. Table 10.5 emphasizes that, although the regression coefficient estimates do not change with the introduction of the scale parameter, estimated standard
+errors and thus p-values do change. 
+
+## Section 10.3 Marginal Models
+
+### With in state correlation independent
+
+```{r comment = ""}
+library(gee)
+gee(NUMFILE ~ offset(LNPOP)+POPLAWYR+VEHCMILE+POPDENSY+WCMPMAX+URBAN+UNEMPLOY+JSLIAB+COLLRULE+CAPS+PUNITIVE, id=STATE, data=tfiling, family=poisson(link="log"), corstr="independence") 
+
+gee(NUMFILE ~ offset(LNPOP)+POPLAWYR+VEHCMILE+POPDENSY+WCMPMAX+URBAN+UNEMPLOY+JSLIAB+COLLRULE+CAPS+PUNITIVE, id=STATE, data=tfiling, family=poisson(link="log"), corstr="AR-M", Mv=1) 
+#THE NUMBER WAS A LITTLE OFF COMPARED WITH SAS ESTIMATE
+```
+
+### Random effects model
+
+```{r comment = ""}
+# MODEL WITHOUR RANDOM EFFECTS
+glm(NUMFILE ~ POPLAWYR+VEHCMILE+POPDENSY+WCMPMAX+URBAN+UNEMPLOY+JSLIAB+COLLRULE+CAPS+PUNITIVE, data=tfiling, family=poisson(link="log"), offset=LNPOP)
+```

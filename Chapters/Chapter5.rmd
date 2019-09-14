@@ -1,0 +1,84 @@
+
+# Multilevel Models
+
+## Import Data
+
+
+
+```{r comment = ""}
+#Dental=read.table(choose.files(), header=TRUE, sep="\t")
+#library(mice)
+#data(potthoffroy)
+# I make this dataset myself according to data(potthoffroy)
+Dental <- read.table("TXTData/dental.txt",sep ="\t", quote = "", header=TRUE)
+
+names(Dental)<-c("MEASURE", "SEX", "AGE", "ID")
+```
+
+## Example 5.2: Dental Data (Page 175)
+
+This example is originally due to Potthoff and Roy (1964B); see also Rao (1987B). Here, y is the distance, measured in millimeters, from the center of the pituitary to the pteryomaxillary fissure. Measurements were taken on eleven girls and sixteen boys at ages 8, 10, 12, and 14. Of interest is the relation between the distance and age, specifically, in how the distance grows with age and whether there is a difference between males and females.
+
+###  Figure 5.1. Multiple time series plot
+
+```{r comment = ""}
+plot(MEASURE ~ AGE, data = Dental, xlab="", ylab="", xaxt="n", yaxt="n")
+ for (i in Dental$ID) {
+ lines(MEASURE ~ AGE, data = subset(Dental, ID == i)) }
+
+axis(2, at=seq(16, 32, by=2), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(16, 32, by=1), lab=F, tck=0.005)
+axis(1, at=seq(8,14, by=2), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(8,14, by=0.2), lab=F, tck=0.005)
+mtext("MEASURE", side=2, line=-2, at=32.5, font=10, cex=1, las=1)
+mtext("AGE", side=1, line=2, at=11, font=10, cex=1, las=1)
+```
+
+ From Figure 5.1, we can see that the measurement length grows as each child ages, although it is difficult to detect differences between boys and girls. In Figure 5.1, we use open circular plotting symbols for girls and filled circular plotting symbols for boys. Figure 5.1 does show that the ninth boy has an unusual growth pattern; this pattern can also be seen in Table 5.1.
+ 
+###  Summary statistics
+
+```{r comment = ""}
+summary(Dental[, c("MEASURE")])
+```
+
+###  Trellis plot, unique in r
+
+```{r comment = ""}
+dent1 = groupedData(MEASURE ~ AGE | ID, data=Dental, outer=~SEX)
+plot(dent1, layout = c(16,2))
+```
+
+## TABLE 5.2: Dental data growth-curve-model parameter estimates
+
+### TABLE 5.2: Error components model
+
+```{r comment = ""}
+dental1.lme<-lme(MEASURE~AGE*SEX, data=Dental, random=~1|ID)
+summary(dental1.lme)
+```
+
+### TABLE 5.2: Growth curve model
+
+```{r comment = ""}
+dental2.lme<-lme(MEASURE~AGE*SEX, data=Dental, random=~1+AGE|ID, correlation=corSymm(form=~1|ID),control= lmeControl(opt = "optim")) # I add the code "control= lmeControl(opt = "optim")" to fix converge problem
+#corSymm gives a general correlation structure in lme
+dental2.lme
+```
+
+### TABLE 5.2: Growth curve model - omitting 9th boy
+
+```{r comment = ""}
+Dental2<-subset(Dental, ID!=20)
+dental3.lme<-update(dental2.lme, data=Dental2)
+dental3.lme
+```
+
+ Table 5.2 shows the parameter estimates for this model. Here, we see that the coefficient associated with linear growth is statistically significant, over all models. Moreover, the rate of increase for girls is lower than for boys. The estimated covariance between $\alpha_{0i}$ and $\alpha_{1i}$ (which is also the estimated covariance between $\beta_{0i}$ and $β_{1i}$ turns out to be negative. One interpretation of the negative covariance between initial status and growth rate is that subjects who start at a low level tend to grow more quickly than those who start at higher levels, and vice versa. 
+
+ For comparison purposes, Table 5.2 shows the parameter estimates with the ninth boy deleted. The effects of this subject deletion on the parameter estimates are small. Table 5.2 also shows parameter estimates of the errorcomponents model. This model employs the same level-1 model but with level-2 models
+ 
+$$\beta_{0i}=\beta_{00}+\beta_{01} \text{GENDER}_i + \alpha_{0i}$$
+
+$$\beta_{1i}=\beta_{10}+\beta_{11} \text{GENDER}_i$$
+ With parameter estimates calculated using the full data set, there again is little change in the parameter estimates. Because the results appear to be robust to both unusual subjects and model selection, we have greater confidence in our interpretations.

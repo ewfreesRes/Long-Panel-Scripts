@@ -1,0 +1,18 @@
+book_filename: "LongPanelDataScripts"
+output_dir: "docs"
+rmd_files: ["index.Rmd", 
+            "Chapters/Chapter1.Rmd",
+            "Chapters/Chapter2.Rmd",
+            "Chapters/Chapter3.Rmd",
+            "Chapters/Chapter4.Rmd",
+            "Chapters/Chapter5.Rmd",
+            "Chapters/Chapter7.Rmd",
+            "Chapters/Chapter8.Rmd",
+            "Chapters/Chapter9.Rmd",
+            "Chapters/Chapter10.Rmd",
+            "Chapters/Chapter11.Rmd"]
+#            "Chapters/Bibliography.Rmd"]
+           
+language:
+  ui:
+    chapter_name: "Chapter "

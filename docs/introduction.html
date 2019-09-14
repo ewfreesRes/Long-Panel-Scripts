@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 1 Introduction | R Scripts for Longitudinal and Panel Data</title>
+  <meta name="description" content="R scripts" />
+  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 1 Introduction | R Scripts for Longitudinal and Panel Data" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R scripts" />
+  <meta name="github-repo" content="https://github.com/openacttexts/Loss-Data-Analytics" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 1 Introduction | R Scripts for Longitudinal and Panel Data" />
+  
+  <meta name="twitter:description" content="R scripts" />
+  
+
+<meta name="author" content="Yumo Dong, Edward Frees, and others??" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="fixed-effects-models.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#import-data"><i class="fa fa-check"></i><b>1.1</b> Import Data</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#example-1.1-divorce-rates-page-2"><i class="fa fa-check"></i><b>1.2</b> Example 1.1: Divorce Rates (page 2)</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="introduction.html"><a href="introduction.html#figure-1.1-plot-of-1965-divorce-rates-versus-afdc-payments."><i class="fa fa-check"></i><b>1.2.1</b> Figure 1.1: Plot of 1965 divorce rates versus AFDC payments.</a></li>
+<li class="chapter" data-level="1.2.2" data-path="introduction.html"><a href="introduction.html#figure-1.2-plot-of-divorce-rate-versus-afdc-payments-from-1965-and-1975."><i class="fa fa-check"></i><b>1.2.2</b> Figure 1.2: Plot of divorce rate versus AFDC payments from 1965 and 1975.</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html"><i class="fa fa-check"></i><b>2</b> Fixed-Effects Models</a><ul>
+<li class="chapter" data-level="2.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#import-data-1"><i class="fa fa-check"></i><b>2.1</b> Import Data</a></li>
+<li class="chapter" data-level="2.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#example-2.2-medicare-hospital-costs-page-26"><i class="fa fa-check"></i><b>2.2</b> Example 2.2: Medicare Hospital Costs (Page 26)</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.1-ccpd-vs-year-multiple-time-series-plot"><i class="fa fa-check"></i><b>2.2.1</b> FIGURE 2.1: CCPD vs YEAR; multiple time series plot</a></li>
+<li class="chapter" data-level="2.2.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.2-ccpd-vs-num.dchg"><i class="fa fa-check"></i><b>2.2.2</b> FIGURE 2.2: CCPD vs NUM.DCHG</a></li>
+<li class="chapter" data-level="2.2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.3-ccpd-vs-ave.days"><i class="fa fa-check"></i><b>2.2.3</b> Figure 2.3: CCPD vs AVE.DAYS</a></li>
+<li class="chapter" data-level="2.2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.4-added-variable-plot-of-ccpd-versus-year"><i class="fa fa-check"></i><b>2.2.4</b> Figure 2.4: Added-variable plot of CCPD versus year</a></li>
+<li class="chapter" data-level="2.2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.5-trellis-plot"><i class="fa fa-check"></i><b>2.2.5</b> Figure 2.5: Trellis Plot</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-fixed-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.3</b> One way fixed effects model using lm, for linear model</a></li>
+<li class="chapter" data-level="2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.1---analysis-for-the-pooling-test"><i class="fa fa-check"></i><b>2.4</b> SECTION 2.4.1 - Analysis for the pooling test;</a></li>
+<li class="chapter" data-level="2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.2---correlation-corresponding-to-the-added-variable-plot"><i class="fa fa-check"></i><b>2.5</b> SECTION 2.4.2 - Correlation corresponding to the added variable plot;</a></li>
+<li class="chapter" data-level="2.6" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.5---testing-for-heteroscedasticity"><i class="fa fa-check"></i><b>2.6</b> SECTION 2.4.5 - Testing for heteroscedasticity;</a><ul>
+<li class="chapter" data-level="2.6.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-random-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.6.1</b> One way random effects model using lm, for linear model;</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html"><i class="fa fa-check"></i><b>3</b> Models with Random Effects</a><ul>
+<li class="chapter" data-level="3.1" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#import-data-2"><i class="fa fa-check"></i><b>3.1</b> Import Data</a></li>
+<li class="chapter" data-level="3.2" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#example-3.2-income-tax-payments-page-81"><i class="fa fa-check"></i><b>3.2</b> Example 3.2: Income Tax Payments (Page 81)</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.2.-averages-of-binary-variables"><i class="fa fa-check"></i><b>3.2.1</b> Table 3.2. Averages of binary variables</a></li>
+<li class="chapter" data-level="3.2.2" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.3---summary-statistics-for-continuous-variables"><i class="fa fa-check"></i><b>3.2.2</b> TABLE 3.3 - Summary statistics for continuous variables</a></li>
+<li class="chapter" data-level="3.2.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.4---averages-by-level-of-binary-explanatory-variable"><i class="fa fa-check"></i><b>3.2.3</b> TABLE 3.4 - Averages by level of binary explanatory variable</a></li>
+<li class="chapter" data-level="3.2.4" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.5---correlation-for-continous-variables"><i class="fa fa-check"></i><b>3.2.4</b> TABLE 3.5 - Correlation for continous variables</a></li>
+<li class="chapter" data-level="3.2.5" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#figure-3.2-basic-added-variable-plot-y-vs.-x"><i class="fa fa-check"></i><b>3.2.5</b> FIGURE 3.2: Basic added variable plot (y vs. x)</a></li>
+<li class="chapter" data-level="3.2.6" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#display-3.1---error-components-model"><i class="fa fa-check"></i><b>3.2.6</b> DISPLAY 3.1 - Error components model</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#section-3.3---random-coefficients-model"><i class="fa fa-check"></i><b>3.3</b> SECTION 3.3 - Random coefficients model</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html"><i class="fa fa-check"></i><b>4</b> Prediction and Bayesian Inference</a><ul>
+<li class="chapter" data-level="4.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#import-data-3"><i class="fa fa-check"></i><b>4.1</b> Import Data</a></li>
+<li class="chapter" data-level="4.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#example-forecasting-wisconsin-lottery-sales-page-138"><i class="fa fa-check"></i><b>4.2</b> Example: Forecasting Wisconsin Lottery Sales (Page 138)</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#table-4.2-time---invariant-summary-statistics"><i class="fa fa-check"></i><b>4.2.1</b> TABLE 4.2: Time - invariant summary statistics</a></li>
+<li class="chapter" data-level="4.2.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.2-look-at-the-relationship"><i class="fa fa-check"></i><b>4.2.2</b> FIGURE 4.2: Look at the relationship</a></li>
+<li class="chapter" data-level="4.2.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#sorting-the-data-by-zip-then-combine-vectors-into-another-data.frame"><i class="fa fa-check"></i><b>4.2.3</b> Sorting the data by zip then combine vectors into another data.frame</a></li>
+<li class="chapter" data-level="4.2.4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.3-lottery-vs.-week-number"><i class="fa fa-check"></i><b>4.2.4</b> FIGURE 4.3: Lottery vs. week number</a></li>
+<li class="chapter" data-level="4.2.5" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.4-log-lottery-vs-week-number"><i class="fa fa-check"></i><b>4.2.5</b> FIGURE 4.4: Log lottery vs week number</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#create-model-development-sample"><i class="fa fa-check"></i><b>4.3</b> Create model development sample</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-1.-pooled-cross-setional-model"><i class="fa fa-check"></i><b>4.3.1</b> MODEL 1. Pooled cross-setional model</a></li>
+<li class="chapter" data-level="4.3.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-2.-error-components-model"><i class="fa fa-check"></i><b>4.3.2</b> MODEL 2. Error components model</a></li>
+<li class="chapter" data-level="4.3.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-3.-error-components-model-with-autocorrelated-errors"><i class="fa fa-check"></i><b>4.3.3</b> MODEL 3. Error components model with autocorrelated errors</a></li>
+<li class="chapter" data-level="4.3.4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-4.-more-parsimonious-random-effects-model"><i class="fa fa-check"></i><b>4.3.4</b> MODEL 4. More parsimonious random effects model</a></li>
+<li class="chapter" data-level="4.3.5" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-5.-fixed-effects-model-with-autocorrelated-errors"><i class="fa fa-check"></i><b>4.3.5</b> MODEL 5. Fixed effects model with autocorrelated errors</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="multilevel-models.html"><a href="multilevel-models.html"><i class="fa fa-check"></i><b>5</b> Multilevel Models</a><ul>
+<li class="chapter" data-level="5.1" data-path="multilevel-models.html"><a href="multilevel-models.html#import-data-4"><i class="fa fa-check"></i><b>5.1</b> Import Data</a></li>
+<li class="chapter" data-level="5.2" data-path="multilevel-models.html"><a href="multilevel-models.html#example-5.2-dental-data-page-175"><i class="fa fa-check"></i><b>5.2</b> Example 5.2: Dental Data (Page 175)</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="multilevel-models.html"><a href="multilevel-models.html#figure-5.1.-multiple-time-series-plot"><i class="fa fa-check"></i><b>5.2.1</b> Figure 5.1. Multiple time series plot</a></li>
+<li class="chapter" data-level="5.2.2" data-path="multilevel-models.html"><a href="multilevel-models.html#summary-statistics"><i class="fa fa-check"></i><b>5.2.2</b> Summary statistics</a></li>
+<li class="chapter" data-level="5.2.3" data-path="multilevel-models.html"><a href="multilevel-models.html#trellis-plot-unique-in-r"><i class="fa fa-check"></i><b>5.2.3</b> Trellis plot, unique in r</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-dental-data-growth-curve-model-parameter-estimates"><i class="fa fa-check"></i><b>5.3</b> TABLE 5.2: Dental data growth-curve-model parameter estimates</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-error-components-model"><i class="fa fa-check"></i><b>5.3.1</b> TABLE 5.2: Error components model</a></li>
+<li class="chapter" data-level="5.3.2" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-growth-curve-model"><i class="fa fa-check"></i><b>5.3.2</b> TABLE 5.2: Growth curve model</a></li>
+<li class="chapter" data-level="5.3.3" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-growth-curve-model---omitting-9th-boy"><i class="fa fa-check"></i><b>5.3.3</b> TABLE 5.2: Growth curve model - omitting 9th boy</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="modeling-issues.html"><a href="modeling-issues.html"><i class="fa fa-check"></i><b>6</b> Modeling Issues</a><ul>
+<li class="chapter" data-level="6.1" data-path="modeling-issues.html"><a href="modeling-issues.html#import-data-5"><i class="fa fa-check"></i><b>6.1</b> Import Data</a></li>
+<li class="chapter" data-level="6.2" data-path="modeling-issues.html"><a href="modeling-issues.html#example-7.2-income-tax-payments-page-248"><i class="fa fa-check"></i><b>6.2</b> Example 7.2: Income Tax Payments (Page 248)</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.1-fixed-effects-estimators"><i class="fa fa-check"></i><b>6.2.1</b> TABLE 7.1: Fixed effects estimators</a></li>
+<li class="chapter" data-level="6.2.2" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.1-random-effects-estimator"><i class="fa fa-check"></i><b>6.2.2</b> TABLE 7.1: Random effects estimator</a></li>
+<li class="chapter" data-level="6.2.3" data-path="modeling-issues.html"><a href="modeling-issues.html#hausmans-test"><i class="fa fa-check"></i><b>6.2.3</b> Hausman’s test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="modeling-issues.html"><a href="modeling-issues.html#example-7.2-income-tax-payments-continued-page-255"><i class="fa fa-check"></i><b>6.3</b> Example 7.2: Income Tax Payments (continued) (Page 255)</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.2-fixed-effects-estimators-with-two-variable-slopes"><i class="fa fa-check"></i><b>6.3.1</b> Table 7.2: Fixed effects estimators with two variable slopes</a></li>
+<li class="chapter" data-level="6.3.2" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.2-variable-slopes-model"><i class="fa fa-check"></i><b>6.3.2</b> Table 7.2: Variable slopes model</a></li>
+<li class="chapter" data-level="6.3.3" data-path="modeling-issues.html"><a href="modeling-issues.html#hausmans-test-1"><i class="fa fa-check"></i><b>6.3.3</b> Hausman’s test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.3-augmented-regressions"><i class="fa fa-check"></i><b>6.4</b> TABLE 7.3 Augmented regressions</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="modeling-issues.html"><a href="modeling-issues.html#create-panel-data-set-with-subject-averages"><i class="fa fa-check"></i><b>6.4.1</b> Create panel data set with subject averages</a></li>
+<li class="chapter" data-level="6.4.2" data-path="modeling-issues.html"><a href="modeling-issues.html#models-with-averages-as-omitted-variables"><i class="fa fa-check"></i><b>6.4.2</b> Models with averages as omitted variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="dynamic-models.html"><a href="dynamic-models.html"><i class="fa fa-check"></i><b>7</b> Dynamic Models</a><ul>
+<li class="chapter" data-level="7.1" data-path="dynamic-models.html"><a href="dynamic-models.html#import-data-6"><i class="fa fa-check"></i><b>7.1</b> Import Data</a></li>
+<li class="chapter" data-level="7.2" data-path="dynamic-models.html"><a href="dynamic-models.html#example-8.6-capital-asset-pricing-model-page-302"><i class="fa fa-check"></i><b>7.2</b> Example 8.6: Capital Asset Pricing Model (Page 302)</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-vwfree-for-incoln-insurance-company"><i class="fa fa-check"></i><b>7.2.1</b> Plot of RETFREE vs. VWFREE for Incoln insurance company</a></li>
+<li class="chapter" data-level="7.2.2" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-vwfree-for-90-insurance-firms"><i class="fa fa-check"></i><b>7.2.2</b> Plot of RETFREE vs. VWFREE for 90 insurance firms</a></li>
+<li class="chapter" data-level="7.2.3" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-year-for-lincoln-insurance-company"><i class="fa fa-check"></i><b>7.2.3</b> Plot of RETFREE vs. YEAR for Lincoln insurance company</a></li>
+<li class="chapter" data-level="7.2.4" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.2-summary-statistics-for-market-index-and-risk-free-security"><i class="fa fa-check"></i><b>7.2.4</b> Table 8.2 Summary statistics for market index and risk-free security</a></li>
+<li class="chapter" data-level="7.2.5" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.3-summary-statistics-for-individual-security-returns"><i class="fa fa-check"></i><b>7.2.5</b> TABLE 8.3 Summary statistics for individual security returns</a></li>
+<li class="chapter" data-level="7.2.6" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.4-fixed-effects-models"><i class="fa fa-check"></i><b>7.2.6</b> TABLE 8.4 Fixed effects models</a></li>
+<li class="chapter" data-level="7.2.7" data-path="dynamic-models.html"><a href="dynamic-models.html#figure-8.1-trellis-plot-of-returns-versus-market-return"><i class="fa fa-check"></i><b>7.2.7</b> Figure 8.1: Trellis plot of returns versus market return</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html"><i class="fa fa-check"></i><b>8</b> Binary Dependent Variables</a><ul>
+<li class="chapter" data-level="8.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#import-data-7"><i class="fa fa-check"></i><b>8.1</b> Import Data</a></li>
+<li class="chapter" data-level="8.2" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#example-income-tax-payments-and-tax-preparers-page-326"><i class="fa fa-check"></i><b>8.2</b> Example: Income Tax Payments and Tax Preparers (page 326)</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.2.-means-for-binary-variables"><i class="fa fa-check"></i><b>8.2.1</b> TABLE 9.2. Means for binary variables</a></li>
+<li class="chapter" data-level="8.2.2" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.3.-summary-stats-for-other-variables"><i class="fa fa-check"></i><b>8.2.2</b> TABLE 9.3. Summary stats for other variables</a></li>
+<li class="chapter" data-level="8.2.3" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.4.-frequency-tables-for-some-of-the-binary-variables"><i class="fa fa-check"></i><b>8.2.3</b> TABLE 9.4. Frequency tables for some of the binary variables</a></li>
+<li class="chapter" data-level="8.2.4" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#display-9.1-fit-the-logistic-distribution-function-using-maximum-likelihood"><i class="fa fa-check"></i><b>8.2.4</b> DISPLAY 9.1 Fit the logistic distribution function using maximum likelihood</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.2-random-effects-nonlinear-mixed-effects-model"><i class="fa fa-check"></i><b>8.3</b> SECTION 9.2 Random effects nonlinear mixed effects model</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#generalized-linear-mixed-effects-model"><i class="fa fa-check"></i><b>8.3.1</b> Generalized linear mixed effects model</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.3-fixed-effect-model"><i class="fa fa-check"></i><b>8.4</b> SECTION 9.3 Fixed effect model</a></li>
+<li class="chapter" data-level="8.5" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.4-marginal-model-and-generalized-equation-estimation"><i class="fa fa-check"></i><b>8.5</b> SECTION 9.4 Marginal model and generalized equation estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>9</b> Generalized Linear Models</a><ul>
+<li class="chapter" data-level="9.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#import-data-8"><i class="fa fa-check"></i><b>9.1</b> Import Data</a></li>
+<li class="chapter" data-level="9.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-tort-filings-page-356"><i class="fa fa-check"></i><b>9.2</b> Example: Tort Filings (Page 356)</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.3-averages-with-explanatory-binary-variables"><i class="fa fa-check"></i><b>9.2.1</b> TABLE 10.3 Averages with explanatory binary variables</a></li>
+<li class="chapter" data-level="9.2.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.4-summary-statistics-for-other-variables"><i class="fa fa-check"></i><b>9.2.2</b> TABLE 10.4 Summary statistics for other variables</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#section-10.2-homogeneous-model"><i class="fa fa-check"></i><b>9.3</b> Section 10.2 Homogeneous model</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.5-tort-filings-model-coefficient-estimates"><i class="fa fa-check"></i><b>9.3.1</b> TABLE 10.5 Tort filings model coefficient estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#section-10.3-marginal-models"><i class="fa fa-check"></i><b>9.4</b> Section 10.3 Marginal Models</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#with-in-state-correlation-independent"><i class="fa fa-check"></i><b>9.4.1</b> With in state correlation independent</a></li>
+<li class="chapter" data-level="9.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#random-effects-model"><i class="fa fa-check"></i><b>9.4.2</b> Random effects model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html"><i class="fa fa-check"></i><b>10</b> Categorical Dependent Variables and Survival Models</a><ul>
+<li class="chapter" data-level="10.1" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#import-data-9"><i class="fa fa-check"></i><b>10.1</b> Import Data</a></li>
+<li class="chapter" data-level="10.2" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#chap11yogurt2013.r"><i class="fa fa-check"></i><b>10.2</b> Chap11Yogurt2013.R</a></li>
+<li class="chapter" data-level="10.3" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#table-11.2-number-of-choices"><i class="fa fa-check"></i><b>10.3</b> Table 11.2 Number of Choices</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#table-11.2-basic-summary-statistics-for-prices"><i class="fa fa-check"></i><b>10.3.1</b> Table 11.2 Basic summary statistics for prices</a></li>
+<li class="chapter" data-level="10.3.2" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#vissualize-the-data"><i class="fa fa-check"></i><b>10.3.2</b> vissualize the data</a></li>
+<li class="chapter" data-level="10.3.3" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#note-the-small-relationships-among-prices"><i class="fa fa-check"></i><b>10.3.3</b> Note the small relationships among prices</a></li>
+<li class="chapter" data-level="10.3.4" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#more-on-prices"><i class="fa fa-check"></i><b>10.3.4</b> More on prices</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#fitting-fixed-effects-multinomial-logit-model-by-the-poisson-log-linear-model"><i class="fa fa-check"></i><b>10.4</b> Fitting fixed effects multinomial logit model by the poisson log-linear model</a></li>
+<li class="chapter" data-level="10.5" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#fitting-multinomial-logit-model-with-random-intercepts-by-the-possion-log-linear-with-random-intercepts"><i class="fa fa-check"></i><b>10.5</b> Fitting multinomial logit model with random intercepts by the possion-log-linear with random intercepts</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Scripts for Longitudinal and Panel Data</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">Chapter 1</span> Introduction</h1>
+<div id="import-data" class="section level2">
+<h2><span class="header-section-number">1.1</span> Import Data</h2>
+<p>First, we can import “Divorce.txt” downloaded from website <a href="https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Longitudinal%20and%20Panel%20Data/Book/DataFiles.htm" class="uri">https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Longitudinal%20and%20Panel%20Data/Book/DataFiles.htm</a></p>
+<p>These are data describing the divorce rate in each state. In addition, there is other socioeconomic information about a state that may be related to the divorce rate. In particular, data concerning the number of marriages and births, unemployment and crime rates, and AFDC (Aid to Families with Dependent Children) payments are available. In this file, data are available for the years 1965, 1975, 1985 and 1995. The information provided by this study is potentially useful for governing agencies in budgeting for social needs such as judicial and welfare services that are affected by divorce. The data for the study were collected from various U.S. Statistical Abstracts. Divorce rate is defined as the number of divorces and annulments per thousand population per state. The independent variables include the number of marriages and live births per thousand population, the total unemployment rate as percent of total work force, the average monthly AFDC payments per family, and the total number of criminal offenses known to the police (murder, rape, robbery, aggravated assault, burglary, larceny, and motor vehicle theft). Some of the data points contain missing observations due to unavailability, and Nevada is unusual due to its uniquely high and unrepresentative marriage and divorce rates. Source: U.S. Statistical Abstract, various issues.</p>
+<table>
+<colgroup>
+<col width="5%" />
+<col width="94%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>DIVORCE</td>
+<td>Number of divorces and annulments per state per one thousand population.</td>
+</tr>
+<tr class="even">
+<td>BIRTH</td>
+<td>Number of live births per state per one thousand population.</td>
+</tr>
+<tr class="odd">
+<td>MARRIAGE</td>
+<td>Number of marriages per state per one thousand population.</td>
+</tr>
+<tr class="even">
+<td>UNEMPLOY</td>
+<td>Total unemployment rate as a percentage of the total work force.</td>
+</tr>
+<tr class="odd">
+<td>CRIME</td>
+<td>Total number of criminal offenses (murder, rape, robbery, aggravated assault, burglary, larceny and motor vehicle theft) known to police per one hundred thousand population.</td>
+</tr>
+<tr class="even">
+<td>AFDC</td>
+<td>Average monthly AFDC (Aid to Families with Dependent Children) payments per family.</td>
+</tr>
+<tr class="odd">
+<td>STATE</td>
+<td>State identifier, 1-51.</td>
+</tr>
+<tr class="even">
+<td>TIME</td>
+<td>Time identifier, 1-4.</td>
+</tr>
+</tbody>
+</table>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#  &quot;\t&quot;  INDICATES SEPARATED BY TABLES  ;</span>
+divorce =<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;TXTData/Divorce.txt&quot;</span>, <span class="dt">sep =</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">quote =</span> <span class="st">&quot;&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
+<span class="co"># divorce = read.table(choose.files(), sep =&quot;\t&quot;, quote = &quot;&quot;,header=TRUE)</span></code></pre>
+<p>Let’s have a look at the dataset. The names of variables and the first 8 rows observations.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#  PROVIDES THE NAMES IN THE FILE AND LISTS THE FIRST 8 OBSERVATIONS  ;</span>
+<span class="kw">names</span> (divorce)</code></pre>
+<pre><code> [1] &quot;DIVORCE&quot;    &quot;BIRTH&quot;      &quot;MARRIAGE&quot;   &quot;UNEMPLOY&quot;   &quot;CRIME&quot;     
+ [6] &quot;AFDC&quot;       &quot;STATE&quot;      &quot;TIME&quot;       &quot;STATE.Name&quot; &quot;Region&quot;    </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">divorce[<span class="dv">1</span><span class="op">:</span><span class="dv">8</span>,]</code></pre>
+<pre><code>  DIVORCE BIRTH MARRIAGE UNEMPLOY  CRIME AFDC STATE TIME    STATE.Name
+1     2.6  19.9      8.8      4.9  6.799  114     1    1         Maine
+2     2.3  19.5     13.4      2.8  6.106  188     2    1 New Hampshire
+3     1.5  20.5      9.0      4.2  5.793  113     3    1       Vermont
+4     1.5  18.8      7.1      4.9 15.072  188     4    1 Massachusetts
+5     1.3  19.4      7.1      4.9 14.180  172     5    1  Rhode Island
+6     1.3  19.2      7.4      3.9 11.749  197     6    1   Connecticut
+7     0.5  18.6      7.4      4.6 22.509  218     7    1      New York
+8     0.8  18.5      6.8      5.1 13.966  203     8    1    New Jersey
+           Region
+1     New England
+2     New England
+3     New England
+4     New England
+5     New England
+6     New England
+7 Middle Atlantic
+8 Middle Atlantic</code></pre>
+<p>We can check some summary statistics. The dimension of <code>divorce</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#  SUMMARY STATISTICS  ;</span>
+<span class="kw">dim</span>(divorce)</code></pre>
+<pre><code>[1] 204  10</code></pre>
+<p>A summary of variables <code>DIVORCE</code> and <code>AFDC</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(divorce[, <span class="kw">c</span>(<span class="st">&quot;DIVORCE&quot;</span>, <span class="st">&quot;AFDC&quot;</span>)])</code></pre>
+<pre><code>    DIVORCE           AFDC      
+ Min.   :0.500   Min.   : 33.0  
+ 1st Qu.:3.300   1st Qu.:154.0  
+ Median :4.250   Median :224.0  
+ Mean   :4.361   Mean   :245.9  
+ 3rd Qu.:5.300   3rd Qu.:315.0  
+ Max.   :9.100   Max.   :731.0  
+ NA&#39;s   :12      NA&#39;s   :3      </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sd</span>(divorce[,<span class="kw">c</span>(<span class="st">&quot;DIVORCE&quot;</span>)], <span class="dt">na.rm=</span><span class="ot">TRUE</span>) <span class="co">#The standard deviation of DIVORCE.</span></code></pre>
+<pre><code>[1] 1.704068</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sd</span>(divorce[,<span class="kw">c</span>(<span class="st">&quot;AFDC&quot;</span>)], <span class="dt">na.rm=</span><span class="ot">TRUE</span>) <span class="co">#The standard deviation of AFDC.</span></code></pre>
+<pre><code>[1] 122.2453</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(divorce<span class="op">$</span>DIVORCE, divorce<span class="op">$</span>AFDC, <span class="dt">use=</span><span class="st">&quot;pairwise.complete.obs&quot;</span>)<span class="co"># The correlation between DIVORCE and AFDC.</span></code></pre>
+<pre><code>[1] 0.07306962</code></pre>
+</div>
+<div id="example-1.1-divorce-rates-page-2" class="section level2">
+<h2><span class="header-section-number">1.2</span> Example 1.1: Divorce Rates (page 2)</h2>
+<div id="figure-1.1-plot-of-1965-divorce-rates-versus-afdc-payments." class="section level3">
+<h3><span class="header-section-number">1.2.1</span> Figure 1.1: Plot of 1965 divorce rates versus AFDC payments.</h3>
+<p>Figure 1.1 shows the 1965 divorce rates versus AFDC (Aid to Families with Dependent Children) payments for the fifty states.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#  FIGURE 1.1. PLOT 1965 DATA ;</span>
+<span class="kw">plot</span>(DIVORCE <span class="op">~</span><span class="st"> </span>AFDC, <span class="dt">subset=</span>TIME <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>),<span class="dt">data =</span> divorce, <span class="dt">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">yaxt=</span><span class="st">&quot;n&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;&quot;</span>,<span class="dt">xlab=</span><span class="st">&quot;&quot;</span>)
+
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dt">by=</span><span class="fl">0.1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">20</span>,<span class="dv">220</span>, <span class="dt">by=</span><span class="dv">20</span>), <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">20</span>,<span class="dv">220</span>, <span class="dt">by=</span><span class="dv">2</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;DIVORCE&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="dv">0</span>, <span class="dt">at=</span><span class="dv">6</span>, <span class="dt">font=</span><span class="dv">12</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;AFDC&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">3</span>, <span class="dt">at=</span><span class="dv">120</span>, <span class="dt">font=</span><span class="dv">12</span>, <span class="dt">cex=</span><span class="dv">1</span>)</code></pre>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>We can also plot 1975 data following the same method.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#  PLOT 1975 DATA ;</span>
+<span class="kw">plot</span>(DIVORCE <span class="op">~</span><span class="st"> </span>AFDC, <span class="dt">subset=</span>TIME <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">2</span>),<span class="dt">data =</span> divorce,<span class="dt">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">yaxt=</span><span class="st">&quot;n&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;&quot;</span>,<span class="dt">xlab=</span><span class="st">&quot;&quot;</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">2</span>, <span class="dv">9</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">2</span>, <span class="dv">9</span>, <span class="dt">by=</span><span class="fl">0.1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">400</span>, <span class="dt">by=</span><span class="dv">100</span>), <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">400</span>, <span class="dt">by=</span><span class="dv">10</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;DIVORCE&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="dv">0</span>, <span class="dt">at=</span><span class="fl">8.5</span>, <span class="dt">font=</span><span class="dv">12</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;AFDC&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">3</span>, <span class="dt">at=</span><span class="dv">200</span>, <span class="dt">font=</span><span class="dv">12</span>, <span class="dt">cex=</span><span class="dv">1</span>)</code></pre>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="figure-1.2-plot-of-divorce-rate-versus-afdc-payments-from-1965-and-1975." class="section level3">
+<h3><span class="header-section-number">1.2.2</span> Figure 1.2: Plot of divorce rate versus AFDC payments from 1965 and 1975.</h3>
+<p>Figure 1.2 shows both the 1965 and 1975 data; a line connects the two observations within each state. These lines represent a change over time (dynamic), not a cross-sectional relationship.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(DIVORCE <span class="op">~</span><span class="st"> </span>AFDC, <span class="dt">data =</span> <span class="kw">subset</span>(divorce, TIME <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)), <span class="dt">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">yaxt=</span><span class="st">&quot;n&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;&quot;</span>,<span class="dt">xlab=</span><span class="st">&quot;&quot;</span>)
+   <span class="cf">for</span> (i <span class="cf">in</span> divorce<span class="op">$</span>STATE) {
+    <span class="kw">lines</span>(DIVORCE <span class="op">~</span><span class="st"> </span>AFDC, <span class="dt">data =</span> <span class="kw">subset</span>(divorce, TIME <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>) <span class="op">&amp;</span><span class="st"> </span>STATE <span class="op">==</span><span class="st"> </span>i)) }
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dt">by=</span><span class="fl">0.1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">400</span>, <span class="dt">by=</span><span class="dv">100</span>), <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">400</span>, <span class="dt">by=</span><span class="dv">10</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;DIVORCE&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="dv">0</span>, <span class="dt">at=</span><span class="fl">8.5</span>, <span class="dt">font=</span><span class="dv">12</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;AFDC&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">3</span>, <span class="dt">at=</span><span class="dv">200</span>, <span class="dt">font=</span><span class="dv">12</span>, <span class="dt">cex=</span><span class="dv">1</span>)</code></pre>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>We can plot data for all years and connect the years.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#  PLOT ALL DATA, CONNECTING THE YEARS ;</span>
+<span class="kw">plot</span>(DIVORCE <span class="op">~</span><span class="st"> </span>AFDC, <span class="dt">data =</span> divorce, <span class="dt">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">yaxt=</span><span class="st">&quot;n&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;&quot;</span>,<span class="dt">xlab=</span><span class="st">&quot;&quot;</span>)
+  <span class="cf">for</span> (i <span class="cf">in</span> divorce<span class="op">$</span>STATE) {
+  <span class="kw">lines</span>(DIVORCE <span class="op">~</span><span class="st"> </span>AFDC, <span class="dt">data =</span> <span class="kw">subset</span>(divorce, STATE <span class="op">==</span><span class="st"> </span>i)) }
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dt">by=</span><span class="fl">0.1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">800</span>, <span class="dt">by=</span><span class="dv">100</span>), <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">800</span>, <span class="dt">by=</span><span class="dv">10</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;DIVORCE&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="dv">0</span>, <span class="dt">at=</span><span class="dv">10</span>, <span class="dt">font=</span><span class="dv">12</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;AFDC&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">3</span>, <span class="dt">at=</span><span class="dv">400</span>, <span class="dt">font=</span><span class="dv">12</span>, <span class="dt">cex=</span><span class="dv">1</span>)</code></pre>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>We can also look at the multiple time series plot by the <code>STATE</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#  MULTIPLE TIME SERIES PLOT  ;</span>
+divorce<span class="op">$</span>YEAR=divorce<span class="op">$</span>TIME<span class="op">*</span><span class="dv">10</span><span class="op">+</span><span class="dv">1955</span>
+<span class="kw">plot</span>(DIVORCE <span class="op">~</span><span class="st"> </span>YEAR, <span class="dt">data =</span> divorce, <span class="dt">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">yaxt=</span><span class="st">&quot;n&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;&quot;</span>,<span class="dt">xlab=</span><span class="st">&quot;&quot;</span>)
+   <span class="cf">for</span> (i <span class="cf">in</span> divorce<span class="op">$</span>STATE) {
+   <span class="kw">lines</span>(DIVORCE <span class="op">~</span><span class="st"> </span>YEAR, <span class="dt">data =</span> <span class="kw">subset</span>(divorce, STATE <span class="op">==</span><span class="st"> </span>i)) }
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dt">by=</span><span class="fl">0.1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">1965</span>,<span class="dv">1995</span>, <span class="dt">by=</span><span class="dv">10</span>), <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">1964</span>,<span class="dv">2000</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;DIVORCE&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="dv">0</span>, <span class="dt">at=</span><span class="dv">10</span>, <span class="dt">font=</span><span class="dv">12</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;YEAR&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">3</span>, <span class="dt">at=</span><span class="dv">1980</span>, <span class="dt">font=</span><span class="dv">12</span>, <span class="dt">cex=</span><span class="dv">1</span>)</code></pre>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="fixed-effects-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["LongPanelDataScripts.pdf", "LongPanelDataScripts.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

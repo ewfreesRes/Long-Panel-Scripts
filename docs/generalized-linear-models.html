@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 9 Generalized Linear Models | R Scripts for Longitudinal and Panel Data</title>
+  <meta name="description" content="R scripts" />
+  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 9 Generalized Linear Models | R Scripts for Longitudinal and Panel Data" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R scripts" />
+  <meta name="github-repo" content="https://github.com/openacttexts/Loss-Data-Analytics" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 9 Generalized Linear Models | R Scripts for Longitudinal and Panel Data" />
+  
+  <meta name="twitter:description" content="R scripts" />
+  
+
+<meta name="author" content="Yumo Dong, Edward Frees, and others??" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="binary-dependent-variables.html">
+<link rel="next" href="categorical-dependent-variables-and-survival-models.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#import-data"><i class="fa fa-check"></i><b>1.1</b> Import Data</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#example-1.1-divorce-rates-page-2"><i class="fa fa-check"></i><b>1.2</b> Example 1.1: Divorce Rates (page 2)</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="introduction.html"><a href="introduction.html#figure-1.1-plot-of-1965-divorce-rates-versus-afdc-payments."><i class="fa fa-check"></i><b>1.2.1</b> Figure 1.1: Plot of 1965 divorce rates versus AFDC payments.</a></li>
+<li class="chapter" data-level="1.2.2" data-path="introduction.html"><a href="introduction.html#figure-1.2-plot-of-divorce-rate-versus-afdc-payments-from-1965-and-1975."><i class="fa fa-check"></i><b>1.2.2</b> Figure 1.2: Plot of divorce rate versus AFDC payments from 1965 and 1975.</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html"><i class="fa fa-check"></i><b>2</b> Fixed-Effects Models</a><ul>
+<li class="chapter" data-level="2.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#import-data-1"><i class="fa fa-check"></i><b>2.1</b> Import Data</a></li>
+<li class="chapter" data-level="2.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#example-2.2-medicare-hospital-costs-page-26"><i class="fa fa-check"></i><b>2.2</b> Example 2.2: Medicare Hospital Costs (Page 26)</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.1-ccpd-vs-year-multiple-time-series-plot"><i class="fa fa-check"></i><b>2.2.1</b> FIGURE 2.1: CCPD vs YEAR; multiple time series plot</a></li>
+<li class="chapter" data-level="2.2.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.2-ccpd-vs-num.dchg"><i class="fa fa-check"></i><b>2.2.2</b> FIGURE 2.2: CCPD vs NUM.DCHG</a></li>
+<li class="chapter" data-level="2.2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.3-ccpd-vs-ave.days"><i class="fa fa-check"></i><b>2.2.3</b> Figure 2.3: CCPD vs AVE.DAYS</a></li>
+<li class="chapter" data-level="2.2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.4-added-variable-plot-of-ccpd-versus-year"><i class="fa fa-check"></i><b>2.2.4</b> Figure 2.4: Added-variable plot of CCPD versus year</a></li>
+<li class="chapter" data-level="2.2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.5-trellis-plot"><i class="fa fa-check"></i><b>2.2.5</b> Figure 2.5: Trellis Plot</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-fixed-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.3</b> One way fixed effects model using lm, for linear model</a></li>
+<li class="chapter" data-level="2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.1---analysis-for-the-pooling-test"><i class="fa fa-check"></i><b>2.4</b> SECTION 2.4.1 - Analysis for the pooling test;</a></li>
+<li class="chapter" data-level="2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.2---correlation-corresponding-to-the-added-variable-plot"><i class="fa fa-check"></i><b>2.5</b> SECTION 2.4.2 - Correlation corresponding to the added variable plot;</a></li>
+<li class="chapter" data-level="2.6" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.5---testing-for-heteroscedasticity"><i class="fa fa-check"></i><b>2.6</b> SECTION 2.4.5 - Testing for heteroscedasticity;</a><ul>
+<li class="chapter" data-level="2.6.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-random-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.6.1</b> One way random effects model using lm, for linear model;</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html"><i class="fa fa-check"></i><b>3</b> Models with Random Effects</a><ul>
+<li class="chapter" data-level="3.1" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#import-data-2"><i class="fa fa-check"></i><b>3.1</b> Import Data</a></li>
+<li class="chapter" data-level="3.2" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#example-3.2-income-tax-payments-page-81"><i class="fa fa-check"></i><b>3.2</b> Example 3.2: Income Tax Payments (Page 81)</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.2.-averages-of-binary-variables"><i class="fa fa-check"></i><b>3.2.1</b> Table 3.2. Averages of binary variables</a></li>
+<li class="chapter" data-level="3.2.2" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.3---summary-statistics-for-continuous-variables"><i class="fa fa-check"></i><b>3.2.2</b> TABLE 3.3 - Summary statistics for continuous variables</a></li>
+<li class="chapter" data-level="3.2.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.4---averages-by-level-of-binary-explanatory-variable"><i class="fa fa-check"></i><b>3.2.3</b> TABLE 3.4 - Averages by level of binary explanatory variable</a></li>
+<li class="chapter" data-level="3.2.4" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.5---correlation-for-continous-variables"><i class="fa fa-check"></i><b>3.2.4</b> TABLE 3.5 - Correlation for continous variables</a></li>
+<li class="chapter" data-level="3.2.5" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#figure-3.2-basic-added-variable-plot-y-vs.-x"><i class="fa fa-check"></i><b>3.2.5</b> FIGURE 3.2: Basic added variable plot (y vs. x)</a></li>
+<li class="chapter" data-level="3.2.6" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#display-3.1---error-components-model"><i class="fa fa-check"></i><b>3.2.6</b> DISPLAY 3.1 - Error components model</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#section-3.3---random-coefficients-model"><i class="fa fa-check"></i><b>3.3</b> SECTION 3.3 - Random coefficients model</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html"><i class="fa fa-check"></i><b>4</b> Prediction and Bayesian Inference</a><ul>
+<li class="chapter" data-level="4.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#import-data-3"><i class="fa fa-check"></i><b>4.1</b> Import Data</a></li>
+<li class="chapter" data-level="4.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#example-forecasting-wisconsin-lottery-sales-page-138"><i class="fa fa-check"></i><b>4.2</b> Example: Forecasting Wisconsin Lottery Sales (Page 138)</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#table-4.2-time---invariant-summary-statistics"><i class="fa fa-check"></i><b>4.2.1</b> TABLE 4.2: Time - invariant summary statistics</a></li>
+<li class="chapter" data-level="4.2.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.2-look-at-the-relationship"><i class="fa fa-check"></i><b>4.2.2</b> FIGURE 4.2: Look at the relationship</a></li>
+<li class="chapter" data-level="4.2.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#sorting-the-data-by-zip-then-combine-vectors-into-another-data.frame"><i class="fa fa-check"></i><b>4.2.3</b> Sorting the data by zip then combine vectors into another data.frame</a></li>
+<li class="chapter" data-level="4.2.4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.3-lottery-vs.-week-number"><i class="fa fa-check"></i><b>4.2.4</b> FIGURE 4.3: Lottery vs. week number</a></li>
+<li class="chapter" data-level="4.2.5" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.4-log-lottery-vs-week-number"><i class="fa fa-check"></i><b>4.2.5</b> FIGURE 4.4: Log lottery vs week number</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#create-model-development-sample"><i class="fa fa-check"></i><b>4.3</b> Create model development sample</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-1.-pooled-cross-setional-model"><i class="fa fa-check"></i><b>4.3.1</b> MODEL 1. Pooled cross-setional model</a></li>
+<li class="chapter" data-level="4.3.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-2.-error-components-model"><i class="fa fa-check"></i><b>4.3.2</b> MODEL 2. Error components model</a></li>
+<li class="chapter" data-level="4.3.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-3.-error-components-model-with-autocorrelated-errors"><i class="fa fa-check"></i><b>4.3.3</b> MODEL 3. Error components model with autocorrelated errors</a></li>
+<li class="chapter" data-level="4.3.4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-4.-more-parsimonious-random-effects-model"><i class="fa fa-check"></i><b>4.3.4</b> MODEL 4. More parsimonious random effects model</a></li>
+<li class="chapter" data-level="4.3.5" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-5.-fixed-effects-model-with-autocorrelated-errors"><i class="fa fa-check"></i><b>4.3.5</b> MODEL 5. Fixed effects model with autocorrelated errors</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="multilevel-models.html"><a href="multilevel-models.html"><i class="fa fa-check"></i><b>5</b> Multilevel Models</a><ul>
+<li class="chapter" data-level="5.1" data-path="multilevel-models.html"><a href="multilevel-models.html#import-data-4"><i class="fa fa-check"></i><b>5.1</b> Import Data</a></li>
+<li class="chapter" data-level="5.2" data-path="multilevel-models.html"><a href="multilevel-models.html#example-5.2-dental-data-page-175"><i class="fa fa-check"></i><b>5.2</b> Example 5.2: Dental Data (Page 175)</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="multilevel-models.html"><a href="multilevel-models.html#figure-5.1.-multiple-time-series-plot"><i class="fa fa-check"></i><b>5.2.1</b> Figure 5.1. Multiple time series plot</a></li>
+<li class="chapter" data-level="5.2.2" data-path="multilevel-models.html"><a href="multilevel-models.html#summary-statistics"><i class="fa fa-check"></i><b>5.2.2</b> Summary statistics</a></li>
+<li class="chapter" data-level="5.2.3" data-path="multilevel-models.html"><a href="multilevel-models.html#trellis-plot-unique-in-r"><i class="fa fa-check"></i><b>5.2.3</b> Trellis plot, unique in r</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-dental-data-growth-curve-model-parameter-estimates"><i class="fa fa-check"></i><b>5.3</b> TABLE 5.2: Dental data growth-curve-model parameter estimates</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-error-components-model"><i class="fa fa-check"></i><b>5.3.1</b> TABLE 5.2: Error components model</a></li>
+<li class="chapter" data-level="5.3.2" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-growth-curve-model"><i class="fa fa-check"></i><b>5.3.2</b> TABLE 5.2: Growth curve model</a></li>
+<li class="chapter" data-level="5.3.3" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-growth-curve-model---omitting-9th-boy"><i class="fa fa-check"></i><b>5.3.3</b> TABLE 5.2: Growth curve model - omitting 9th boy</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="modeling-issues.html"><a href="modeling-issues.html"><i class="fa fa-check"></i><b>6</b> Modeling Issues</a><ul>
+<li class="chapter" data-level="6.1" data-path="modeling-issues.html"><a href="modeling-issues.html#import-data-5"><i class="fa fa-check"></i><b>6.1</b> Import Data</a></li>
+<li class="chapter" data-level="6.2" data-path="modeling-issues.html"><a href="modeling-issues.html#example-7.2-income-tax-payments-page-248"><i class="fa fa-check"></i><b>6.2</b> Example 7.2: Income Tax Payments (Page 248)</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.1-fixed-effects-estimators"><i class="fa fa-check"></i><b>6.2.1</b> TABLE 7.1: Fixed effects estimators</a></li>
+<li class="chapter" data-level="6.2.2" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.1-random-effects-estimator"><i class="fa fa-check"></i><b>6.2.2</b> TABLE 7.1: Random effects estimator</a></li>
+<li class="chapter" data-level="6.2.3" data-path="modeling-issues.html"><a href="modeling-issues.html#hausmans-test"><i class="fa fa-check"></i><b>6.2.3</b> Hausman’s test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="modeling-issues.html"><a href="modeling-issues.html#example-7.2-income-tax-payments-continued-page-255"><i class="fa fa-check"></i><b>6.3</b> Example 7.2: Income Tax Payments (continued) (Page 255)</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.2-fixed-effects-estimators-with-two-variable-slopes"><i class="fa fa-check"></i><b>6.3.1</b> Table 7.2: Fixed effects estimators with two variable slopes</a></li>
+<li class="chapter" data-level="6.3.2" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.2-variable-slopes-model"><i class="fa fa-check"></i><b>6.3.2</b> Table 7.2: Variable slopes model</a></li>
+<li class="chapter" data-level="6.3.3" data-path="modeling-issues.html"><a href="modeling-issues.html#hausmans-test-1"><i class="fa fa-check"></i><b>6.3.3</b> Hausman’s test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.3-augmented-regressions"><i class="fa fa-check"></i><b>6.4</b> TABLE 7.3 Augmented regressions</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="modeling-issues.html"><a href="modeling-issues.html#create-panel-data-set-with-subject-averages"><i class="fa fa-check"></i><b>6.4.1</b> Create panel data set with subject averages</a></li>
+<li class="chapter" data-level="6.4.2" data-path="modeling-issues.html"><a href="modeling-issues.html#models-with-averages-as-omitted-variables"><i class="fa fa-check"></i><b>6.4.2</b> Models with averages as omitted variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="dynamic-models.html"><a href="dynamic-models.html"><i class="fa fa-check"></i><b>7</b> Dynamic Models</a><ul>
+<li class="chapter" data-level="7.1" data-path="dynamic-models.html"><a href="dynamic-models.html#import-data-6"><i class="fa fa-check"></i><b>7.1</b> Import Data</a></li>
+<li class="chapter" data-level="7.2" data-path="dynamic-models.html"><a href="dynamic-models.html#example-8.6-capital-asset-pricing-model-page-302"><i class="fa fa-check"></i><b>7.2</b> Example 8.6: Capital Asset Pricing Model (Page 302)</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-vwfree-for-incoln-insurance-company"><i class="fa fa-check"></i><b>7.2.1</b> Plot of RETFREE vs. VWFREE for Incoln insurance company</a></li>
+<li class="chapter" data-level="7.2.2" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-vwfree-for-90-insurance-firms"><i class="fa fa-check"></i><b>7.2.2</b> Plot of RETFREE vs. VWFREE for 90 insurance firms</a></li>
+<li class="chapter" data-level="7.2.3" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-year-for-lincoln-insurance-company"><i class="fa fa-check"></i><b>7.2.3</b> Plot of RETFREE vs. YEAR for Lincoln insurance company</a></li>
+<li class="chapter" data-level="7.2.4" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.2-summary-statistics-for-market-index-and-risk-free-security"><i class="fa fa-check"></i><b>7.2.4</b> Table 8.2 Summary statistics for market index and risk-free security</a></li>
+<li class="chapter" data-level="7.2.5" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.3-summary-statistics-for-individual-security-returns"><i class="fa fa-check"></i><b>7.2.5</b> TABLE 8.3 Summary statistics for individual security returns</a></li>
+<li class="chapter" data-level="7.2.6" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.4-fixed-effects-models"><i class="fa fa-check"></i><b>7.2.6</b> TABLE 8.4 Fixed effects models</a></li>
+<li class="chapter" data-level="7.2.7" data-path="dynamic-models.html"><a href="dynamic-models.html#figure-8.1-trellis-plot-of-returns-versus-market-return"><i class="fa fa-check"></i><b>7.2.7</b> Figure 8.1: Trellis plot of returns versus market return</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html"><i class="fa fa-check"></i><b>8</b> Binary Dependent Variables</a><ul>
+<li class="chapter" data-level="8.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#import-data-7"><i class="fa fa-check"></i><b>8.1</b> Import Data</a></li>
+<li class="chapter" data-level="8.2" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#example-income-tax-payments-and-tax-preparers-page-326"><i class="fa fa-check"></i><b>8.2</b> Example: Income Tax Payments and Tax Preparers (page 326)</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.2.-means-for-binary-variables"><i class="fa fa-check"></i><b>8.2.1</b> TABLE 9.2. Means for binary variables</a></li>
+<li class="chapter" data-level="8.2.2" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.3.-summary-stats-for-other-variables"><i class="fa fa-check"></i><b>8.2.2</b> TABLE 9.3. Summary stats for other variables</a></li>
+<li class="chapter" data-level="8.2.3" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.4.-frequency-tables-for-some-of-the-binary-variables"><i class="fa fa-check"></i><b>8.2.3</b> TABLE 9.4. Frequency tables for some of the binary variables</a></li>
+<li class="chapter" data-level="8.2.4" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#display-9.1-fit-the-logistic-distribution-function-using-maximum-likelihood"><i class="fa fa-check"></i><b>8.2.4</b> DISPLAY 9.1 Fit the logistic distribution function using maximum likelihood</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.2-random-effects-nonlinear-mixed-effects-model"><i class="fa fa-check"></i><b>8.3</b> SECTION 9.2 Random effects nonlinear mixed effects model</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#generalized-linear-mixed-effects-model"><i class="fa fa-check"></i><b>8.3.1</b> Generalized linear mixed effects model</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.3-fixed-effect-model"><i class="fa fa-check"></i><b>8.4</b> SECTION 9.3 Fixed effect model</a></li>
+<li class="chapter" data-level="8.5" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.4-marginal-model-and-generalized-equation-estimation"><i class="fa fa-check"></i><b>8.5</b> SECTION 9.4 Marginal model and generalized equation estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>9</b> Generalized Linear Models</a><ul>
+<li class="chapter" data-level="9.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#import-data-8"><i class="fa fa-check"></i><b>9.1</b> Import Data</a></li>
+<li class="chapter" data-level="9.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-tort-filings-page-356"><i class="fa fa-check"></i><b>9.2</b> Example: Tort Filings (Page 356)</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.3-averages-with-explanatory-binary-variables"><i class="fa fa-check"></i><b>9.2.1</b> TABLE 10.3 Averages with explanatory binary variables</a></li>
+<li class="chapter" data-level="9.2.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.4-summary-statistics-for-other-variables"><i class="fa fa-check"></i><b>9.2.2</b> TABLE 10.4 Summary statistics for other variables</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#section-10.2-homogeneous-model"><i class="fa fa-check"></i><b>9.3</b> Section 10.2 Homogeneous model</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.5-tort-filings-model-coefficient-estimates"><i class="fa fa-check"></i><b>9.3.1</b> TABLE 10.5 Tort filings model coefficient estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#section-10.3-marginal-models"><i class="fa fa-check"></i><b>9.4</b> Section 10.3 Marginal Models</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#with-in-state-correlation-independent"><i class="fa fa-check"></i><b>9.4.1</b> With in state correlation independent</a></li>
+<li class="chapter" data-level="9.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#random-effects-model"><i class="fa fa-check"></i><b>9.4.2</b> Random effects model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html"><i class="fa fa-check"></i><b>10</b> Categorical Dependent Variables and Survival Models</a><ul>
+<li class="chapter" data-level="10.1" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#import-data-9"><i class="fa fa-check"></i><b>10.1</b> Import Data</a></li>
+<li class="chapter" data-level="10.2" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#chap11yogurt2013.r"><i class="fa fa-check"></i><b>10.2</b> Chap11Yogurt2013.R</a></li>
+<li class="chapter" data-level="10.3" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#table-11.2-number-of-choices"><i class="fa fa-check"></i><b>10.3</b> Table 11.2 Number of Choices</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#table-11.2-basic-summary-statistics-for-prices"><i class="fa fa-check"></i><b>10.3.1</b> Table 11.2 Basic summary statistics for prices</a></li>
+<li class="chapter" data-level="10.3.2" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#vissualize-the-data"><i class="fa fa-check"></i><b>10.3.2</b> vissualize the data</a></li>
+<li class="chapter" data-level="10.3.3" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#note-the-small-relationships-among-prices"><i class="fa fa-check"></i><b>10.3.3</b> Note the small relationships among prices</a></li>
+<li class="chapter" data-level="10.3.4" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#more-on-prices"><i class="fa fa-check"></i><b>10.3.4</b> More on prices</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#fitting-fixed-effects-multinomial-logit-model-by-the-poisson-log-linear-model"><i class="fa fa-check"></i><b>10.4</b> Fitting fixed effects multinomial logit model by the poisson log-linear model</a></li>
+<li class="chapter" data-level="10.5" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#fitting-multinomial-logit-model-with-random-intercepts-by-the-possion-log-linear-with-random-intercepts"><i class="fa fa-check"></i><b>10.5</b> Fitting multinomial logit model with random intercepts by the possion-log-linear with random intercepts</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Scripts for Longitudinal and Panel Data</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="generalized-linear-models" class="section level1">
+<h1><span class="header-section-number">Chapter 9</span> Generalized Linear Models</h1>
+<div id="import-data-8" class="section level2">
+<h2><span class="header-section-number">9.1</span> Import Data</h2>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#tfiling=read.table(&quot;c:\\data\\tfiling.txt&quot;, header=TRUE, sep=&quot;\t&quot;) # the two missing observations were already removed</span>
+
+tfiling.na=<span class="kw">read.table</span>(<span class="st">&quot;TXTData/TFiling.txt&quot;</span>, <span class="dt">sep =</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">quote =</span> <span class="st">&quot;&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
+tfiling&lt;-<span class="kw">na.omit</span>(tfiling.na)
+tfiling<span class="op">$</span>GSTATEP=tfiling<span class="op">$</span>GSTATEP<span class="op">/</span><span class="dv">10000</span>
+tfiling<span class="op">$</span>POP=tfiling<span class="op">$</span>POPULATI<span class="op">/</span><span class="dv">1000</span>
+tfiling<span class="op">$</span>YEAR=tfiling<span class="op">$</span>TIME<span class="op">+</span><span class="dv">1983</span></code></pre>
+<p>There is a widespread belief that, in the United States, parties have become increasingly willing to go to the judicial system to settle disputes. This is particularly true in the insurance industry, an industry designed to spread risk among individuals who are subject to unfortunate events that threaten their livelihoods. Litigation in the insurance industry arises from two types of disagreement among parties, breach of faith and tort. A breach of faith is a failure by a party to the contract to perform according to its terms. This type of dispute is relatively confined to issues of facts including the nature of the duties and the action of each party. A tort action is a civil wrong, other than breach of contract, for which the court will provide a remedy in the form of action for damages. A civil wrong may include malice, wantonness oppression or capricious behavior by a party. Generally, much larger damages can be collected for tort actions because the award may be large enough to “sting” the guilty party. Since large insurance companies are viewed as having “deep pockets,” these awards can be quite large indeed.</p>
+<table>
+<colgroup>
+<col width="57%" />
+<col width="42%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>FILINGS</td>
+<td>Number of filings of tort actions against insurance companies.</td>
+</tr>
+<tr class="even">
+<td>POPLAWYR</td>
+<td>The population per lawyer.</td>
+</tr>
+<tr class="odd">
+<td>VEHCMILE</td>
+<td>Number of automobiles miles per mile of road, in thousands.</td>
+</tr>
+<tr class="even">
+<td>GSTATEP</td>
+<td>Percentage of gross state product from manufacturing and construction.</td>
+</tr>
+<tr class="odd">
+<td>POPDENSY</td>
+<td>Number of people per ten square miles of land.</td>
+</tr>
+<tr class="even">
+<td>WCMPMAX</td>
+<td>Maximum workers’ compensation weekly benefit.</td>
+</tr>
+<tr class="odd">
+<td>URBAN</td>
+<td>Percentage of population living in urban areas.</td>
+</tr>
+<tr class="even">
+<td>UNEMPLOY</td>
+<td>State unemployment rate, in percentages.</td>
+</tr>
+<tr class="odd">
+<td>J&amp;SLIAB</td>
+<td>An indicator of joint and several liability reform.</td>
+</tr>
+<tr class="even">
+<td>COLLRULE</td>
+<td>An indicator of collateral source reform.</td>
+</tr>
+<tr class="odd">
+<td>CAPS</td>
+<td>An indicator of caps on non-economic reform.</td>
+</tr>
+<tr class="even">
+<td>PUNITIVE</td>
+<td>An indicator of limits of punitive damage.</td>
+</tr>
+<tr class="odd">
+<td>TIME</td>
+<td>Year identifier, 1-6</td>
+</tr>
+<tr class="even">
+<td>STATE</td>
+<td>State identifier, 1-19.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="example-tort-filings-page-356" class="section level2">
+<h2><span class="header-section-number">9.2</span> Example: Tort Filings (Page 356)</h2>
+<p>There is a widespread belief that, in the United States, contentious parties have become increasingly willing to go to the judicial system to settle disputes. This is particularly true when one party is from the insurance industry, an industry designed to spread risk among individuals. Litigation in the insurance industry arises from two types of disagreement among parties, breach of faith and tort. A breach of faith is a failure by a party to the contract to perform according to its terms. A tort action is a civil wrong, other than breach of contract, for which the court will provide a remedy in the form of action for damages. A civil wrong may include malice, wantonness, oppression, or capricious behavior by a party. Generally, large damages can be collected for tort actions because the award may be large enough to “sting” the guilty party. Because large insurance companies are viewed as having “deep pockets,” these awards can be quite large.</p>
+<div id="table-10.3-averages-with-explanatory-binary-variables" class="section level3">
+<h3><span class="header-section-number">9.2.1</span> TABLE 10.3 Averages with explanatory binary variables</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(Hmisc)
+<span class="kw">summary</span>(tfiling[, <span class="kw">c</span>(<span class="st">&quot;JSLIAB&quot;</span>, <span class="st">&quot;COLLRULE&quot;</span>, <span class="st">&quot;CAPS&quot;</span>, <span class="st">&quot;PUNITIVE&quot;</span>)])</code></pre>
+<pre><code>     JSLIAB          COLLRULE           CAPS           PUNITIVE     
+ Min.   :0.0000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+ 1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
+ Median :0.0000   Median :0.0000   Median :0.0000   Median :0.0000  
+ Mean   :0.4911   Mean   :0.3036   Mean   :0.2321   Mean   :0.3214  
+ 3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:0.0000   3rd Qu.:1.0000  
+ Max.   :1.0000   Max.   :1.0000   Max.   :1.0000   Max.   :1.0000  </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(tfiling<span class="op">$</span>NUMFILE, tfiling<span class="op">$</span>JSLIAB, mean)</code></pre>
+<pre><code>  tfiling$JSLIAB tfiling$NUMFILE
+1              0        15330.07
+2              1        25886.76</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(tfiling<span class="op">$</span>NUMFILE, tfiling<span class="op">$</span>COLLRULE, mean)</code></pre>
+<pre><code>  tfiling$COLLRULE tfiling$NUMFILE
+1                0        20726.64
+2                1        20026.71</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(tfiling<span class="op">$</span>NUMFILE, tfiling<span class="op">$</span>CAPS, mean)</code></pre>
+<pre><code>  tfiling$CAPS tfiling$NUMFILE
+1            0       24682.488
+2            1        6726.615</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(tfiling<span class="op">$</span>NUMFILE, tfiling<span class="op">$</span>PUNITIVE, mean)</code></pre>
+<pre><code>  tfiling$PUNITIVE tfiling$NUMFILE
+1                0        17693.38
+2                1        26469.14</code></pre>
+<p>In Table 10.3 we see that 23.2% of the 112 stateyear observations were under limits (caps) on noneconomic reform. Those observations not under limits on noneconomic reforms had a larger average number of filings.</p>
+</div>
+<div id="table-10.4-summary-statistics-for-other-variables" class="section level3">
+<h3><span class="header-section-number">9.2.2</span> TABLE 10.4 Summary statistics for other variables</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(tfiling[,<span class="kw">c</span>(<span class="st">&quot;NUMFILE&quot;</span>, <span class="st">&quot;POP&quot;</span>, <span class="st">&quot;POPLAWYR&quot;</span>, <span class="st">&quot;VEHCMILE&quot;</span>, <span class="st">&quot;GSTATEP&quot;</span>, <span class="st">&quot;POPDENSY&quot;</span>, <span class="st">&quot;WCMPMAX&quot;</span>, <span class="st">&quot;URBAN&quot;</span>, <span class="st">&quot;UNEMPLOY&quot;</span>)])</code></pre>
+<pre><code>    NUMFILE            POP            POPLAWYR        VEHCMILE     
+ Min.   :   512   Min.   : 0.521   Min.   :211.0   Min.   :  63.0  
+ 1st Qu.:  1790   1st Qu.: 1.109   1st Qu.:315.8   1st Qu.: 267.0  
+ Median :  9085   Median : 3.353   Median :382.5   Median : 510.5  
+ Mean   : 20514   Mean   : 6.679   Mean   :377.3   Mean   : 654.8  
+ 3rd Qu.: 31227   3rd Qu.:10.752   3rd Qu.:426.2   3rd Qu.: 933.5  
+ Max.   :137455   Max.   :29.064   Max.   :537.0   Max.   :1899.0  
+    GSTATEP          POPDENSY          WCMPMAX           URBAN       
+ Min.   : 1.000   Min.   :   0.90   Min.   : 203.0   Min.   : 18.90  
+ 1st Qu.: 1.982   1st Qu.:  20.75   1st Qu.: 275.8   1st Qu.: 44.98  
+ Median : 6.243   Median :  63.90   Median : 319.0   Median : 78.90  
+ Mean   :12.667   Mean   : 168.18   Mean   : 350.0   Mean   : 69.36  
+ 3rd Qu.:17.673   3rd Qu.: 212.00   3rd Qu.: 382.0   3rd Qu.: 90.50  
+ Max.   :69.738   Max.   :1043.00   Max.   :1140.0   Max.   :100.00  
+    UNEMPLOY     
+ Min.   : 2.600  
+ 1st Qu.: 5.075  
+ Median : 5.950  
+ Mean   : 6.217  
+ 3rd Qu.: 7.225  
+ Max.   :10.800  </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(tfiling<span class="op">$</span>NUMFILE, tfiling[, <span class="kw">c</span>(<span class="st">&quot;POP&quot;</span>, <span class="st">&quot;POPLAWYR&quot;</span>, <span class="st">&quot;VEHCMILE&quot;</span>, <span class="st">&quot;GSTATEP&quot;</span>, <span class="st">&quot;POPDENSY&quot;</span>, <span class="st">&quot;WCMPMAX&quot;</span>, <span class="st">&quot;URBAN&quot;</span>, <span class="st">&quot;UNEMPLOY&quot;</span>, <span class="st">&quot;JSLIAB&quot;</span>, <span class="st">&quot;COLLRULE&quot;</span>, <span class="st">&quot;CAPS&quot;</span>, <span class="st">&quot;PUNITIVE&quot;</span>)], <span class="dt">use=</span><span class="st">&quot;pairwise.complete.obs&quot;</span>)</code></pre>
+<pre><code>          POP   POPLAWYR  VEHCMILE   GSTATEP  POPDENSY    WCMPMAX
+[1,] 0.901947 -0.3781212 0.5175764 0.9145287 0.3678268 -0.2655063
+         URBAN    UNEMPLOY    JSLIAB    COLLRULE       CAPS  PUNITIVE
+[1,] 0.5501013 0.007600309 0.1825544 -0.01113243 -0.2622334 0.1417713</code></pre>
+<p>The correlations in Table 10.4 show that several of the economic and demographic variables appear to be related to the number of filings. In particular, we note that the number of filings is highly related to the state population.</p>
+</div>
+</div>
+<div id="section-10.2-homogeneous-model" class="section level2">
+<h2><span class="header-section-number">9.3</span> Section 10.2 Homogeneous model</h2>
+<pre class="sourceCode r"><code class="sourceCode r">tfiling<span class="op">$</span>POPLAWYR &lt;-<span class="st"> </span>tfiling<span class="op">$</span>POPLAWYR<span class="op">/</span><span class="dv">1000</span>
+tfiling<span class="op">$</span>VEHCMILE &lt;-<span class="st"> </span>tfiling<span class="op">$</span>VEHCMILE<span class="op">/</span><span class="dv">1000</span>
+tfiling<span class="op">$</span>GSTATEP&lt;-<span class="st"> </span>tfiling<span class="op">$</span>GSTATEP<span class="op">/</span><span class="dv">1000</span>
+tfiling<span class="op">$</span>POPDENSY&lt;-tfiling<span class="op">$</span>POPDENSY<span class="op">/</span><span class="dv">1000</span>
+tfiling<span class="op">$</span>WCMPMAX&lt;-tfiling<span class="op">$</span>WCMPMAX<span class="op">/</span><span class="dv">1000</span>
+tfiling<span class="op">$</span>URBAN&lt;-tfiling<span class="op">$</span>URBAN<span class="op">/</span><span class="dv">1000</span>
+tfiling<span class="op">$</span>LNPOP&lt;-<span class="kw">log</span>(tfiling<span class="op">$</span>POPULATI<span class="op">*</span><span class="dv">1000</span>)</code></pre>
+<div id="table-10.5-tort-filings-model-coefficient-estimates" class="section level3">
+<h3><span class="header-section-number">9.3.1</span> TABLE 10.5 Tort filings model coefficient estimates</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">glm</span>(NUMFILE <span class="op">~</span><span class="st"> </span>POPLAWYR<span class="op">+</span>VEHCMILE<span class="op">+</span>POPDENSY<span class="op">+</span>WCMPMAX<span class="op">+</span>URBAN<span class="op">+</span>UNEMPLOY<span class="op">+</span>JSLIAB<span class="op">+</span>COLLRULE<span class="op">+</span>CAPS<span class="op">+</span>PUNITIVE, <span class="dt">data=</span>tfiling, <span class="dt">family=</span><span class="kw">poisson</span>(<span class="dt">link=</span><span class="st">&quot;log&quot;</span>), <span class="dt">offset=</span>LNPOP)</code></pre>
+<pre><code>
+Call:  glm(formula = NUMFILE ~ POPLAWYR + VEHCMILE + POPDENSY + WCMPMAX + 
+    URBAN + UNEMPLOY + JSLIAB + COLLRULE + CAPS + PUNITIVE, family = poisson(link = &quot;log&quot;), 
+    data = tfiling, offset = LNPOP)
+
+Coefficients:
+(Intercept)     POPLAWYR     VEHCMILE     POPDENSY      WCMPMAX  
+   -7.94343      2.16331      0.86188      0.39182     -0.80195  
+      URBAN     UNEMPLOY       JSLIAB     COLLRULE         CAPS  
+    0.89183      0.08664      0.17678     -0.02982     -0.03193  
+   PUNITIVE  
+    0.02953  
+
+Degrees of Freedom: 111 Total (i.e. Null);  101 Residual
+Null Deviance:      430300 
+Residual Deviance: 118300   AIC: 119500</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">tfiling<span class="op">$</span>TIMEFAC&lt;-<span class="kw">factor</span>(tfiling<span class="op">$</span>TIME)
+<span class="kw">glm</span>(NUMFILE <span class="op">~</span><span class="st"> </span>TIMEFAC<span class="op">+</span>POPLAWYR<span class="op">+</span>VEHCMILE<span class="op">+</span>POPDENSY<span class="op">+</span>WCMPMAX<span class="op">+</span>URBAN<span class="op">+</span>UNEMPLOY<span class="op">+</span>JSLIAB<span class="op">+</span>COLLRULE<span class="op">+</span>CAPS<span class="op">+</span>PUNITIVE<span class="dv">-1</span>, <span class="dt">data=</span>tfiling, <span class="dt">family=</span><span class="kw">poisson</span>(<span class="dt">link=</span><span class="st">&quot;log&quot;</span>), <span class="dt">offset=</span>LNPOP)</code></pre>
+<pre><code>
+Call:  glm(formula = NUMFILE ~ TIMEFAC + POPLAWYR + VEHCMILE + POPDENSY + 
+    WCMPMAX + URBAN + UNEMPLOY + JSLIAB + COLLRULE + CAPS + PUNITIVE - 
+    1, family = poisson(link = &quot;log&quot;), data = tfiling, offset = LNPOP)
+
+Coefficients:
+TIMEFAC1  TIMEFAC2  TIMEFAC3  TIMEFAC4  TIMEFAC5  TIMEFAC6  POPLAWYR  
+-7.97398  -7.90048  -7.83975  -7.92226  -7.88501  -7.88776   2.12339  
+VEHCMILE  POPDENSY   WCMPMAX     URBAN  UNEMPLOY    JSLIAB  COLLRULE  
+ 0.85617   0.38357  -0.82607   0.97667   0.08605   0.12953  -0.02347  
+    CAPS  PUNITIVE  
+-0.05575   0.05281  
+
+Degrees of Freedom: 112 Total (i.e. Null);  96 Residual
+Null Deviance:      1.465e+09 
+Residual Deviance: 115500   AIC: 116700</code></pre>
+<p>Table 10.5 summarizes the fit of three Poisson models. With the basic homogeneous Poisson model, all explanatory variables turn out to be statistically significant, as evidenced by the small p-values. However, the Poisson model assumes that the variance equals the mean; this is often a restrictive assumption for empirical work. Thus, to account for potential overdispersion, Table 10.5 also summarizes a homogenous Poisson model with an estimated scale parameter. Table 10.5 emphasizes that, although the regression coefficient estimates do not change with the introduction of the scale parameter, estimated standard
+errors and thus p-values do change.</p>
+</div>
+</div>
+<div id="section-10.3-marginal-models" class="section level2">
+<h2><span class="header-section-number">9.4</span> Section 10.3 Marginal Models</h2>
+<div id="with-in-state-correlation-independent" class="section level3">
+<h3><span class="header-section-number">9.4.1</span> With in state correlation independent</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(gee)
+<span class="kw">gee</span>(NUMFILE <span class="op">~</span><span class="st"> </span><span class="kw">offset</span>(LNPOP)<span class="op">+</span>POPLAWYR<span class="op">+</span>VEHCMILE<span class="op">+</span>POPDENSY<span class="op">+</span>WCMPMAX<span class="op">+</span>URBAN<span class="op">+</span>UNEMPLOY<span class="op">+</span>JSLIAB<span class="op">+</span>COLLRULE<span class="op">+</span>CAPS<span class="op">+</span>PUNITIVE, <span class="dt">id=</span>STATE, <span class="dt">data=</span>tfiling, <span class="dt">family=</span><span class="kw">poisson</span>(<span class="dt">link=</span><span class="st">&quot;log&quot;</span>), <span class="dt">corstr=</span><span class="st">&quot;independence&quot;</span>) </code></pre>
+<pre><code>Beginning Cgee S-function, @(#) geeformula.q 4.13 98/01/27</code></pre>
+<pre><code>running glm to get initial regression estimate</code></pre>
+<pre><code>(Intercept)    POPLAWYR    VEHCMILE    POPDENSY     WCMPMAX       URBAN 
+-7.94343077  2.16331290  0.86187552  0.39181865 -0.80195312  0.89182723 
+   UNEMPLOY      JSLIAB    COLLRULE        CAPS    PUNITIVE 
+ 0.08663651  0.17677542 -0.02982377 -0.03193075  0.02952586 </code></pre>
+<pre><code>
+ GEE:  GENERALIZED LINEAR MODELS FOR DEPENDENT DATA
+ gee S-function, version 4.13 modified 98/01/27 (1998) 
+
+Model:
+ Link:                      Logarithm 
+ Variance to Mean Relation: Poisson 
+ Correlation Structure:     Independent 
+
+Call:
+gee(formula = NUMFILE ~ offset(LNPOP) + POPLAWYR + VEHCMILE + 
+    POPDENSY + WCMPMAX + URBAN + UNEMPLOY + JSLIAB + COLLRULE + 
+    CAPS + PUNITIVE, id = STATE, data = tfiling, family = poisson(link = &quot;log&quot;), 
+    corstr = &quot;independence&quot;)
+
+Number of observations :  112 
+
+Maximum cluster size   :  6 
+
+
+Coefficients:
+(Intercept)    POPLAWYR    VEHCMILE    POPDENSY     WCMPMAX       URBAN 
+-7.94343079  2.16331290  0.86187552  0.39181865 -0.80195312  0.89182735 
+   UNEMPLOY      JSLIAB    COLLRULE        CAPS    PUNITIVE 
+ 0.08663651  0.17677542 -0.02982377 -0.03193075  0.02952586 
+
+Estimated Scale Parameter:  1285.7
+Number of Iterations:  1
+
+Working Correlation[1:4,1:4]
+     [,1] [,2] [,3] [,4]
+[1,]    1    0    0    0
+[2,]    0    1    0    0
+[3,]    0    0    1    0
+[4,]    0    0    0    1
+
+
+Returned Error Value:
+[1] 0</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">gee</span>(NUMFILE <span class="op">~</span><span class="st"> </span><span class="kw">offset</span>(LNPOP)<span class="op">+</span>POPLAWYR<span class="op">+</span>VEHCMILE<span class="op">+</span>POPDENSY<span class="op">+</span>WCMPMAX<span class="op">+</span>URBAN<span class="op">+</span>UNEMPLOY<span class="op">+</span>JSLIAB<span class="op">+</span>COLLRULE<span class="op">+</span>CAPS<span class="op">+</span>PUNITIVE, <span class="dt">id=</span>STATE, <span class="dt">data=</span>tfiling, <span class="dt">family=</span><span class="kw">poisson</span>(<span class="dt">link=</span><span class="st">&quot;log&quot;</span>), <span class="dt">corstr=</span><span class="st">&quot;AR-M&quot;</span>, <span class="dt">Mv=</span><span class="dv">1</span>) </code></pre>
+<pre><code>Beginning Cgee S-function, @(#) geeformula.q 4.13 98/01/27
+running glm to get initial regression estimate</code></pre>
+<pre><code>(Intercept)    POPLAWYR    VEHCMILE    POPDENSY     WCMPMAX       URBAN 
+-7.94343077  2.16331290  0.86187552  0.39181865 -0.80195312  0.89182723 
+   UNEMPLOY      JSLIAB    COLLRULE        CAPS    PUNITIVE 
+ 0.08663651  0.17677542 -0.02982377 -0.03193075  0.02952586 </code></pre>
+<pre><code>
+ GEE:  GENERALIZED LINEAR MODELS FOR DEPENDENT DATA
+ gee S-function, version 4.13 modified 98/01/27 (1998) 
+
+Model:
+ Link:                      Logarithm 
+ Variance to Mean Relation: Poisson 
+ Correlation Structure:     AR-M , M = 1 
+
+Call:
+gee(formula = NUMFILE ~ offset(LNPOP) + POPLAWYR + VEHCMILE + 
+    POPDENSY + WCMPMAX + URBAN + UNEMPLOY + JSLIAB + COLLRULE + 
+    CAPS + PUNITIVE, id = STATE, data = tfiling, family = poisson(link = &quot;log&quot;), 
+    corstr = &quot;AR-M&quot;, Mv = 1)
+
+Number of observations :  112 
+
+Maximum cluster size   :  6 
+
+
+Coefficients:
+(Intercept)    POPLAWYR    VEHCMILE    POPDENSY     WCMPMAX       URBAN 
+-7.99997854  1.88219159  0.69338537  0.37164593  0.05604892  4.93610043 
+   UNEMPLOY      JSLIAB    COLLRULE        CAPS    PUNITIVE 
+ 0.04340498  0.17025340 -0.06500658  0.09194548 -0.04663443 
+
+Estimated Scale Parameter:  1444.921
+Number of Iterations:  9
+
+Working Correlation[1:4,1:4]
+          [,1]      [,2]      [,3]      [,4]
+[1,] 1.0000000 0.8517403 0.7254616 0.6179048
+[2,] 0.8517403 1.0000000 0.8517403 0.7254616
+[3,] 0.7254616 0.8517403 1.0000000 0.8517403
+[4,] 0.6179048 0.7254616 0.8517403 1.0000000
+
+
+Returned Error Value:
+[1] 0</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#THE NUMBER WAS A LITTLE OFF COMPARED WITH SAS ESTIMATE</span></code></pre>
+</div>
+<div id="random-effects-model" class="section level3">
+<h3><span class="header-section-number">9.4.2</span> Random effects model</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># MODEL WITHOUR RANDOM EFFECTS</span>
+<span class="kw">glm</span>(NUMFILE <span class="op">~</span><span class="st"> </span>POPLAWYR<span class="op">+</span>VEHCMILE<span class="op">+</span>POPDENSY<span class="op">+</span>WCMPMAX<span class="op">+</span>URBAN<span class="op">+</span>UNEMPLOY<span class="op">+</span>JSLIAB<span class="op">+</span>COLLRULE<span class="op">+</span>CAPS<span class="op">+</span>PUNITIVE, <span class="dt">data=</span>tfiling, <span class="dt">family=</span><span class="kw">poisson</span>(<span class="dt">link=</span><span class="st">&quot;log&quot;</span>), <span class="dt">offset=</span>LNPOP)</code></pre>
+<pre><code>
+Call:  glm(formula = NUMFILE ~ POPLAWYR + VEHCMILE + POPDENSY + WCMPMAX + 
+    URBAN + UNEMPLOY + JSLIAB + COLLRULE + CAPS + PUNITIVE, family = poisson(link = &quot;log&quot;), 
+    data = tfiling, offset = LNPOP)
+
+Coefficients:
+(Intercept)     POPLAWYR     VEHCMILE     POPDENSY      WCMPMAX  
+   -7.94343      2.16331      0.86188      0.39182     -0.80195  
+      URBAN     UNEMPLOY       JSLIAB     COLLRULE         CAPS  
+    0.89183      0.08664      0.17678     -0.02982     -0.03193  
+   PUNITIVE  
+    0.02953  
+
+Degrees of Freedom: 111 Total (i.e. Null);  101 Residual
+Null Deviance:      430300 
+Residual Deviance: 118300   AIC: 119500</code></pre>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="binary-dependent-variables.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="categorical-dependent-variables-and-survival-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["LongPanelDataScripts.pdf", "LongPanelDataScripts.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

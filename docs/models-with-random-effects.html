@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Models with Random Effects | R Scripts for Longitudinal and Panel Data</title>
+  <meta name="description" content="R scripts" />
+  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Models with Random Effects | R Scripts for Longitudinal and Panel Data" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R scripts" />
+  <meta name="github-repo" content="https://github.com/openacttexts/Loss-Data-Analytics" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Models with Random Effects | R Scripts for Longitudinal and Panel Data" />
+  
+  <meta name="twitter:description" content="R scripts" />
+  
+
+<meta name="author" content="Yumo Dong, Edward Frees, and others??" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="fixed-effects-models.html">
+<link rel="next" href="prediction-and-bayesian-inference.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#import-data"><i class="fa fa-check"></i><b>1.1</b> Import Data</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#example-1.1-divorce-rates-page-2"><i class="fa fa-check"></i><b>1.2</b> Example 1.1: Divorce Rates (page 2)</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="introduction.html"><a href="introduction.html#figure-1.1-plot-of-1965-divorce-rates-versus-afdc-payments."><i class="fa fa-check"></i><b>1.2.1</b> Figure 1.1: Plot of 1965 divorce rates versus AFDC payments.</a></li>
+<li class="chapter" data-level="1.2.2" data-path="introduction.html"><a href="introduction.html#figure-1.2-plot-of-divorce-rate-versus-afdc-payments-from-1965-and-1975."><i class="fa fa-check"></i><b>1.2.2</b> Figure 1.2: Plot of divorce rate versus AFDC payments from 1965 and 1975.</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html"><i class="fa fa-check"></i><b>2</b> Fixed-Effects Models</a><ul>
+<li class="chapter" data-level="2.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#import-data-1"><i class="fa fa-check"></i><b>2.1</b> Import Data</a></li>
+<li class="chapter" data-level="2.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#example-2.2-medicare-hospital-costs-page-26"><i class="fa fa-check"></i><b>2.2</b> Example 2.2: Medicare Hospital Costs (Page 26)</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.1-ccpd-vs-year-multiple-time-series-plot"><i class="fa fa-check"></i><b>2.2.1</b> FIGURE 2.1: CCPD vs YEAR; multiple time series plot</a></li>
+<li class="chapter" data-level="2.2.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.2-ccpd-vs-num.dchg"><i class="fa fa-check"></i><b>2.2.2</b> FIGURE 2.2: CCPD vs NUM.DCHG</a></li>
+<li class="chapter" data-level="2.2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.3-ccpd-vs-ave.days"><i class="fa fa-check"></i><b>2.2.3</b> Figure 2.3: CCPD vs AVE.DAYS</a></li>
+<li class="chapter" data-level="2.2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.4-added-variable-plot-of-ccpd-versus-year"><i class="fa fa-check"></i><b>2.2.4</b> Figure 2.4: Added-variable plot of CCPD versus year</a></li>
+<li class="chapter" data-level="2.2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.5-trellis-plot"><i class="fa fa-check"></i><b>2.2.5</b> Figure 2.5: Trellis Plot</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-fixed-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.3</b> One way fixed effects model using lm, for linear model</a></li>
+<li class="chapter" data-level="2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.1---analysis-for-the-pooling-test"><i class="fa fa-check"></i><b>2.4</b> SECTION 2.4.1 - Analysis for the pooling test;</a></li>
+<li class="chapter" data-level="2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.2---correlation-corresponding-to-the-added-variable-plot"><i class="fa fa-check"></i><b>2.5</b> SECTION 2.4.2 - Correlation corresponding to the added variable plot;</a></li>
+<li class="chapter" data-level="2.6" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.5---testing-for-heteroscedasticity"><i class="fa fa-check"></i><b>2.6</b> SECTION 2.4.5 - Testing for heteroscedasticity;</a><ul>
+<li class="chapter" data-level="2.6.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-random-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.6.1</b> One way random effects model using lm, for linear model;</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html"><i class="fa fa-check"></i><b>3</b> Models with Random Effects</a><ul>
+<li class="chapter" data-level="3.1" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#import-data-2"><i class="fa fa-check"></i><b>3.1</b> Import Data</a></li>
+<li class="chapter" data-level="3.2" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#example-3.2-income-tax-payments-page-81"><i class="fa fa-check"></i><b>3.2</b> Example 3.2: Income Tax Payments (Page 81)</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.2.-averages-of-binary-variables"><i class="fa fa-check"></i><b>3.2.1</b> Table 3.2. Averages of binary variables</a></li>
+<li class="chapter" data-level="3.2.2" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.3---summary-statistics-for-continuous-variables"><i class="fa fa-check"></i><b>3.2.2</b> TABLE 3.3 - Summary statistics for continuous variables</a></li>
+<li class="chapter" data-level="3.2.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.4---averages-by-level-of-binary-explanatory-variable"><i class="fa fa-check"></i><b>3.2.3</b> TABLE 3.4 - Averages by level of binary explanatory variable</a></li>
+<li class="chapter" data-level="3.2.4" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.5---correlation-for-continous-variables"><i class="fa fa-check"></i><b>3.2.4</b> TABLE 3.5 - Correlation for continous variables</a></li>
+<li class="chapter" data-level="3.2.5" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#figure-3.2-basic-added-variable-plot-y-vs.-x"><i class="fa fa-check"></i><b>3.2.5</b> FIGURE 3.2: Basic added variable plot (y vs. x)</a></li>
+<li class="chapter" data-level="3.2.6" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#display-3.1---error-components-model"><i class="fa fa-check"></i><b>3.2.6</b> DISPLAY 3.1 - Error components model</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#section-3.3---random-coefficients-model"><i class="fa fa-check"></i><b>3.3</b> SECTION 3.3 - Random coefficients model</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html"><i class="fa fa-check"></i><b>4</b> Prediction and Bayesian Inference</a><ul>
+<li class="chapter" data-level="4.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#import-data-3"><i class="fa fa-check"></i><b>4.1</b> Import Data</a></li>
+<li class="chapter" data-level="4.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#example-forecasting-wisconsin-lottery-sales-page-138"><i class="fa fa-check"></i><b>4.2</b> Example: Forecasting Wisconsin Lottery Sales (Page 138)</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#table-4.2-time---invariant-summary-statistics"><i class="fa fa-check"></i><b>4.2.1</b> TABLE 4.2: Time - invariant summary statistics</a></li>
+<li class="chapter" data-level="4.2.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.2-look-at-the-relationship"><i class="fa fa-check"></i><b>4.2.2</b> FIGURE 4.2: Look at the relationship</a></li>
+<li class="chapter" data-level="4.2.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#sorting-the-data-by-zip-then-combine-vectors-into-another-data.frame"><i class="fa fa-check"></i><b>4.2.3</b> Sorting the data by zip then combine vectors into another data.frame</a></li>
+<li class="chapter" data-level="4.2.4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.3-lottery-vs.-week-number"><i class="fa fa-check"></i><b>4.2.4</b> FIGURE 4.3: Lottery vs. week number</a></li>
+<li class="chapter" data-level="4.2.5" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.4-log-lottery-vs-week-number"><i class="fa fa-check"></i><b>4.2.5</b> FIGURE 4.4: Log lottery vs week number</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#create-model-development-sample"><i class="fa fa-check"></i><b>4.3</b> Create model development sample</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-1.-pooled-cross-setional-model"><i class="fa fa-check"></i><b>4.3.1</b> MODEL 1. Pooled cross-setional model</a></li>
+<li class="chapter" data-level="4.3.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-2.-error-components-model"><i class="fa fa-check"></i><b>4.3.2</b> MODEL 2. Error components model</a></li>
+<li class="chapter" data-level="4.3.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-3.-error-components-model-with-autocorrelated-errors"><i class="fa fa-check"></i><b>4.3.3</b> MODEL 3. Error components model with autocorrelated errors</a></li>
+<li class="chapter" data-level="4.3.4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-4.-more-parsimonious-random-effects-model"><i class="fa fa-check"></i><b>4.3.4</b> MODEL 4. More parsimonious random effects model</a></li>
+<li class="chapter" data-level="4.3.5" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-5.-fixed-effects-model-with-autocorrelated-errors"><i class="fa fa-check"></i><b>4.3.5</b> MODEL 5. Fixed effects model with autocorrelated errors</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="multilevel-models.html"><a href="multilevel-models.html"><i class="fa fa-check"></i><b>5</b> Multilevel Models</a><ul>
+<li class="chapter" data-level="5.1" data-path="multilevel-models.html"><a href="multilevel-models.html#import-data-4"><i class="fa fa-check"></i><b>5.1</b> Import Data</a></li>
+<li class="chapter" data-level="5.2" data-path="multilevel-models.html"><a href="multilevel-models.html#example-5.2-dental-data-page-175"><i class="fa fa-check"></i><b>5.2</b> Example 5.2: Dental Data (Page 175)</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="multilevel-models.html"><a href="multilevel-models.html#figure-5.1.-multiple-time-series-plot"><i class="fa fa-check"></i><b>5.2.1</b> Figure 5.1. Multiple time series plot</a></li>
+<li class="chapter" data-level="5.2.2" data-path="multilevel-models.html"><a href="multilevel-models.html#summary-statistics"><i class="fa fa-check"></i><b>5.2.2</b> Summary statistics</a></li>
+<li class="chapter" data-level="5.2.3" data-path="multilevel-models.html"><a href="multilevel-models.html#trellis-plot-unique-in-r"><i class="fa fa-check"></i><b>5.2.3</b> Trellis plot, unique in r</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-dental-data-growth-curve-model-parameter-estimates"><i class="fa fa-check"></i><b>5.3</b> TABLE 5.2: Dental data growth-curve-model parameter estimates</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-error-components-model"><i class="fa fa-check"></i><b>5.3.1</b> TABLE 5.2: Error components model</a></li>
+<li class="chapter" data-level="5.3.2" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-growth-curve-model"><i class="fa fa-check"></i><b>5.3.2</b> TABLE 5.2: Growth curve model</a></li>
+<li class="chapter" data-level="5.3.3" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-growth-curve-model---omitting-9th-boy"><i class="fa fa-check"></i><b>5.3.3</b> TABLE 5.2: Growth curve model - omitting 9th boy</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="modeling-issues.html"><a href="modeling-issues.html"><i class="fa fa-check"></i><b>6</b> Modeling Issues</a><ul>
+<li class="chapter" data-level="6.1" data-path="modeling-issues.html"><a href="modeling-issues.html#import-data-5"><i class="fa fa-check"></i><b>6.1</b> Import Data</a></li>
+<li class="chapter" data-level="6.2" data-path="modeling-issues.html"><a href="modeling-issues.html#example-7.2-income-tax-payments-page-248"><i class="fa fa-check"></i><b>6.2</b> Example 7.2: Income Tax Payments (Page 248)</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.1-fixed-effects-estimators"><i class="fa fa-check"></i><b>6.2.1</b> TABLE 7.1: Fixed effects estimators</a></li>
+<li class="chapter" data-level="6.2.2" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.1-random-effects-estimator"><i class="fa fa-check"></i><b>6.2.2</b> TABLE 7.1: Random effects estimator</a></li>
+<li class="chapter" data-level="6.2.3" data-path="modeling-issues.html"><a href="modeling-issues.html#hausmans-test"><i class="fa fa-check"></i><b>6.2.3</b> Hausman’s test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="modeling-issues.html"><a href="modeling-issues.html#example-7.2-income-tax-payments-continued-page-255"><i class="fa fa-check"></i><b>6.3</b> Example 7.2: Income Tax Payments (continued) (Page 255)</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.2-fixed-effects-estimators-with-two-variable-slopes"><i class="fa fa-check"></i><b>6.3.1</b> Table 7.2: Fixed effects estimators with two variable slopes</a></li>
+<li class="chapter" data-level="6.3.2" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.2-variable-slopes-model"><i class="fa fa-check"></i><b>6.3.2</b> Table 7.2: Variable slopes model</a></li>
+<li class="chapter" data-level="6.3.3" data-path="modeling-issues.html"><a href="modeling-issues.html#hausmans-test-1"><i class="fa fa-check"></i><b>6.3.3</b> Hausman’s test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.3-augmented-regressions"><i class="fa fa-check"></i><b>6.4</b> TABLE 7.3 Augmented regressions</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="modeling-issues.html"><a href="modeling-issues.html#create-panel-data-set-with-subject-averages"><i class="fa fa-check"></i><b>6.4.1</b> Create panel data set with subject averages</a></li>
+<li class="chapter" data-level="6.4.2" data-path="modeling-issues.html"><a href="modeling-issues.html#models-with-averages-as-omitted-variables"><i class="fa fa-check"></i><b>6.4.2</b> Models with averages as omitted variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="dynamic-models.html"><a href="dynamic-models.html"><i class="fa fa-check"></i><b>7</b> Dynamic Models</a><ul>
+<li class="chapter" data-level="7.1" data-path="dynamic-models.html"><a href="dynamic-models.html#import-data-6"><i class="fa fa-check"></i><b>7.1</b> Import Data</a></li>
+<li class="chapter" data-level="7.2" data-path="dynamic-models.html"><a href="dynamic-models.html#example-8.6-capital-asset-pricing-model-page-302"><i class="fa fa-check"></i><b>7.2</b> Example 8.6: Capital Asset Pricing Model (Page 302)</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-vwfree-for-incoln-insurance-company"><i class="fa fa-check"></i><b>7.2.1</b> Plot of RETFREE vs. VWFREE for Incoln insurance company</a></li>
+<li class="chapter" data-level="7.2.2" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-vwfree-for-90-insurance-firms"><i class="fa fa-check"></i><b>7.2.2</b> Plot of RETFREE vs. VWFREE for 90 insurance firms</a></li>
+<li class="chapter" data-level="7.2.3" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-year-for-lincoln-insurance-company"><i class="fa fa-check"></i><b>7.2.3</b> Plot of RETFREE vs. YEAR for Lincoln insurance company</a></li>
+<li class="chapter" data-level="7.2.4" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.2-summary-statistics-for-market-index-and-risk-free-security"><i class="fa fa-check"></i><b>7.2.4</b> Table 8.2 Summary statistics for market index and risk-free security</a></li>
+<li class="chapter" data-level="7.2.5" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.3-summary-statistics-for-individual-security-returns"><i class="fa fa-check"></i><b>7.2.5</b> TABLE 8.3 Summary statistics for individual security returns</a></li>
+<li class="chapter" data-level="7.2.6" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.4-fixed-effects-models"><i class="fa fa-check"></i><b>7.2.6</b> TABLE 8.4 Fixed effects models</a></li>
+<li class="chapter" data-level="7.2.7" data-path="dynamic-models.html"><a href="dynamic-models.html#figure-8.1-trellis-plot-of-returns-versus-market-return"><i class="fa fa-check"></i><b>7.2.7</b> Figure 8.1: Trellis plot of returns versus market return</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html"><i class="fa fa-check"></i><b>8</b> Binary Dependent Variables</a><ul>
+<li class="chapter" data-level="8.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#import-data-7"><i class="fa fa-check"></i><b>8.1</b> Import Data</a></li>
+<li class="chapter" data-level="8.2" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#example-income-tax-payments-and-tax-preparers-page-326"><i class="fa fa-check"></i><b>8.2</b> Example: Income Tax Payments and Tax Preparers (page 326)</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.2.-means-for-binary-variables"><i class="fa fa-check"></i><b>8.2.1</b> TABLE 9.2. Means for binary variables</a></li>
+<li class="chapter" data-level="8.2.2" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.3.-summary-stats-for-other-variables"><i class="fa fa-check"></i><b>8.2.2</b> TABLE 9.3. Summary stats for other variables</a></li>
+<li class="chapter" data-level="8.2.3" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.4.-frequency-tables-for-some-of-the-binary-variables"><i class="fa fa-check"></i><b>8.2.3</b> TABLE 9.4. Frequency tables for some of the binary variables</a></li>
+<li class="chapter" data-level="8.2.4" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#display-9.1-fit-the-logistic-distribution-function-using-maximum-likelihood"><i class="fa fa-check"></i><b>8.2.4</b> DISPLAY 9.1 Fit the logistic distribution function using maximum likelihood</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.2-random-effects-nonlinear-mixed-effects-model"><i class="fa fa-check"></i><b>8.3</b> SECTION 9.2 Random effects nonlinear mixed effects model</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#generalized-linear-mixed-effects-model"><i class="fa fa-check"></i><b>8.3.1</b> Generalized linear mixed effects model</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.3-fixed-effect-model"><i class="fa fa-check"></i><b>8.4</b> SECTION 9.3 Fixed effect model</a></li>
+<li class="chapter" data-level="8.5" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.4-marginal-model-and-generalized-equation-estimation"><i class="fa fa-check"></i><b>8.5</b> SECTION 9.4 Marginal model and generalized equation estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>9</b> Generalized Linear Models</a><ul>
+<li class="chapter" data-level="9.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#import-data-8"><i class="fa fa-check"></i><b>9.1</b> Import Data</a></li>
+<li class="chapter" data-level="9.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-tort-filings-page-356"><i class="fa fa-check"></i><b>9.2</b> Example: Tort Filings (Page 356)</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.3-averages-with-explanatory-binary-variables"><i class="fa fa-check"></i><b>9.2.1</b> TABLE 10.3 Averages with explanatory binary variables</a></li>
+<li class="chapter" data-level="9.2.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.4-summary-statistics-for-other-variables"><i class="fa fa-check"></i><b>9.2.2</b> TABLE 10.4 Summary statistics for other variables</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#section-10.2-homogeneous-model"><i class="fa fa-check"></i><b>9.3</b> Section 10.2 Homogeneous model</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.5-tort-filings-model-coefficient-estimates"><i class="fa fa-check"></i><b>9.3.1</b> TABLE 10.5 Tort filings model coefficient estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#section-10.3-marginal-models"><i class="fa fa-check"></i><b>9.4</b> Section 10.3 Marginal Models</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#with-in-state-correlation-independent"><i class="fa fa-check"></i><b>9.4.1</b> With in state correlation independent</a></li>
+<li class="chapter" data-level="9.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#random-effects-model"><i class="fa fa-check"></i><b>9.4.2</b> Random effects model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html"><i class="fa fa-check"></i><b>10</b> Categorical Dependent Variables and Survival Models</a><ul>
+<li class="chapter" data-level="10.1" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#import-data-9"><i class="fa fa-check"></i><b>10.1</b> Import Data</a></li>
+<li class="chapter" data-level="10.2" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#chap11yogurt2013.r"><i class="fa fa-check"></i><b>10.2</b> Chap11Yogurt2013.R</a></li>
+<li class="chapter" data-level="10.3" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#table-11.2-number-of-choices"><i class="fa fa-check"></i><b>10.3</b> Table 11.2 Number of Choices</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#table-11.2-basic-summary-statistics-for-prices"><i class="fa fa-check"></i><b>10.3.1</b> Table 11.2 Basic summary statistics for prices</a></li>
+<li class="chapter" data-level="10.3.2" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#vissualize-the-data"><i class="fa fa-check"></i><b>10.3.2</b> vissualize the data</a></li>
+<li class="chapter" data-level="10.3.3" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#note-the-small-relationships-among-prices"><i class="fa fa-check"></i><b>10.3.3</b> Note the small relationships among prices</a></li>
+<li class="chapter" data-level="10.3.4" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#more-on-prices"><i class="fa fa-check"></i><b>10.3.4</b> More on prices</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#fitting-fixed-effects-multinomial-logit-model-by-the-poisson-log-linear-model"><i class="fa fa-check"></i><b>10.4</b> Fitting fixed effects multinomial logit model by the poisson log-linear model</a></li>
+<li class="chapter" data-level="10.5" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#fitting-multinomial-logit-model-with-random-intercepts-by-the-possion-log-linear-with-random-intercepts"><i class="fa fa-check"></i><b>10.5</b> Fitting multinomial logit model with random intercepts by the possion-log-linear with random intercepts</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Scripts for Longitudinal and Panel Data</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="models-with-random-effects" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Models with Random Effects</h1>
+<div id="import-data-2" class="section level2">
+<h2><span class="header-section-number">3.1</span> Import Data</h2>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#  &quot;\t&quot;  INDICATES SEPARATED BY TABLES  ;</span>
+taxprep  =<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;TXTData/TaxPrep.txt&quot;</span>, <span class="dt">sep =</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">quote =</span> <span class="st">&quot;&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
+
+<span class="co"># taxprep=read.table(choose.files(), header=TRUE, sep=&quot;\t&quot;)</span></code></pre>
+<p>Data for this study are from the Statistics of Income (SOI) Panel of Individual Returns, a part of the Ernst and Young/University of Michigan Tax Research Database. The SOI Panel represents a simple random sample of unaudited individual income tax returns filed for tax years 1979-1990. The data are compiled from a stratified probability sample of unaudited individual income tax returns, Forms 1040, 1040A and 1040EZ, filed by U.S. taxpayers. The estimates that are obtained from these data are intended to represent all returns filed for the income tax years under review. All returns processed are subjected to sampling except tentative and amended returns.</p>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="93%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MS</td>
+<td>is an indicator variable of the taxpayer’s marital status. It is coded one if the taxpayer is married and zero otherwise.</td>
+</tr>
+<tr class="even">
+<td>HH</td>
+<td>is an indicator variable, one if the taxpayer is a head of household and zero otherwise.</td>
+</tr>
+<tr class="odd">
+<td>DEPEND</td>
+<td>is the number of dependents claimed by the taxpayer.</td>
+</tr>
+<tr class="even">
+<td>AGE</td>
+<td>is the presence of an indicator for age 65 or over.</td>
+</tr>
+<tr class="odd">
+<td>F1040A</td>
+<td>is an indicator variable of the taxpayer’s filing type. It is coded one if the taxpayer uses Form 1040A and zero otherwise.</td>
+</tr>
+<tr class="even">
+<td>F1040EZ</td>
+<td>is an indicator variable of the taxpayer’s filing type. It is coded one if the taxpayer uses Form 1040EZ and zero otherwise.</td>
+</tr>
+<tr class="odd">
+<td>TPI</td>
+<td>is the sum of all positive income line items on the return. is a marginal tax rate.</td>
+</tr>
+<tr class="even">
+<td>TXRT</td>
+<td>is a marginal tax rate。 It is computed on TPI less exemptions and the standard deduction.</td>
+</tr>
+<tr class="odd">
+<td>MR</td>
+<td>is an exogenous marginal tax rate. It is computed on TPI less exemptions and the standard deduction.</td>
+</tr>
+<tr class="even">
+<td>EMP</td>
+<td>is an indicator variable, one if Schedule C or F is present and zero otherwise. Self-employed taxpayers have greater need for professional assistance to reduce the reporting risks of doing business.</td>
+</tr>
+<tr class="odd">
+<td>PREP</td>
+<td>is a variable indicating the presence of a paid preparer.</td>
+</tr>
+<tr class="even">
+<td>TAX</td>
+<td>is the tax liability on the return.</td>
+</tr>
+<tr class="odd">
+<td>SUBJECT</td>
+<td>Subject identifier, 1- 258.</td>
+</tr>
+<tr class="even">
+<td>TIME</td>
+<td>Time identifier, 1-5.</td>
+</tr>
+<tr class="odd">
+<td>LNTAX</td>
+<td>is the natural logarithm of the tax liability on the return.</td>
+</tr>
+<tr class="even">
+<td>LNTPI</td>
+<td>is the natural logarithm of the sum of all positive income line items on the return.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="example-3.2-income-tax-payments-page-81" class="section level2">
+<h2><span class="header-section-number">3.2</span> Example 3.2: Income Tax Payments (Page 81)</h2>
+<p>In this section, we study the effects that an individual’s economic and demographic characteristics have on the amount of income tax paid. Specifically, the response of interest is <code>LNTAX</code>, defined as the natural logarithm of the liability on the tax return.</p>
+<div id="table-3.2.-averages-of-binary-variables" class="section level3">
+<h3><span class="header-section-number">3.2.1</span> Table 3.2. Averages of binary variables</h3>
+<p>The binary variables in Table 3.2 indicate that over half the sample is married (MS) and approximately half the sample uses a paid preparer (PREP).</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(nlme)
+<span class="kw">gsummary</span>(taxprep[, <span class="kw">c</span>(<span class="st">&quot;MS&quot;</span>, <span class="st">&quot;HH&quot;</span>, <span class="st">&quot;AGE&quot;</span>, <span class="st">&quot;EMP&quot;</span>, <span class="st">&quot;PREP&quot;</span>)], <span class="dt">groups=</span>taxprep<span class="op">$</span>TIME, <span class="dt">FUN=</span>mean)</code></pre>
+<pre><code>         MS         HH        AGE       EMP      PREP
+1 0.5968992 0.08139535 0.08527132 0.1395349 0.4496124
+2 0.5968992 0.09302326 0.10465116 0.1589147 0.4418605
+3 0.6240310 0.08527132 0.11240310 0.1550388 0.4844961
+4 0.6472868 0.08139535 0.13178295 0.1472868 0.5077519
+5 0.6472868 0.09302326 0.14728682 0.1472868 0.5155039</code></pre>
+</div>
+<div id="table-3.3---summary-statistics-for-continuous-variables" class="section level3">
+<h3><span class="header-section-number">3.2.2</span> TABLE 3.3 - Summary statistics for continuous variables</h3>
+<p>Tables 3.2 and 3.3 describe the basic taxpayer characteristics used in our analysis. The summary statistics for the other nonbinary variables are in Table 3.3.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(taxprep[, <span class="kw">c</span>(<span class="st">&quot;DEPEND&quot;</span>, <span class="st">&quot;LNTPI&quot;</span>, <span class="st">&quot;MR&quot;</span>, <span class="st">&quot;LNTAX&quot;</span>)]) <span class="co">#summary does not provid standard deviation</span></code></pre>
+<pre><code>     DEPEND          LNTPI               MR            LNTAX       
+ Min.   :0.000   Min.   :-0.1275   Min.   : 0.00   Min.   : 0.000  
+ 1st Qu.:1.000   1st Qu.: 9.4467   1st Qu.:15.00   1st Qu.: 6.645  
+ Median :2.000   Median :10.0506   Median :22.00   Median : 7.701  
+ Mean   :2.419   Mean   : 9.8886   Mean   :23.52   Mean   : 6.880  
+ 3rd Qu.:3.000   3rd Qu.:10.5320   3rd Qu.:33.00   3rd Qu.: 8.420  
+ Max.   :6.000   Max.   :13.2220   Max.   :50.00   Max.   :11.860  </code></pre>
+<p>Standard deviation of some variables.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Standard Deviation</span>
+var&lt;-<span class="kw">var</span>(taxprep[, <span class="kw">c</span>(<span class="st">&quot;DEPEND&quot;</span>, <span class="st">&quot;LNTPI&quot;</span>, <span class="st">&quot;MR&quot;</span>, <span class="st">&quot;LNTAX&quot;</span>)])
+<span class="kw">sqrt</span>(<span class="kw">diag</span>(var))</code></pre>
+<pre><code>   DEPEND     LNTPI        MR     LNTAX 
+ 1.337562  1.164625 11.453800  2.694961 </code></pre>
+</div>
+<div id="table-3.4---averages-by-level-of-binary-explanatory-variable" class="section level3">
+<h3><span class="header-section-number">3.2.3</span> TABLE 3.4 - Averages by level of binary explanatory variable</h3>
+<p>To explore the relationship between each indicator variable and logarithmic tax, Table 3.4 presents the average logarithmic tax liability by level of indicator variable. This table shows that married filers pay greater tax, head-of-household filers pay less tax, taxpayers 65 or over pay less, taxpayers with self-employed income pay less, and taxpayers who use a professional tax preparer pay more.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(Hmisc)
+<span class="kw">summarize</span>(taxprep<span class="op">$</span>LNTAX, taxprep<span class="op">$</span>MS, mean) </code></pre>
+<pre><code>  taxprep$MS taxprep$LNTAX
+1          0      5.973412
+2          1      7.429948</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(taxprep<span class="op">$</span>LNTAX, taxprep<span class="op">$</span>HH, mean)</code></pre>
+<pre><code>  taxprep$HH taxprep$LNTAX
+1          0      7.013197
+2          1      5.479947</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(taxprep<span class="op">$</span>LNTAX, taxprep<span class="op">$</span>AGE, mean)</code></pre>
+<pre><code>  taxprep$AGE taxprep$LNTAX
+1           0      6.939184
+2           1      6.430867</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(taxprep<span class="op">$</span>LNTAX, taxprep<span class="op">$</span>EMP, mean)</code></pre>
+<pre><code>  taxprep$EMP taxprep$LNTAX
+1           0      6.982682
+2           1      6.296879</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(taxprep<span class="op">$</span>LNTAX, taxprep<span class="op">$</span>PREP, mean)</code></pre>
+<pre><code>  taxprep$PREP taxprep$LNTAX
+1            0      6.623648
+2            1      7.158049</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># TABLE counts of BINARY EXPLANATORY VARIABLE</span>
+<span class="co"># CREATE CATEGORICAL VARIABLE</span>
+taxprep<span class="op">$</span>MSF=taxprep<span class="op">$</span>MS
+taxprep<span class="op">$</span>HHF=taxprep<span class="op">$</span>HH
+taxprep<span class="op">$</span>AGEF=taxprep<span class="op">$</span>AGE
+taxprep<span class="op">$</span>EMPF=taxprep<span class="op">$</span>EMP
+taxprep<span class="op">$</span>PREPF=taxprep<span class="op">$</span>PREP
+<span class="kw">table</span>(taxprep<span class="op">$</span>MSF)</code></pre>
+<pre><code>
+  0   1 
+487 803 </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(taxprep<span class="op">$</span>HHF)</code></pre>
+<pre><code>
+   0    1 
+1178  112 </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(taxprep<span class="op">$</span>AGEF)</code></pre>
+<pre><code>
+   0    1 
+1140  150 </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(taxprep<span class="op">$</span>EMPF)</code></pre>
+<pre><code>
+   0    1 
+1097  193 </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(taxprep<span class="op">$</span>PREPF)</code></pre>
+<pre><code>
+  0   1 
+671 619 </code></pre>
+</div>
+<div id="table-3.5---correlation-for-continous-variables" class="section level3">
+<h3><span class="header-section-number">3.2.4</span> TABLE 3.5 - Correlation for continous variables</h3>
+<p>Table 3.5 summarizes basic relations among logarithmic tax and the other nonbinary explanatory variables. Both <code>LNTPI</code> and <code>MR</code> are strongly correlated with logarithmic tax whereas the relationship between <code>DEPEND</code> and logarithmic tax is positive, yet weaker. Table 3.5 also shows that <code>LNTPI</code> and <code>MR</code> are strongly positively correlated.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(taxprep[,<span class="kw">c</span>(<span class="st">&quot;LNTAX&quot;</span>, <span class="st">&quot;DEPEND&quot;</span>, <span class="st">&quot;LNTPI&quot;</span>, <span class="st">&quot;MR&quot;</span>)])</code></pre>
+<pre><code>            LNTAX     DEPEND     LNTPI        MR
+LNTAX  1.00000000 0.08519899 0.7176476 0.7466574
+DEPEND 0.08519899 1.00000000 0.2777381 0.1275044
+LNTPI  0.71764760 0.27773808 1.0000000 0.7958007
+MR     0.74665744 0.12750438 0.7958007 1.0000000</code></pre>
+</div>
+<div id="figure-3.2-basic-added-variable-plot-y-vs.-x" class="section level3">
+<h3><span class="header-section-number">3.2.5</span> FIGURE 3.2: Basic added variable plot (y vs. x)</h3>
+<p>Moreover, both the mean and median marginal tax rates (<code>MR</code>) are decreasing, although mean and median tax liabilities (<code>LNTAX</code>) are stable (see Figure 3.2). These results are consistent with congressional efforts to reduce rates and expand the tax base through broadening the definition of income and eliminating deductions.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#CREATE CATEGORICAL VARIABLE</span>
+taxprep<span class="op">$</span>SUBJECT1=<span class="kw">factor</span>(taxprep<span class="op">$</span>SUBJECT)
+lntax.lm =<span class="st"> </span><span class="kw">lm</span>(LNTAX <span class="op">~</span><span class="st"> </span>SUBJECT1, <span class="dt">data=</span>taxprep)
+lntpi.lm =<span class="st"> </span><span class="kw">lm</span>(LNTPI <span class="op">~</span><span class="st"> </span>SUBJECT1, <span class="dt">data=</span>taxprep)
+taxprep<span class="op">$</span>Resid1=<span class="kw">residuals</span>(lntax.lm)
+taxprep<span class="op">$</span>Resid2=<span class="kw">residuals</span>(lntpi.lm)
+<span class="kw">plot</span>(Resid1 <span class="op">~</span><span class="st"> </span>Resid2, <span class="dt">data=</span>taxprep, <span class="dt">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">yaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;&quot;</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">8</span>, <span class="dv">7</span>, <span class="dt">by=</span><span class="dv">2</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">8</span>, <span class="dv">8</span>, <span class="dt">by=</span><span class="fl">0.2</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">8</span>,<span class="dv">4</span>, <span class="dt">by=</span><span class="dv">2</span>), <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">8</span>, <span class="dv">4</span>, <span class="dt">by=</span><span class="fl">0.2</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;Residuals from LNTAX&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="op">-</span><span class="dv">7</span>, <span class="dt">at=</span><span class="fl">7.5</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;Residuals from LNTPI&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">3</span>, <span class="dt">at=</span><span class="op">-</span><span class="dv">2</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>)</code></pre>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+</div>
+<div id="display-3.1---error-components-model" class="section level3">
+<h3><span class="header-section-number">3.2.6</span> DISPLAY 3.1 - Error components model</h3>
+<p>The estimated model appears in Display 3.1, from a fit using the statistical package SAS. Display 3.1 shows that HH, EMP, LNTPI, and MR are statistically significant variables that affect LNTAX. Somewhat surprisingly, the PREP variable was not statistically significant.</p>
+<pre class="sourceCode r"><code class="sourceCode r">random&lt;-<span class="kw">lme</span>(LNTAX<span class="op">~</span>MS<span class="op">+</span>HH<span class="op">+</span>AGE<span class="op">+</span>EMP<span class="op">+</span>PREP<span class="op">+</span>LNTPI<span class="op">+</span>DEPEND<span class="op">+</span>MR, <span class="dt">data=</span>taxprep, <span class="dt">random=</span><span class="op">~</span><span class="dv">1</span><span class="op">|</span>SUBJECT, <span class="dt">method=</span><span class="st">&quot;ML&quot;</span>)
+<span class="co">## </span><span class="al">NOTE</span><span class="co">* THE DEFAULT METHOD IN lme IS &quot;REML&quot;</span>
+<span class="kw">summary</span>(random)</code></pre>
+<pre><code>Linear mixed-effects model fit by maximum likelihood
+ Data: taxprep 
+       AIC      BIC    logLik
+  4813.255 4870.041 -2395.627
+
+Random effects:
+ Formula: ~1 | SUBJECT
+        (Intercept) Residual
+StdDev:   0.9602161 1.368896
+
+Fixed effects: LNTAX ~ MS + HH + AGE + EMP + PREP + LNTPI + DEPEND + MR 
+                 Value Std.Error   DF   t-value p-value
+(Intercept) -2.9603371 0.5705536 1024 -5.188534  0.0000
+MS           0.0373000 0.1824839 1024  0.204402  0.8381
+HH          -0.6889876 0.2320057 1024 -2.969702  0.0031
+AGE          0.0207431 0.2000035 1024  0.103713  0.9174
+EMP         -0.5048035 0.1679848 1024 -3.005054  0.0027
+PREP        -0.0217036 0.1175229 1024 -0.184675  0.8535
+LNTPI        0.7604058 0.0699692 1024 10.867728  0.0000
+DEPEND      -0.1127475 0.0592818 1024 -1.901891  0.0575
+MR           0.1153752 0.0073142 1024 15.774213  0.0000
+ Correlation: 
+       (Intr) MS     HH     AGE    EMP    PREP   LNTPI  DEPEND
+MS      0.176                                                 
+HH      0.030  0.419                                          
+AGE    -0.043 -0.167 -0.023                                   
+EMP    -0.116 -0.069  0.024 -0.030                            
+PREP   -0.035 -0.045  0.004 -0.115 -0.112                     
+LNTPI  -0.948 -0.180 -0.081 -0.043  0.099 -0.016              
+DEPEND -0.074 -0.604 -0.269  0.224 -0.038 -0.039 -0.068       
+MR      0.522 -0.020  0.055  0.149 -0.041 -0.051 -0.698  0.102
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-5.83483692 -0.21263981  0.09677632  0.39814646  5.79731648 
+
+Number of Observations: 1290
+Number of Groups: 258 </code></pre>
+</div>
+</div>
+<div id="section-3.3---random-coefficients-model" class="section level2">
+<h2><span class="header-section-number">3.3</span> SECTION 3.3 - Random coefficients model</h2>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#randomcoeff&lt;-lme(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR, data=taxprep, random=~1+MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR|SUBJECT, method=&quot;ML&quot;) </span>
+<span class="co"># </span><span class="al">NOTE</span><span class="co">*:It takes forever to run the estimation, in the end a warning messaged was given. </span>
+<span class="co"># No estimation result was produced. </span>
+<span class="co"># The reason is due to the fact that in SAS, the method of mivque0 allows estimation for this model, in R this method is not readily available to be coded.</span></code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="fixed-effects-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="prediction-and-bayesian-inference.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["LongPanelDataScripts.pdf", "LongPanelDataScripts.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

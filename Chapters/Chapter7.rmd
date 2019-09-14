@@ -1,0 +1,158 @@
+
+
+# Modeling Issues
+
+## Import Data
+
+```{r comment = ""}
+taxprep=read.table("TXTData/TaxPrep.txt", sep ="\t", quote = "",header=TRUE)
+
+#taxprep=read.table(choose.files(), header=TRUE, sep="\t")
+```
+
+ Data for this study are from the Statistics of Income (SOI) Panel of Individual Returns, a part of the Ernst and Young/University of Michigan Tax Research Database. The SOI Panel represents a simple random sample of unaudited individual income tax returns filed for tax years 1979-1990. The data are compiled from a stratified probability sample of unaudited individual income tax returns, Forms 1040, 1040A and 1040EZ, filed by U.S. taxpayers. The estimates that are obtained from these data are intended to represent all returns filed for the income tax years under review. All returns processed are subjected to sampling except tentative and amended returns.
+ 
+Variable| Description
+---- | --- 
+MS | is an indicator variable of the taxpayer's marital status. It is coded one if the taxpayer is married and zero otherwise.
+HH | is an indicator variable, one if the taxpayer is a head of household and zero otherwise.
+DEPEND | is the number of dependents claimed by the taxpayer.
+AGE | is the presence of an indicator for age 65 or over.
+F1040A | is an indicator variable of the taxpayer’s filing type. It is coded one if the taxpayer uses Form 1040A and zero otherwise.
+F1040EZ | is an indicator variable of the taxpayer’s filing type. It is coded one if the taxpayer uses Form 1040EZ and zero otherwise.
+TPI | is the sum of all positive income line items on the return.
+TXRT | is a marginal tax rate. It is computed on TPI less exemptions and the standard deduction.
+MR | is an exogenous marginal tax rate. It is computed on TPI less exemptions and the standard deduction.
+EMP | is an indicator variable, one if Schedule C or F is present and zero otherwise. Self-employed taxpayers have greater need for professional assistance to reduce the reporting risks of doing business.
+PREP | is a variable indicating the presence of a paid preparer.
+TAX | is the tax liability on the return.
+SUBJECT | Subject identifier, 1-258.
+TIME | Time identifier, 1-5.
+LNTAX | is the natural logarithm of the tax liability on the return.
+LNTPI | is the natural logarithm of the sum of all positive income line items on the return.
+
+## Example 7.2: Income Tax Payments (Page 248) 
+
+ To illustrate the performance of the fixed-effects estimators and omitted-variable tests, we examine data on determinants of income tax payments introduced in Section 3.2. Specifically, we begin with the error-components model with K = 8 coefficients estimated using generalized least squares. 
+
+### TABLE 7.1: Fixed effects estimators
+
+```{r comment = ""}
+taxprep$YEAR<-taxprep$TIME+1981
+taxprep$SUBFACTOR<-factor(taxprep$SUBJECT)
+library(nlme)
+taxprepfx<-lm(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR+SUBFACTOR-1, data=taxprep) 
+summary(taxprepfx)
+```
+
+### TABLE 7.1: Random effects estimator
+
+```{r comment = ""}
+taxpreprdm1<-lme(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR, data=taxprep, random=~1|SUBJECT, method="ML") #using maximum likelihood estimator to estimate beta coefficients 
+summary(taxpreprdm1)
+```
+
+### Hausman's test
+
+```{r comment = ""}
+beta1fix<-coefficients(taxprepfx)
+beta1fe<-beta1fix[1:8]
+cov1fix<-vcov(taxprepfx)
+cov1fe<-cov1fix[1:8, 1:8]
+beta1re<-coefficients(taxpreprdm1)
+beta1re<-t(beta1re[1, 2:9])
+cov1re<-vcov(taxpreprdm1)
+cov1re<-cov1re[2:9, 2:9]
+HSTEST1<-t(beta1fe-beta1re)%*%solve(cov1fe-cov1re)%*%(beta1fe-beta1re)
+beta1fe
+beta1re
+HSTEST1
+```
+
+## Example 7.2: Income Tax Payments (continued) (Page 255)
+
+### Table 7.2: Fixed effects estimators with two variable slopes
+ 
+```{r comment = ""}
+ACF(taxpreprdm1, maxlag=10) #Obtain ACF of residuals for within-group residual
+# Compared with SAS, lm in R can estimate fixed effects, but can not code AR(1) for within-subject correlation
+taxprepfx2<-lm(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR+SUBFACTOR+SUBFACTOR*MR+SUBFACTOR*LNTPI-1, data=taxprep)  
+# summary(taxprepfx2)
+```
+
+### Table 7.2: Variable slopes model
+
+```{r comment = ""}
+taxpreprdm2<-lme(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR, data=taxprep, method="ML",random=~1+LNTPI+MR|SUBJECT, correlation=corAR1(form=~1|SUBJECT),control = lmeControl(opt = "optim"))  
+# I changed the initial code to "control = lmeControl(opt = "optim")", because the initial code has convergence problem.
+
+summary(taxpreprdm2) #ESTIMATES ARE CLOSE TO RESULTS FROM SAS
+```
+
+### Hausman's test
+
+```{r comment = ""}
+beta2fix<-coefficients(taxprepfx2)
+beta2fe<-beta2fix[1:8]
+cov2fix<-vcov(taxprepfx2)
+cov2fe<-cov2fix[1:8, 1:8]
+beta2re<-coefficients(taxpreprdm2)
+beta2re<-t(beta2re[1, 2:9])
+cov2re<-vcov(taxpreprdm2)
+cov2re<-cov2re[2:9, 2:9]
+HSTEST2<-t(beta2fe-beta2re)%*%solve(cov2fe-cov2re)%*%(beta2fe-beta2re)
+beta2fe
+beta2re
+HSTEST2 #ESTIMATES ARE DIFFERENT FROM RESULTS FROM SAS, BECAUSE THE FIXED EFFECTS ESTIMATORS DID NOT INCLUDE AR(1) 
+```
+
+## TABLE 7.3 Augmented regressions
+
+### Create panel data set with subject averages
+
+```{r comment = ""}
+msavg<-aggregate(taxprep$MS, list(SUBJECT=taxprep$SUBJECT), mean)
+names(msavg)<-c("SUBJECT", "msavg")
+hhavg<-aggregate(taxprep$HH, list(SUBJECT=taxprep$SUBJECT), mean)
+names(hhavg)<-c("SUBJECT", "hhavg")
+ageavg<-aggregate(taxprep$AGE, list(SUBJECT=taxprep$SUBJECT), mean)
+names(ageavg)<-c("SUBJECT", "ageavg")
+empavg<-aggregate(taxprep$EMP, list(SUBJECT=taxprep$SUBJECT), mean)
+names(empavg)<-c("SUBJECT", "empavg")
+prepavg<-aggregate(taxprep$PREP, list(SUBJECT=taxprep$SUBJECT), mean)
+names(prepavg)<-c("SUBJECT", "prepavg")
+dependavg<-aggregate(taxprep$DEPEND, list(SUBJECT=taxprep$SUBJECT), mean)
+names(dependavg)<-c("SUBJECT", "dependavg")
+lntpiavg<-aggregate(taxprep$LNTPI, list(SUBJECT=taxprep$SUBJECT), mean)
+names(lntpiavg)<-c("SUBJECT", "lntpiavg")
+mravg<-aggregate(taxprep$MR, list(SUBJECT=taxprep$SUBJECT), mean)
+names(mravg)<-c("SUBJECT", "mravg")
+
+avg<-merge(msavg, taxprep, by="SUBJECT", all.y=T, sort=T)
+avg<-merge(hhavg, avg, by="SUBJECT", all.y=T, sort=T)
+avg<-merge(ageavg, avg, by="SUBJECT", all.y=T, sort=T)
+avg<-merge(empavg, avg, by="SUBJECT", all.y=T, sort=T)
+avg<-merge(prepavg, avg, by="SUBJECT", all.y=T, sort=T)
+avg<-merge(dependavg, avg, by="SUBJECT", all.y=T, sort=T)
+avg<-merge(lntpiavg, avg, by="SUBJECT", all.y=T, sort=T)
+avg<-merge(mravg, avg, by="SUBJECT", all.y=T, sort=T)
+
+```
+
+### Models with averages as omitted variables
+
+```{r comment = ""}
+#VARIABLE INTERCEPTS AND TWO VARIABLE SLOPES 
+taxprepaug<-lme(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR+msavg+hhavg+ageavg+empavg+prepavg+dependavg+lntpiavg+mravg, data=avg, method="ML",random=~1+LNTPI+MR|SUBJECT, correlation=corAR1(form=~1|SUBJECT),control = lmeControl(opt = "optim"))  
+#Again, I change the code to "control = lmeControl(opt = "optim")" due to convergence problem.
+summary(taxprepaug)
+
+#ESTIMATES ARE DIFFERENT FROM SAS BECAUSE fa0(3) WAS CODED IN SAS
+beta3re<-coefficients(taxprepaug)
+betarand<-t(beta3re[1, 10:17])
+cov3re<-vcov(taxprepaug)
+cov3re<-cov3re[10:17, 10:17]
+ARTEST <- t(betarand)%*%solve(cov3re)%*%betarand
+betarand
+ARTEST
+```

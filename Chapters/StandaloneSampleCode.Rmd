@@ -1,0 +1,159 @@
+---
+title: "L&P Ch1"
+date: "08/08/2019"
+output:
+  bookdown::html_document2:
+    toc: yes
+    toc_depth: '3'
+    number_sections: yes
+    fig_width: 6
+    fig_height: 4
+    code_folding: hide
+    pandoc_args: [
+      "--number-sections",
+      "--number-offset=0"]
+  # pdf_document:
+  #   number_sections: yes
+  #   toc: yes
+  #   toc_depth: '3'
+#bibliography: LDAReferenceB.bib  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(boot)
+library(lattice)
+```
+
+# Introduction
+
+## Import Data
+
+First, we can import "Divorce.txt" downloaded from website https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Longitudinal%20and%20Panel%20Data/Book/DataFiles.htm
+
+ These are data describing the divorce rate in each state. In addition, there is other socioeconomic information about a state that may be related to the divorce rate. In particular, data concerning the number of marriages and births, unemployment and crime rates, and AFDC (Aid to Families with Dependent Children) payments are available. In this file, data are available for the years 1965, 1975, 1985 and 1995. The information provided by this study is potentially useful for governing agencies in budgeting for social needs such as judicial and welfare services that are affected by divorce. The data for the study were collected from various U.S. Statistical Abstracts. Divorce rate is defined as the number of divorces and annulments per thousand population per state. The independent variables include the number of marriages and live births per thousand population, the total unemployment rate as percent of total work force, the average monthly AFDC payments per family, and the total number of criminal offenses known to the police (murder, rape, robbery, aggravated assault, burglary, larceny, and motor vehicle theft). Some of the data points contain missing observations due to unavailability, and Nevada is unusual due to its uniquely high and unrepresentative marriage and divorce rates. Source: U.S. Statistical Abstract, various issues.
+ 
+Variable| Description
+---- | --- 
+DIVORCE |Number of divorces and annulments per state per one thousand population. 
+BIRTH | Number of live births per state per one thousand population.
+MARRIAGE | Number of marriages per state per one thousand population.
+UNEMPLOY | Total unemployment rate as a percentage of the total work force.
+CRIME | Total number of criminal offenses (murder, rape, robbery, aggravated assault, burglary, larceny and motor vehicle theft) known to police per one hundred thousand population.
+AFDC | Average monthly AFDC (Aid to Families with Dependent Children) payments per family.
+STATE | State identifier, 1-51.
+TIME | Time identifier, 1-4.
+
+
+```{r}
+#  FILENAME IS Chap1AnalysisR.txt  ;
+
+#  "\t"  INDICATES SEPARATED BY TABLES  ;
+divorce = read.table("C:/Users/dongyumo/Desktop/ANU study/2019.7/Longitudinal Data/Data of the book/Divorce.txt", sep ="\t", quote = "",header=TRUE)
+# divorce = read.table(choose.files(), sep ="\t", quote = "",header=TRUE)
+```
+
+ Let's have a look at the dataset. The names of variables and the first 8 rows observations.
+
+```{r}
+#  PROVIDES THE NAMES IN THE FILE AND LISTS THE FIRST 8 OBSERVATIONS  ;
+names (divorce)
+divorce[1:8,]
+```
+
+ We can check some summary statistics. The dimension of `divorce`.
+
+```{r}
+#  SUMMARY STATISTICS  ;
+dim(divorce)
+```
+
+ A summary of variables `DIVORCE` and `AFDC`.
+
+```{r}
+summary(divorce[, c("DIVORCE", "AFDC")])
+sd(divorce[,c("DIVORCE")], na.rm=TRUE) #The standard deviation of DIVORCE.
+sd(divorce[,c("AFDC")], na.rm=TRUE) #The standard deviation of AFDC.
+cor(divorce$DIVORCE, divorce$AFDC, use="pairwise.complete.obs")# The correlation between DIVORCE and AFDC.
+```
+
+## Exmample 1.1: Divorce Rates (page 2)
+
+### Figure 1.1: Plot of 1965 divorce rates versus AFDC payments.
+
+ Figure 1.1 shows the 1965 divorce rates versus AFDC (Aid to Families with Dependent Children) payments for the fifty states.
+```{r}
+
+#  FIGURE 1.1. PLOT 1965 DATA ;
+plot(DIVORCE ~ AFDC, subset=TIME %in% c(1),data = divorce, xaxt="n", yaxt="n",ylab="",xlab="")
+
+axis(2, at=seq(0, 6, by=1), las=1, font=10, cex=0.005, tck=0.01)
+
+axis(2, at=seq(0, 6, by=0.1), lab=F, tck=0.005)
+axis(1, at=seq(20,220, by=20), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(20,220, by=2), lab=F, tck=0.005)
+mtext("DIVORCE", side=2, line=0, at=6, font=12, cex=1, las=1)
+mtext("AFDC", side=1, line=3, at=120, font=12, cex=1)
+```
+
+ We can also plot 1975 data following the same method.
+
+```{r}
+#  PLOT 1975 DATA ;
+plot(DIVORCE ~ AFDC, subset=TIME %in% c(2),data = divorce,xaxt="n", yaxt="n",ylab="",xlab="")
+axis(2, at=seq(2, 9, by=1), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(2, 9, by=0.1), lab=F, tck=0.005)
+axis(1, at=seq(0,400, by=100), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(0,400, by=10), lab=F, tck=0.005)
+mtext("DIVORCE", side=2, line=0, at=8.5, font=12, cex=1, las=1)
+mtext("AFDC", side=1, line=3, at=200, font=12, cex=1)
+```
+
+### Figure 1.2: Plot of divorce rate versus AFDC payments from 1965 and 1975.
+
+ Figure 1.2 shows both the 1965 and 1975 data; a line connects the two observations within each state. These lines represent a change over time (dynamic), not a cross-sectional relationship.
+
+```{r}
+plot(DIVORCE ~ AFDC, data = subset(divorce, TIME %in% c(1, 2)), xaxt="n", yaxt="n",ylab="",xlab="")
+   for (i in divorce$STATE) {
+    lines(DIVORCE ~ AFDC, data = subset(divorce, TIME %in% c(1, 2) & STATE == i)) }
+axis(2, at=seq(0, 10, by=1), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(0, 10, by=0.1), lab=F, tck=0.005)
+axis(1, at=seq(0,400, by=100), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(0,400, by=10), lab=F, tck=0.005)
+mtext("DIVORCE", side=2, line=0, at=8.5, font=12, cex=1, las=1)
+mtext("AFDC", side=1, line=3, at=200, font=12, cex=1)
+```
+
+ We can plot data for all years and connect the years.
+
+```{r}
+#  PLOT ALL DATA, CONNECTING THE YEARS ;
+plot(DIVORCE ~ AFDC, data = divorce, xaxt="n", yaxt="n",ylab="",xlab="")
+  for (i in divorce$STATE) {
+  lines(DIVORCE ~ AFDC, data = subset(divorce, STATE == i)) }
+axis(2, at=seq(0, 10, by=1), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(0, 10, by=0.1), lab=F, tck=0.005)
+axis(1, at=seq(0,800, by=100), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(0,800, by=10), lab=F, tck=0.005)
+mtext("DIVORCE", side=2, line=0, at=10, font=12, cex=1, las=1)
+mtext("AFDC", side=1, line=3, at=400, font=12, cex=1)
+
+```
+
+ We can also look at the multiple time series plot by the `STATE`.
+
+```{r}
+#  MULTIPLE TIME SERIES PLOT  ;
+divorce$YEAR=divorce$TIME*10+1955
+plot(DIVORCE ~ YEAR, data = divorce, xaxt="n", yaxt="n",ylab="",xlab="")
+   for (i in divorce$STATE) {
+   lines(DIVORCE ~ YEAR, data = subset(divorce, STATE == i)) }
+axis(2, at=seq(0, 10, by=1), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(0, 10, by=0.1), lab=F, tck=0.005)
+axis(1, at=seq(1965,1995, by=10), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(1964,2000, by=1), lab=F, tck=0.005)
+mtext("DIVORCE", side=2, line=0, at=10, font=12, cex=1, las=1)
+mtext("YEAR", side=1, line=3, at=1980, font=12, cex=1)
+
+```

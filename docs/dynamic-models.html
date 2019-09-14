@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 7 Dynamic Models | R Scripts for Longitudinal and Panel Data</title>
+  <meta name="description" content="R scripts" />
+  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 7 Dynamic Models | R Scripts for Longitudinal and Panel Data" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R scripts" />
+  <meta name="github-repo" content="https://github.com/openacttexts/Loss-Data-Analytics" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 7 Dynamic Models | R Scripts for Longitudinal and Panel Data" />
+  
+  <meta name="twitter:description" content="R scripts" />
+  
+
+<meta name="author" content="Yumo Dong, Edward Frees, and others??" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="modeling-issues.html">
+<link rel="next" href="binary-dependent-variables.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#import-data"><i class="fa fa-check"></i><b>1.1</b> Import Data</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#example-1.1-divorce-rates-page-2"><i class="fa fa-check"></i><b>1.2</b> Example 1.1: Divorce Rates (page 2)</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="introduction.html"><a href="introduction.html#figure-1.1-plot-of-1965-divorce-rates-versus-afdc-payments."><i class="fa fa-check"></i><b>1.2.1</b> Figure 1.1: Plot of 1965 divorce rates versus AFDC payments.</a></li>
+<li class="chapter" data-level="1.2.2" data-path="introduction.html"><a href="introduction.html#figure-1.2-plot-of-divorce-rate-versus-afdc-payments-from-1965-and-1975."><i class="fa fa-check"></i><b>1.2.2</b> Figure 1.2: Plot of divorce rate versus AFDC payments from 1965 and 1975.</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html"><i class="fa fa-check"></i><b>2</b> Fixed-Effects Models</a><ul>
+<li class="chapter" data-level="2.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#import-data-1"><i class="fa fa-check"></i><b>2.1</b> Import Data</a></li>
+<li class="chapter" data-level="2.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#example-2.2-medicare-hospital-costs-page-26"><i class="fa fa-check"></i><b>2.2</b> Example 2.2: Medicare Hospital Costs (Page 26)</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.1-ccpd-vs-year-multiple-time-series-plot"><i class="fa fa-check"></i><b>2.2.1</b> FIGURE 2.1: CCPD vs YEAR; multiple time series plot</a></li>
+<li class="chapter" data-level="2.2.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.2-ccpd-vs-num.dchg"><i class="fa fa-check"></i><b>2.2.2</b> FIGURE 2.2: CCPD vs NUM.DCHG</a></li>
+<li class="chapter" data-level="2.2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.3-ccpd-vs-ave.days"><i class="fa fa-check"></i><b>2.2.3</b> Figure 2.3: CCPD vs AVE.DAYS</a></li>
+<li class="chapter" data-level="2.2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.4-added-variable-plot-of-ccpd-versus-year"><i class="fa fa-check"></i><b>2.2.4</b> Figure 2.4: Added-variable plot of CCPD versus year</a></li>
+<li class="chapter" data-level="2.2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.5-trellis-plot"><i class="fa fa-check"></i><b>2.2.5</b> Figure 2.5: Trellis Plot</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-fixed-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.3</b> One way fixed effects model using lm, for linear model</a></li>
+<li class="chapter" data-level="2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.1---analysis-for-the-pooling-test"><i class="fa fa-check"></i><b>2.4</b> SECTION 2.4.1 - Analysis for the pooling test;</a></li>
+<li class="chapter" data-level="2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.2---correlation-corresponding-to-the-added-variable-plot"><i class="fa fa-check"></i><b>2.5</b> SECTION 2.4.2 - Correlation corresponding to the added variable plot;</a></li>
+<li class="chapter" data-level="2.6" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.5---testing-for-heteroscedasticity"><i class="fa fa-check"></i><b>2.6</b> SECTION 2.4.5 - Testing for heteroscedasticity;</a><ul>
+<li class="chapter" data-level="2.6.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-random-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.6.1</b> One way random effects model using lm, for linear model;</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html"><i class="fa fa-check"></i><b>3</b> Models with Random Effects</a><ul>
+<li class="chapter" data-level="3.1" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#import-data-2"><i class="fa fa-check"></i><b>3.1</b> Import Data</a></li>
+<li class="chapter" data-level="3.2" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#example-3.2-income-tax-payments-page-81"><i class="fa fa-check"></i><b>3.2</b> Example 3.2: Income Tax Payments (Page 81)</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.2.-averages-of-binary-variables"><i class="fa fa-check"></i><b>3.2.1</b> Table 3.2. Averages of binary variables</a></li>
+<li class="chapter" data-level="3.2.2" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.3---summary-statistics-for-continuous-variables"><i class="fa fa-check"></i><b>3.2.2</b> TABLE 3.3 - Summary statistics for continuous variables</a></li>
+<li class="chapter" data-level="3.2.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.4---averages-by-level-of-binary-explanatory-variable"><i class="fa fa-check"></i><b>3.2.3</b> TABLE 3.4 - Averages by level of binary explanatory variable</a></li>
+<li class="chapter" data-level="3.2.4" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.5---correlation-for-continous-variables"><i class="fa fa-check"></i><b>3.2.4</b> TABLE 3.5 - Correlation for continous variables</a></li>
+<li class="chapter" data-level="3.2.5" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#figure-3.2-basic-added-variable-plot-y-vs.-x"><i class="fa fa-check"></i><b>3.2.5</b> FIGURE 3.2: Basic added variable plot (y vs. x)</a></li>
+<li class="chapter" data-level="3.2.6" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#display-3.1---error-components-model"><i class="fa fa-check"></i><b>3.2.6</b> DISPLAY 3.1 - Error components model</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#section-3.3---random-coefficients-model"><i class="fa fa-check"></i><b>3.3</b> SECTION 3.3 - Random coefficients model</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html"><i class="fa fa-check"></i><b>4</b> Prediction and Bayesian Inference</a><ul>
+<li class="chapter" data-level="4.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#import-data-3"><i class="fa fa-check"></i><b>4.1</b> Import Data</a></li>
+<li class="chapter" data-level="4.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#example-forecasting-wisconsin-lottery-sales-page-138"><i class="fa fa-check"></i><b>4.2</b> Example: Forecasting Wisconsin Lottery Sales (Page 138)</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#table-4.2-time---invariant-summary-statistics"><i class="fa fa-check"></i><b>4.2.1</b> TABLE 4.2: Time - invariant summary statistics</a></li>
+<li class="chapter" data-level="4.2.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.2-look-at-the-relationship"><i class="fa fa-check"></i><b>4.2.2</b> FIGURE 4.2: Look at the relationship</a></li>
+<li class="chapter" data-level="4.2.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#sorting-the-data-by-zip-then-combine-vectors-into-another-data.frame"><i class="fa fa-check"></i><b>4.2.3</b> Sorting the data by zip then combine vectors into another data.frame</a></li>
+<li class="chapter" data-level="4.2.4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.3-lottery-vs.-week-number"><i class="fa fa-check"></i><b>4.2.4</b> FIGURE 4.3: Lottery vs. week number</a></li>
+<li class="chapter" data-level="4.2.5" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.4-log-lottery-vs-week-number"><i class="fa fa-check"></i><b>4.2.5</b> FIGURE 4.4: Log lottery vs week number</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#create-model-development-sample"><i class="fa fa-check"></i><b>4.3</b> Create model development sample</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-1.-pooled-cross-setional-model"><i class="fa fa-check"></i><b>4.3.1</b> MODEL 1. Pooled cross-setional model</a></li>
+<li class="chapter" data-level="4.3.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-2.-error-components-model"><i class="fa fa-check"></i><b>4.3.2</b> MODEL 2. Error components model</a></li>
+<li class="chapter" data-level="4.3.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-3.-error-components-model-with-autocorrelated-errors"><i class="fa fa-check"></i><b>4.3.3</b> MODEL 3. Error components model with autocorrelated errors</a></li>
+<li class="chapter" data-level="4.3.4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-4.-more-parsimonious-random-effects-model"><i class="fa fa-check"></i><b>4.3.4</b> MODEL 4. More parsimonious random effects model</a></li>
+<li class="chapter" data-level="4.3.5" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-5.-fixed-effects-model-with-autocorrelated-errors"><i class="fa fa-check"></i><b>4.3.5</b> MODEL 5. Fixed effects model with autocorrelated errors</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="multilevel-models.html"><a href="multilevel-models.html"><i class="fa fa-check"></i><b>5</b> Multilevel Models</a><ul>
+<li class="chapter" data-level="5.1" data-path="multilevel-models.html"><a href="multilevel-models.html#import-data-4"><i class="fa fa-check"></i><b>5.1</b> Import Data</a></li>
+<li class="chapter" data-level="5.2" data-path="multilevel-models.html"><a href="multilevel-models.html#example-5.2-dental-data-page-175"><i class="fa fa-check"></i><b>5.2</b> Example 5.2: Dental Data (Page 175)</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="multilevel-models.html"><a href="multilevel-models.html#figure-5.1.-multiple-time-series-plot"><i class="fa fa-check"></i><b>5.2.1</b> Figure 5.1. Multiple time series plot</a></li>
+<li class="chapter" data-level="5.2.2" data-path="multilevel-models.html"><a href="multilevel-models.html#summary-statistics"><i class="fa fa-check"></i><b>5.2.2</b> Summary statistics</a></li>
+<li class="chapter" data-level="5.2.3" data-path="multilevel-models.html"><a href="multilevel-models.html#trellis-plot-unique-in-r"><i class="fa fa-check"></i><b>5.2.3</b> Trellis plot, unique in r</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-dental-data-growth-curve-model-parameter-estimates"><i class="fa fa-check"></i><b>5.3</b> TABLE 5.2: Dental data growth-curve-model parameter estimates</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-error-components-model"><i class="fa fa-check"></i><b>5.3.1</b> TABLE 5.2: Error components model</a></li>
+<li class="chapter" data-level="5.3.2" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-growth-curve-model"><i class="fa fa-check"></i><b>5.3.2</b> TABLE 5.2: Growth curve model</a></li>
+<li class="chapter" data-level="5.3.3" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-growth-curve-model---omitting-9th-boy"><i class="fa fa-check"></i><b>5.3.3</b> TABLE 5.2: Growth curve model - omitting 9th boy</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="modeling-issues.html"><a href="modeling-issues.html"><i class="fa fa-check"></i><b>6</b> Modeling Issues</a><ul>
+<li class="chapter" data-level="6.1" data-path="modeling-issues.html"><a href="modeling-issues.html#import-data-5"><i class="fa fa-check"></i><b>6.1</b> Import Data</a></li>
+<li class="chapter" data-level="6.2" data-path="modeling-issues.html"><a href="modeling-issues.html#example-7.2-income-tax-payments-page-248"><i class="fa fa-check"></i><b>6.2</b> Example 7.2: Income Tax Payments (Page 248)</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.1-fixed-effects-estimators"><i class="fa fa-check"></i><b>6.2.1</b> TABLE 7.1: Fixed effects estimators</a></li>
+<li class="chapter" data-level="6.2.2" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.1-random-effects-estimator"><i class="fa fa-check"></i><b>6.2.2</b> TABLE 7.1: Random effects estimator</a></li>
+<li class="chapter" data-level="6.2.3" data-path="modeling-issues.html"><a href="modeling-issues.html#hausmans-test"><i class="fa fa-check"></i><b>6.2.3</b> Hausman’s test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="modeling-issues.html"><a href="modeling-issues.html#example-7.2-income-tax-payments-continued-page-255"><i class="fa fa-check"></i><b>6.3</b> Example 7.2: Income Tax Payments (continued) (Page 255)</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.2-fixed-effects-estimators-with-two-variable-slopes"><i class="fa fa-check"></i><b>6.3.1</b> Table 7.2: Fixed effects estimators with two variable slopes</a></li>
+<li class="chapter" data-level="6.3.2" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.2-variable-slopes-model"><i class="fa fa-check"></i><b>6.3.2</b> Table 7.2: Variable slopes model</a></li>
+<li class="chapter" data-level="6.3.3" data-path="modeling-issues.html"><a href="modeling-issues.html#hausmans-test-1"><i class="fa fa-check"></i><b>6.3.3</b> Hausman’s test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.3-augmented-regressions"><i class="fa fa-check"></i><b>6.4</b> TABLE 7.3 Augmented regressions</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="modeling-issues.html"><a href="modeling-issues.html#create-panel-data-set-with-subject-averages"><i class="fa fa-check"></i><b>6.4.1</b> Create panel data set with subject averages</a></li>
+<li class="chapter" data-level="6.4.2" data-path="modeling-issues.html"><a href="modeling-issues.html#models-with-averages-as-omitted-variables"><i class="fa fa-check"></i><b>6.4.2</b> Models with averages as omitted variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="dynamic-models.html"><a href="dynamic-models.html"><i class="fa fa-check"></i><b>7</b> Dynamic Models</a><ul>
+<li class="chapter" data-level="7.1" data-path="dynamic-models.html"><a href="dynamic-models.html#import-data-6"><i class="fa fa-check"></i><b>7.1</b> Import Data</a></li>
+<li class="chapter" data-level="7.2" data-path="dynamic-models.html"><a href="dynamic-models.html#example-8.6-capital-asset-pricing-model-page-302"><i class="fa fa-check"></i><b>7.2</b> Example 8.6: Capital Asset Pricing Model (Page 302)</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-vwfree-for-incoln-insurance-company"><i class="fa fa-check"></i><b>7.2.1</b> Plot of RETFREE vs. VWFREE for Incoln insurance company</a></li>
+<li class="chapter" data-level="7.2.2" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-vwfree-for-90-insurance-firms"><i class="fa fa-check"></i><b>7.2.2</b> Plot of RETFREE vs. VWFREE for 90 insurance firms</a></li>
+<li class="chapter" data-level="7.2.3" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-year-for-lincoln-insurance-company"><i class="fa fa-check"></i><b>7.2.3</b> Plot of RETFREE vs. YEAR for Lincoln insurance company</a></li>
+<li class="chapter" data-level="7.2.4" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.2-summary-statistics-for-market-index-and-risk-free-security"><i class="fa fa-check"></i><b>7.2.4</b> Table 8.2 Summary statistics for market index and risk-free security</a></li>
+<li class="chapter" data-level="7.2.5" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.3-summary-statistics-for-individual-security-returns"><i class="fa fa-check"></i><b>7.2.5</b> TABLE 8.3 Summary statistics for individual security returns</a></li>
+<li class="chapter" data-level="7.2.6" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.4-fixed-effects-models"><i class="fa fa-check"></i><b>7.2.6</b> TABLE 8.4 Fixed effects models</a></li>
+<li class="chapter" data-level="7.2.7" data-path="dynamic-models.html"><a href="dynamic-models.html#figure-8.1-trellis-plot-of-returns-versus-market-return"><i class="fa fa-check"></i><b>7.2.7</b> Figure 8.1: Trellis plot of returns versus market return</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html"><i class="fa fa-check"></i><b>8</b> Binary Dependent Variables</a><ul>
+<li class="chapter" data-level="8.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#import-data-7"><i class="fa fa-check"></i><b>8.1</b> Import Data</a></li>
+<li class="chapter" data-level="8.2" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#example-income-tax-payments-and-tax-preparers-page-326"><i class="fa fa-check"></i><b>8.2</b> Example: Income Tax Payments and Tax Preparers (page 326)</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.2.-means-for-binary-variables"><i class="fa fa-check"></i><b>8.2.1</b> TABLE 9.2. Means for binary variables</a></li>
+<li class="chapter" data-level="8.2.2" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.3.-summary-stats-for-other-variables"><i class="fa fa-check"></i><b>8.2.2</b> TABLE 9.3. Summary stats for other variables</a></li>
+<li class="chapter" data-level="8.2.3" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.4.-frequency-tables-for-some-of-the-binary-variables"><i class="fa fa-check"></i><b>8.2.3</b> TABLE 9.4. Frequency tables for some of the binary variables</a></li>
+<li class="chapter" data-level="8.2.4" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#display-9.1-fit-the-logistic-distribution-function-using-maximum-likelihood"><i class="fa fa-check"></i><b>8.2.4</b> DISPLAY 9.1 Fit the logistic distribution function using maximum likelihood</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.2-random-effects-nonlinear-mixed-effects-model"><i class="fa fa-check"></i><b>8.3</b> SECTION 9.2 Random effects nonlinear mixed effects model</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#generalized-linear-mixed-effects-model"><i class="fa fa-check"></i><b>8.3.1</b> Generalized linear mixed effects model</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.3-fixed-effect-model"><i class="fa fa-check"></i><b>8.4</b> SECTION 9.3 Fixed effect model</a></li>
+<li class="chapter" data-level="8.5" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.4-marginal-model-and-generalized-equation-estimation"><i class="fa fa-check"></i><b>8.5</b> SECTION 9.4 Marginal model and generalized equation estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>9</b> Generalized Linear Models</a><ul>
+<li class="chapter" data-level="9.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#import-data-8"><i class="fa fa-check"></i><b>9.1</b> Import Data</a></li>
+<li class="chapter" data-level="9.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-tort-filings-page-356"><i class="fa fa-check"></i><b>9.2</b> Example: Tort Filings (Page 356)</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.3-averages-with-explanatory-binary-variables"><i class="fa fa-check"></i><b>9.2.1</b> TABLE 10.3 Averages with explanatory binary variables</a></li>
+<li class="chapter" data-level="9.2.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.4-summary-statistics-for-other-variables"><i class="fa fa-check"></i><b>9.2.2</b> TABLE 10.4 Summary statistics for other variables</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#section-10.2-homogeneous-model"><i class="fa fa-check"></i><b>9.3</b> Section 10.2 Homogeneous model</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.5-tort-filings-model-coefficient-estimates"><i class="fa fa-check"></i><b>9.3.1</b> TABLE 10.5 Tort filings model coefficient estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#section-10.3-marginal-models"><i class="fa fa-check"></i><b>9.4</b> Section 10.3 Marginal Models</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#with-in-state-correlation-independent"><i class="fa fa-check"></i><b>9.4.1</b> With in state correlation independent</a></li>
+<li class="chapter" data-level="9.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#random-effects-model"><i class="fa fa-check"></i><b>9.4.2</b> Random effects model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html"><i class="fa fa-check"></i><b>10</b> Categorical Dependent Variables and Survival Models</a><ul>
+<li class="chapter" data-level="10.1" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#import-data-9"><i class="fa fa-check"></i><b>10.1</b> Import Data</a></li>
+<li class="chapter" data-level="10.2" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#chap11yogurt2013.r"><i class="fa fa-check"></i><b>10.2</b> Chap11Yogurt2013.R</a></li>
+<li class="chapter" data-level="10.3" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#table-11.2-number-of-choices"><i class="fa fa-check"></i><b>10.3</b> Table 11.2 Number of Choices</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#table-11.2-basic-summary-statistics-for-prices"><i class="fa fa-check"></i><b>10.3.1</b> Table 11.2 Basic summary statistics for prices</a></li>
+<li class="chapter" data-level="10.3.2" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#vissualize-the-data"><i class="fa fa-check"></i><b>10.3.2</b> vissualize the data</a></li>
+<li class="chapter" data-level="10.3.3" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#note-the-small-relationships-among-prices"><i class="fa fa-check"></i><b>10.3.3</b> Note the small relationships among prices</a></li>
+<li class="chapter" data-level="10.3.4" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#more-on-prices"><i class="fa fa-check"></i><b>10.3.4</b> More on prices</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#fitting-fixed-effects-multinomial-logit-model-by-the-poisson-log-linear-model"><i class="fa fa-check"></i><b>10.4</b> Fitting fixed effects multinomial logit model by the poisson log-linear model</a></li>
+<li class="chapter" data-level="10.5" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#fitting-multinomial-logit-model-with-random-intercepts-by-the-possion-log-linear-with-random-intercepts"><i class="fa fa-check"></i><b>10.5</b> Fitting multinomial logit model with random intercepts by the possion-log-linear with random intercepts</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Scripts for Longitudinal and Panel Data</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="dynamic-models" class="section level1">
+<h1><span class="header-section-number">Chapter 7</span> Dynamic Models</h1>
+<div id="import-data-6" class="section level2">
+<h2><span class="header-section-number">7.1</span> Import Data</h2>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#insbeta=read.table(choose.files(), header=TRUE, sep=&quot;\t&quot;)</span>
+<span class="kw">library</span>(nlme)
+insbeta=<span class="kw">read.table</span>(<span class="st">&quot;TXTData/insbeta.txt&quot;</span>, <span class="dt">sep =</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">quote =</span> <span class="st">&quot;&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
+
+insbeta<span class="op">$</span>YEAR=<span class="dv">1995</span><span class="op">+</span>(insbeta<span class="op">$</span>Time<span class="dv">-1</span>)<span class="op">/</span><span class="dv">12</span></code></pre>
+<p>This is the data used at page 302 for 8.6 Example: Capital Asset Pricing Model. No more information could be found.</p>
+</div>
+<div id="example-8.6-capital-asset-pricing-model-page-302" class="section level2">
+<h2><span class="header-section-number">7.2</span> Example 8.6: Capital Asset Pricing Model (Page 302)</h2>
+<p>The capital asset pricing model (CAPM) is a representation that is widely used in financial economics. An intuitively appealing idea, and one of the basic characteristics of the CAPM, is that there should be a relationship between the performance of a security and the performance of the market. One rationale is simply that if economic forces are such that the market improves, then those same forces should act upon an individual stock, suggesting that it also improve. We measure performance of a security through the return. To measure performance of the market, several market indices exist for each exchange. As an illustration, in the following we use the return from the “value-weighted” index of the market created by the Center for Research in Securities Prices (CRSP). The value-weighted index is defined by assuming a portfolio is created when investing an amount of money in proportion to the market value (at a certain date) of firms listed on the New York Stock Exchange, the American Stock Exchange, and the Nasdaq stock market.</p>
+<div id="plot-of-retfree-vs.-vwfree-for-incoln-insurance-company" class="section level3">
+<h3><span class="header-section-number">7.2.1</span> Plot of RETFREE vs. VWFREE for Incoln insurance company</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(retfree <span class="op">~</span><span class="st"> </span>vwfree, <span class="dt">data =</span> <span class="kw">subset</span>(insbeta, insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="dv">49015</span>), <span class="dt">type=</span><span class="st">&quot;p&quot;</span>, <span class="dt">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">yaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;&quot;</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">pch=</span><span class="st">&quot;o&quot;</span>, <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">mkh=</span><span class="fl">0.0001</span>, <span class="dt">lwd=</span><span class="fl">0.5</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">30</span>, <span class="dv">30</span>, <span class="dt">by=</span><span class="dv">10</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">30</span>, <span class="dv">30</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">20</span>,<span class="dv">20</span>, <span class="dt">by=</span><span class="dv">10</span>), <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">20</span>,<span class="dv">20</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">70</span>, <span class="dv">110</span>, <span class="dt">by=</span><span class="dv">10</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">70</span>, <span class="dv">110</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">20</span>,<span class="dv">10</span>, <span class="dt">by=</span><span class="dv">10</span>), <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">20</span>,<span class="dv">10</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;retfree&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="dv">0</span>, <span class="dt">at=</span><span class="dv">28</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;vwfree&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">2</span>, <span class="dt">at=</span><span class="op">-</span><span class="dv">5</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>)</code></pre>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-70-1.png" width="672" /></p>
+</div>
+<div id="plot-of-retfree-vs.-vwfree-for-90-insurance-firms" class="section level3">
+<h3><span class="header-section-number">7.2.2</span> Plot of RETFREE vs. VWFREE for 90 insurance firms</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(retfree <span class="op">~</span><span class="st"> </span>vwfree, <span class="dt">data =</span>insbeta, <span class="dt">type=</span><span class="st">&quot;p&quot;</span>, <span class="dt">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">yaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;&quot;</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">pch=</span><span class="st">&quot;o&quot;</span>, <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">mkh=</span><span class="fl">0.0001</span>, <span class="dt">lwd=</span><span class="fl">0.5</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">70</span>, <span class="dv">110</span>, <span class="dt">by=</span><span class="dv">10</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">70</span>, <span class="dv">110</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">20</span>,<span class="dv">10</span>, <span class="dt">by=</span><span class="dv">10</span>), <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">20</span>,<span class="dv">10</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;retfree&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="dv">0</span>, <span class="dt">at=</span><span class="dv">115</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;vwfree&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">2</span>, <span class="dt">at=</span><span class="op">-</span><span class="dv">5</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;RETFREE vs. VWFREE for 90 Insurance Firms&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">4</span>, <span class="dt">at=</span><span class="op">-</span><span class="dv">5</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>)</code></pre>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-71-1.png" width="672" /></p>
+</div>
+<div id="plot-of-retfree-vs.-year-for-lincoln-insurance-company" class="section level3">
+<h3><span class="header-section-number">7.2.3</span> Plot of RETFREE vs. YEAR for Lincoln insurance company</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(retfree <span class="op">~</span><span class="st"> </span>YEAR, <span class="dt">data =</span> <span class="kw">subset</span>(insbeta, insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="dv">49015</span>), <span class="dt">type=</span><span class="st">&quot;o&quot;</span>, <span class="dt">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">yaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;&quot;</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">mkh=</span><span class="fl">0.0001</span>, <span class="dt">lwd=</span><span class="fl">0.5</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">30</span>, <span class="dv">30</span>, <span class="dt">by=</span><span class="dv">10</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">30</span>, <span class="dv">30</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">1995</span>,<span class="dv">2000</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">1995</span>,<span class="dv">2000</span>, <span class="dt">by=</span><span class="fl">0.1</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;retfree&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="dv">0</span>, <span class="dt">at=</span><span class="dv">28</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;year&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">2</span>, <span class="dt">at=</span><span class="fl">1997.50</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;Lincoln RETFREE vs. YEAR&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">5</span>, <span class="dt">at=</span><span class="fl">1997.50</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>)</code></pre>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-72-1.png" width="672" /></p>
+</div>
+<div id="table-8.2-summary-statistics-for-market-index-and-risk-free-security" class="section level3">
+<h3><span class="header-section-number">7.2.4</span> Table 8.2 Summary statistics for market index and risk-free security</h3>
+<pre class="sourceCode r"><code class="sourceCode r">LINCOLN&lt;-<span class="kw">subset</span>(insbeta, insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="dv">49015</span>)
+<span class="kw">summary</span>(LINCOLN[, <span class="kw">c</span>(<span class="st">&quot;VWRETD&quot;</span>, <span class="st">&quot;SPRTRN&quot;</span>, <span class="st">&quot;riskf&quot;</span>, <span class="st">&quot;vwfree&quot;</span>, <span class="st">&quot;spfree&quot;</span>)])</code></pre>
+<pre><code>     VWRETD             SPRTRN             riskf            vwfree        
+ Min.   :-15.6765   Min.   :-14.5797   Min.   :0.2964   Min.   :-16.0683  
+ 1st Qu.: -0.2581   1st Qu.:  0.1612   1st Qu.:0.3811   1st Qu.: -0.6755  
+ Median :  2.9464   Median :  2.6730   Median :0.4147   Median :  2.5174  
+ Mean   :  2.0914   Mean   :  2.0380   Mean   :0.4075   Mean   :  1.6839  
+ 3rd Qu.:  4.9429   3rd Qu.:  5.0748   3rd Qu.:0.4267   3rd Qu.:  4.5654  
+ Max.   :  8.3054   Max.   :  8.0294   Max.   :0.4829   Max.   :  7.8798  
+     spfree        
+ Min.   :-14.9714  
+ 1st Qu.: -0.2533  
+ Median :  2.2244  
+ Mean   :  1.6305  
+ 3rd Qu.:  4.6481  
+ Max.   :  7.7330  </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sd1&lt;-<span class="kw">sqrt</span>(<span class="kw">diag</span>(<span class="kw">var</span>(insbeta[,<span class="kw">c</span>(<span class="st">&quot;VWRETD&quot;</span>, <span class="st">&quot;SPRTRN&quot;</span>, <span class="st">&quot;riskf&quot;</span>, <span class="st">&quot;vwfree&quot;</span>, <span class="st">&quot;spfree&quot;</span>)])))
+sd1</code></pre>
+<pre><code>    VWRETD     SPRTRN      riskf     vwfree     spfree 
+4.09890088 3.98794716 0.03380599 4.09997511 3.98932881 </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(LINCOLN[,<span class="kw">c</span>(<span class="st">&quot;VWRETD&quot;</span>, <span class="st">&quot;SPRTRN&quot;</span>, <span class="st">&quot;riskf&quot;</span>, <span class="st">&quot;vwfree&quot;</span>, <span class="st">&quot;spfree&quot;</span>)])</code></pre>
+<pre><code>           VWRETD      SPRTRN       riskf      vwfree      spfree
+VWRETD  1.0000000  0.97950897 -0.02765660  0.99996603  0.97940410
+SPRTRN  0.9795090  1.00000000 -0.03663843  0.97955443  0.99996414
+riskf  -0.0276566 -0.03663843  1.00000000 -0.03589477 -0.04509984
+vwfree  0.9999660  0.97955443 -0.03589477  1.00000000  0.97951935
+spfree  0.9794041  0.99996414 -0.04509984  0.97951935  1.00000000</code></pre>
+<p>Table 8.2 summarizes the performance of the market through the return from the value-weighted index, <code>VWRETD</code>, and risk free instrument, <code>RISKFREE</code>. We also consider the difference between the two, <code>VWFREE</code>, and interpret this to be the return from the market in excess of the risk-free rate.</p>
+</div>
+<div id="table-8.3-summary-statistics-for-individual-security-returns" class="section level3">
+<h3><span class="header-section-number">7.2.5</span> TABLE 8.3 Summary statistics for individual security returns</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(insbeta[,<span class="kw">c</span>(<span class="st">&quot;RET&quot;</span>, <span class="st">&quot;retfree&quot;</span>, <span class="st">&quot;PRC&quot;</span>)]) </code></pre>
+<pre><code>      RET              retfree              PRC          
+ Min.   :-66.1972   Min.   :-66.5785   Min.   :    0.81  
+ 1st Qu.: -3.8462   1st Qu.: -4.2428   1st Qu.:   14.25  
+ Median :  0.7453   Median :  0.3402   Median :   26.88  
+ Mean   :  1.0521   Mean   :  0.6446   Mean   :  547.11  
+ 3rd Qu.:  5.8823   3rd Qu.:  5.4675   3rd Qu.:   45.89  
+ Max.   :102.5000   Max.   :102.0850   Max.   :78305.00  </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># STANDARD DEVIATION</span>
+sd1&lt;-<span class="kw">sqrt</span>(<span class="kw">diag</span>(<span class="kw">var</span>(insbeta[,<span class="kw">c</span>(<span class="st">&quot;RET&quot;</span>, <span class="st">&quot;retfree&quot;</span>, <span class="st">&quot;PRC&quot;</span>)])))
+sd1</code></pre>
+<pre><code>       RET    retfree        PRC 
+  10.03772   10.03552 5178.49653 </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(insbeta[,<span class="kw">c</span>(<span class="st">&quot;RET&quot;</span>, <span class="st">&quot;VWRETD&quot;</span>, <span class="st">&quot;SPRTRN&quot;</span>, <span class="st">&quot;riskf&quot;</span>, <span class="st">&quot;retfree&quot;</span>, <span class="st">&quot;vwfree&quot;</span>, <span class="st">&quot;spfree&quot;</span>)])</code></pre>
+<pre><code>               RET     VWRETD      SPRTRN       riskf    retfree
+RET     1.00000000  0.2937725  0.28237030  0.06693926 0.99999435
+VWRETD  0.29377254  1.0000000  0.97950897 -0.02765660 0.29393029
+SPRTRN  0.28237030  0.9795090  1.00000000 -0.03663843 0.28255580
+riskf   0.06693926 -0.0276566 -0.03663843  1.00000000 0.06358534
+retfree 0.99999435  0.2939303  0.28255580  0.06358534 1.00000000
+vwfree  0.29314362  0.9999660  0.97955443 -0.03589477 0.29332899
+spfree  0.28170525  0.9794041  0.99996414 -0.04509984 0.28191911
+             vwfree      spfree
+RET      0.29314362  0.28170525
+VWRETD   0.99996603  0.97940410
+SPRTRN   0.97955443  0.99996414
+riskf   -0.03589477 -0.04509984
+retfree  0.29332899  0.28191911
+vwfree   1.00000000  0.97951935
+spfree   0.97951935  1.00000000</code></pre>
+<p>Table 8.3 summarizes the performance of individual securities through the monthly return, <code>RET</code>. These summary statistics are based on 5,400 monthly observations taken from 90 firms. The difference between the return and the corresponding risk-free instrument is <code>RETFREE</code>.</p>
+</div>
+<div id="table-8.4-fixed-effects-models" class="section level3">
+<h3><span class="header-section-number">7.2.6</span> TABLE 8.4 Fixed effects models</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#HOMOGENEOUS MODEL</span>
+insbetahomo&lt;-<span class="kw">gls</span>(retfree<span class="op">~</span>vwfree, <span class="dt">method=</span><span class="st">&quot;REML&quot;</span>, <span class="dt">data=</span>insbeta) 
+<span class="kw">anova</span>(insbetahomo)</code></pre>
+<pre><code>Denom. DF: 5398 
+            numDF  F-value p-value
+(Intercept)     1  24.3686  &lt;.0001
+vwfree          1 508.1788  &lt;.0001</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">insbetahomo<span class="op">$</span>sigma<span class="op">^</span><span class="dv">2</span></code></pre>
+<pre><code>[1] 92.06322</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(insbetahomo)</code></pre>
+<pre><code>[1] 39757.19</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">logLik</span>(insbetahomo)<span class="op">*</span>(<span class="op">-</span><span class="dv">2</span>)</code></pre>
+<pre><code>&#39;log Lik.&#39; 39751.19 (df=3)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">insbeta<span class="op">$</span>FACPERM&lt;-<span class="kw">factor</span>(insbeta<span class="op">$</span>PERMNO)
+<span class="co">#VARIABLE INTERCEPT MODEL</span>
+insbetafx1&lt;-<span class="kw">gls</span>(retfree<span class="op">~</span>vwfree<span class="op">+</span>FACPERM, <span class="dt">method=</span><span class="st">&quot;REML&quot;</span>, <span class="dt">data=</span>insbeta)
+<span class="kw">anova</span>(insbetafx1)</code></pre>
+<pre><code>Denom. DF: 5309 
+            numDF  F-value p-value
+(Intercept)     1  24.2193  &lt;.0001
+vwfree          1 505.0665  &lt;.0001
+FACPERM        89   0.6285  0.9975</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">insbetafx1<span class="op">$</span>sigma<span class="op">^</span><span class="dv">2</span></code></pre>
+<pre><code>[1] 92.63053</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(insbetafx1)</code></pre>
+<pre><code>[1] 39672.63</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">logLik</span>(insbetafx1)<span class="op">*</span>(<span class="op">-</span><span class="dv">2</span>)</code></pre>
+<pre><code>&#39;log Lik.&#39; 39488.63 (df=92)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#VARIALBE SLOPES MODEL</span>
+insbetafx2&lt;-<span class="kw">gls</span>(retfree<span class="op">~</span>vwfree<span class="op">*</span>FACPERM<span class="op">-</span>vwfree<span class="op">-</span>FACPERM, <span class="dt">method=</span><span class="st">&quot;REML&quot;</span>, <span class="dt">data=</span>insbeta)
+<span class="kw">anova</span>(insbetafx2)</code></pre>
+<pre><code>Denom. DF: 5309 
+               numDF   F-value p-value
+(Intercept)        1 24.712995  &lt;.0001
+vwfree:FACPERM    90  7.562791  &lt;.0001</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">insbetafx2<span class="op">$</span>sigma<span class="op">^</span><span class="dv">2</span></code></pre>
+<pre><code>[1] 90.78022</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(insbetafx2)</code></pre>
+<pre><code>[1] 39830.52</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">logLik</span>(insbetafx2)<span class="op">*</span>(<span class="op">-</span><span class="dv">2</span>)</code></pre>
+<pre><code>&#39;log Lik.&#39; 39646.52 (df=92)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#VARIABLE INTERCEPTS AND SLOPES MODEL</span>
+insbetafx3&lt;-<span class="kw">gls</span>(retfree<span class="op">~</span>vwfree<span class="op">*</span>FACPERM, <span class="dt">method=</span><span class="st">&quot;REML&quot;</span>, <span class="dt">data=</span>insbeta)
+<span class="kw">anova</span>(insbetafx3)</code></pre>
+<pre><code>Denom. DF: 5220 
+               numDF  F-value p-value
+(Intercept)        1  24.6569  &lt;.0001
+vwfree             1 514.1906  &lt;.0001
+FACPERM           89   0.6399  0.9966
+vwfree:FACPERM    89   2.0776  &lt;.0001</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">insbetafx3<span class="op">$</span>sigma<span class="op">^</span><span class="dv">2</span></code></pre>
+<pre><code>[1] 90.98683</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(insbetafx3)</code></pre>
+<pre><code>[1] 39712.59</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">logLik</span>(insbetafx3)<span class="op">*</span>(<span class="op">-</span><span class="dv">2</span>)</code></pre>
+<pre><code>&#39;log Lik.&#39; 39350.59 (df=181)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#VARIABLE SLOPES MODEL WITH AR(1) TERM</span>
+insbetafx4&lt;-<span class="kw">gls</span>(retfree<span class="op">~</span>vwfree<span class="op">:</span>FACPERM, <span class="dt">data=</span>insbeta, <span class="dt">method=</span><span class="st">&quot;REML&quot;</span>, <span class="dt">correlation=</span><span class="kw">corAR1</span>(<span class="dt">form=</span><span class="op">~</span><span class="dv">1</span><span class="op">|</span>PERMNO)) <span class="co">#Model probably not working</span>
+<span class="kw">anova</span>(insbetafx4)</code></pre>
+<pre><code>Denom. DF: 5309 
+               numDF   F-value p-value
+(Intercept)        1 29.285237  &lt;.0001
+vwfree:FACPERM    90  7.941803  &lt;.0001</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">insbetafx4<span class="op">$</span>sigma<span class="op">^</span><span class="dv">2</span></code></pre>
+<pre><code>[1] 90.76872</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(insbetafx4)</code></pre>
+<pre><code>[1] 39796.92</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">logLik</span>(insbetafx4)<span class="op">*</span>(<span class="op">-</span><span class="dv">2</span>)</code></pre>
+<pre><code>&#39;log Lik.&#39; 39610.92 (df=93)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">insbetafx4<span class="op">$</span>modelStruct</code></pre>
+<pre><code>corStruct  parameters:
+[1] -0.1689266</code></pre>
+<p>Table 8.4 summarizes the fit of each model. Based on these fits, we will use the variable slopes with an <span class="math inline">\(AR(1)\)</span> error term model as the baseline for investigating time-varying coefficients.</p>
+<p>Then we can include random effects:</p>
+<pre class="sourceCode r"><code class="sourceCode r">insbetarm&lt;-<span class="kw">lme</span>(retfree<span class="op">~</span>vwfree, <span class="dt">data=</span>insbeta, <span class="dt">random=</span><span class="op">~</span>vwfree<span class="dv">-1</span><span class="op">|</span>PERMNO) <span class="co">#Random - Effects Model</span>
+
+insbetarco&lt;-<span class="kw">lme</span>(retfree<span class="op">~</span>vwfree, <span class="dt">data=</span>insbeta, <span class="dt">random=</span><span class="op">~</span><span class="dv">1</span><span class="op">+</span>vwfree<span class="op">|</span>PERMNO, <span class="dt">correlation=</span><span class="kw">corAR1</span>(<span class="dt">form=</span><span class="op">~</span><span class="dv">1</span><span class="op">|</span>PERMNO),<span class="dt">control =</span> <span class="kw">lmeControl</span>(<span class="dt">opt =</span> <span class="st">&quot;optim&quot;</span>))
+
+<span class="co">#due to convergence problem, I add the &quot;control = lmeControl(opt = &quot;optim&quot;)&quot;.</span>
+
+<span class="co">#Random - Coefficients Model</span>
+<span class="kw">summary</span>(insbetarm)</code></pre>
+<pre><code>Linear mixed-effects model fit by REML
+ Data: insbeta 
+       AIC      BIC    logLik
+  39738.53 39764.91 -19865.27
+
+Random effects:
+ Formula: ~vwfree - 1 | PERMNO
+           vwfree Residual
+StdDev: 0.2569603 9.527865
+
+Fixed effects: retfree ~ vwfree 
+                 Value  Std.Error   DF   t-value p-value
+(Intercept) -0.5644229 0.14016877 5309 -4.026737   1e-04
+vwfree       0.7179819 0.04164033 5309 17.242464   0e+00
+ Correlation: 
+       (Intr)
+vwfree -0.289
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-7.18150077 -0.49947031 -0.02643177  0.46193572 10.17362517 
+
+Number of Observations: 5400
+Number of Groups: 90 </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(insbetarco)</code></pre>
+<pre><code>Linear mixed-effects model fit by REML
+ Data: insbeta 
+      AIC      BIC   logLik
+  39697.8 39743.95 -19841.9
+
+Random effects:
+ Formula: ~1 + vwfree | PERMNO
+ Structure: General positive-definite, Log-Cholesky parametrization
+            StdDev    Corr  
+(Intercept) 0.5759112 (Intr)
+vwfree      0.3182517 -0.831
+Residual    9.5058076       
+
+Correlation Structure: AR(1)
+ Formula: ~1 | PERMNO 
+ Parameter estimate(s):
+        Phi 
+-0.08830483 
+Fixed effects: retfree ~ vwfree 
+                 Value  Std.Error   DF   t-value p-value
+(Intercept) -0.5905640 0.14322023 5309 -4.123468       0
+vwfree       0.7378101 0.04596025 5309 16.053222       0
+ Correlation: 
+       (Intr)
+vwfree -0.508
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-7.20057083 -0.49733487 -0.02677384  0.46069650 10.22355808 
+
+Number of Observations: 5400
+Number of Groups: 90 </code></pre>
+<p>Cleaning up companies with more than one Ticker names but having the same <code>PERMNO</code>:</p>
+<pre class="sourceCode r"><code class="sourceCode r">tab&lt;-<span class="kw">as.matrix</span>(<span class="kw">xtabs</span>(<span class="op">~</span>PERMNO<span class="op">+</span>TICKER, insbeta)) <span class="co">#a logical matrix cross-tabulation of PERMNO and TIcker</span>
+<span class="kw">which</span>(<span class="kw">rowSums</span>(tab<span class="op">&gt;</span><span class="dv">0</span>)<span class="op">&gt;</span><span class="dv">1</span>)</code></pre>
+<pre><code>10085 10388 10933 11203 11371 11406 11713 22198 37226 48901 52936 58393 
+    1     5    10    12    13    14    16    24    30    41    44    50 
+60687 76099 76697 77052 77815 
+   56    72    79    83    86 </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># PERMNOs that have more than one ticker</span>
+<span class="co">#10085 10388 10933 11203 11371 11406 11713 22198 37226 48901 52936 58393 60687 </span>
+<span class="co">#    1     5    10    12    13    14    16    24    30    41    44    50    56 </span>
+<span class="co">#76099 76697 77052 77815 </span>
+<span class="co">#   72    79    83    86 </span>
+<span class="co"># For each PERMNO go through the following code check on the the TICKER names and frequency</span>
+<span class="co"># which(tab[&quot;10388&quot;,]&gt;0)</span>
+<span class="co">#TREN  TWK </span>
+<span class="co">#  96   99 </span>
+<span class="co">#&gt; tab[&quot;10388&quot;, c(96,99)]</span>
+<span class="co"># TREN  TWK </span>
+<span class="co">#  57    3  # THIS SHOWS THE FREQUENCY AS WELL AS THE TICKER NAMES FOR ONE SINGLE PERMNO &quot;10388&quot;</span></code></pre>
+<p>Recode Tickers:</p>
+<pre class="sourceCode r"><code class="sourceCode r">insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;10085&quot;</span>]&lt;-<span class="st">&quot;UICI&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;10388&quot;</span>]&lt;-<span class="st">&quot;TREN&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;10933&quot;</span>]&lt;-<span class="st">&quot;MKL&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;11203&quot;</span>]&lt;-<span class="st">&quot;PXT&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;11371&quot;</span>]&lt;-<span class="st">&quot;HCCC&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;11406&quot;</span>]&lt;-<span class="st">&quot;CSH&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;11713&quot;</span>]&lt;-<span class="st">&quot;PTAC&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;22198&quot;</span>]&lt;-<span class="st">&quot;CRLC&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;37226&quot;</span>]&lt;-<span class="st">&quot;FOM&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;48901&quot;</span>]&lt;-<span class="st">&quot;MLA&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;52936&quot;</span>]&lt;-<span class="st">&quot;MCY&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;58393&quot;</span>]&lt;-<span class="st">&quot;RLR&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;60687&quot;</span>]&lt;-<span class="st">&quot;AFG&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;76099&quot;</span>]&lt;-<span class="st">&quot;DFG&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;76697&quot;</span>]&lt;-<span class="st">&quot;FHS&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;77052&quot;</span>]&lt;-<span class="st">&quot;UWZ&quot;</span>
+insbeta<span class="op">$</span>TICKER[insbeta<span class="op">$</span>PERMNO<span class="op">==</span><span class="st">&quot;77815&quot;</span>]&lt;-<span class="st">&quot;EQ&quot;</span></code></pre>
+<p>Retuen the following checking the consistency between <code>PERMNO</code> and <code>TICKER</code>:</p>
+<pre class="sourceCode r"><code class="sourceCode r">tab&lt;-<span class="kw">as.matrix</span>(<span class="kw">xtabs</span>(<span class="op">~</span>PERMNO<span class="op">+</span>TICKER, insbeta)) 
+<span class="kw">which</span>(<span class="kw">rowSums</span>(tab<span class="op">&gt;</span><span class="dv">0</span>)<span class="op">&gt;</span><span class="dv">1</span>) <span class="co">#RESULT SHOULD BE ZERO</span></code></pre>
+<pre><code>named integer(0)</code></pre>
+</div>
+<div id="figure-8.1-trellis-plot-of-returns-versus-market-return" class="section level3">
+<h3><span class="header-section-number">7.2.7</span> Figure 8.1: Trellis plot of returns versus market return</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#PRODUCE A TRELLIS PLOT TO SHOW VARYING BETAS</span>
+<span class="kw">library</span>(lattice)
+insbeta<span class="op">$</span>ID=<span class="kw">factor</span>(insbeta<span class="op">$</span>PERMNO)
+insbeta<span class="op">$</span>TK=<span class="kw">factor</span>(insbeta<span class="op">$</span>TICKER)
+sampbeta &lt;-<span class="st"> </span><span class="kw">subset</span>(insbeta, ID <span class="op">%in%</span><span class="st"> </span><span class="kw">sample</span>(<span class="kw">levels</span>(insbeta<span class="op">$</span>ID), <span class="dv">18</span>, <span class="dt">replace=</span><span class="ot">FALSE</span>) )
+
+<span class="kw">xyplot</span>(RET <span class="op">~</span><span class="st"> </span>VWRETD <span class="op">|</span><span class="st"> </span>TK, <span class="dt">data=</span>sampbeta, <span class="dt">layout=</span><span class="kw">c</span>(<span class="dv">6</span>,<span class="dv">3</span>,<span class="dv">1</span>), <span class="dt">panel =</span> <span class="cf">function</span>(x, y) {
+ <span class="kw">panel.grid</span>()
+ <span class="kw">panel.xyplot</span>(x, y)
+ <span class="kw">panel.loess</span>(x, y, <span class="dt">span =</span> <span class="fl">1.5</span>)
+ })</code></pre>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-80-1.png" width="672" /></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="modeling-issues.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="binary-dependent-variables.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["LongPanelDataScripts.pdf", "LongPanelDataScripts.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

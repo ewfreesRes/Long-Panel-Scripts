@@ -1,0 +1,127 @@
+
+
+# Binary Dependent Variables
+
+## Import Data
+
+```{r comment = ""}
+taxprep=read.table("TXTData/TaxPrep.txt", sep ="\t", quote = "",header=TRUE)
+
+#taxprep=read.table(choose.files(), header=TRUE, sep="\t")
+```
+
+ Data for this study are from the Statistics of Income (SOI) Panel of Individual Returns, a part of the Ernst and Young/University of Michigan Tax Research Database. The SOI Panel represents a simple random sample of unaudited individual income tax returns filed for tax years 1979-1990. The data are compiled from a stratified probability sample of unaudited individual income tax returns, Forms 1040, 1040A and 1040EZ, filed by U.S. taxpayers. The estimates that are obtained from these data are intended to represent all returns filed for the income tax years under review. All returns processed are subjected to sampling except tentative and amended returns.
+ 
+Variable| Description
+---- | ---------------------------------------- 
+MS | is an indicator variable of the taxpayer's marital status. It is coded one if the taxpayer is married and zero otherwise.
+HH | is an indicator variable, one if the taxpayer is a head of household and zero otherwise.
+DEPEND | is the number of dependents claimed by the taxpayer.
+AGE | is the presence of an indicator for age 65 or over.
+F1040A | is an indicator variable of the taxpayer’s filing type. It is coded one if the taxpayer uses Form 1040A and zero otherwise.
+F1040EZ | is an indicator variable of the taxpayer’s filing type. It is coded one if the taxpayer uses Form 1040EZ and zero otherwise.
+TPI | is the sum of all positive income line items on the return.
+TXRT | is a marginal tax rate. It is computed on TPI less exemptions and the standard deduction.
+MR | is an exogenous marginal tax rate. It is computed on TPI less exemptions and the standard deduction.
+EMP | is an indicator variable, one if Schedule C or F is present and zero otherwise. Self-employed taxpayers have greater need for professional assistance to reduce the reporting risks of doing business.
+PREP | is a variable indicating the presence of a paid preparer.
+TAX | is the tax liability on the return.
+SUBJECT | Subject identifier, 1-258.
+TIME | Time identifier, 1-5.
+LNTAX | is the natural logarithm of the tax liability on the return.
+LNTPI | is the natural logarithm of the sum of all positive income line items on the return.
+
+## Example: Income Tax Payments and Tax Preparers (page 326)
+
+### TABLE 9.2. Means for binary variables
+
+```{r comment = ""}
+library(Hmisc)
+summarize(taxprep$MS, taxprep$PREP, mean) 
+summarize(taxprep$HH, taxprep$PREP, mean) 
+summarize(taxprep$AGE, taxprep$PREP, mean) 
+summarize(taxprep$EMP, taxprep$PREP, mean) 
+```
+
+Table 9.2 shows that those taxpayers using a professional tax preparer (`PREP` = 1) were more likely to be married, not the head of a household, age 65 and over, and self-employed. 
+
+### TABLE 9.3. Summary stats for other variables
+
+```{r comment = ""}
+library(nlme)
+gsummary(taxprep[, c("DEPEND", "LNTPI", "MR")], groups=taxprep$PREP, FUN=mean)
+gsummary(taxprep[, c("DEPEND", "LNTPI", "MR")], groups=taxprep$PREP, FUN=min)
+gsummary(taxprep[, c("DEPEND", "LNTPI", "MR")], groups=taxprep$PREP, FUN=max)
+gsummary(taxprep[, c("DEPEND", "LNTPI", "MR")], groups=taxprep$PREP, FUN=sd)
+
+```
+
+Table 9.3 shows that those taxpayers using a professional tax preparer had more dependents, had a larger income, and were in a higher tax bracket.
+
+### TABLE 9.4. Frequency tables for some of the binary variables
+
+```{r comment = ""}
+xtabs(~taxprep$PREP+taxprep$EMP, data=taxprep)
+```
+
+Table 9.4 provides additional information about the relation between `EMP` and `PREP`.
+
+### DISPLAY 9.1 Fit the logistic distribution function using maximum likelihood
+
+```{r comment = ""}
+library(Hmisc)
+library(rms)
+# `rms` is an R package that is a replacement for the `Design` package.
+preplogit<-lrm(PREP~LNTPI+MR+EMP, data=taxprep) 
+preplogit
+```
+
+```{r comment = ""}
+# ALTERNATIVE - FIT A GENERALIZED LINEAR MODEL;
+prepglm<-glm(PREP~LNTPI+MR+EMP, binomial(link=logit), data=taxprep)
+prepglm
+```
+
+ Display 9.1 shows a fitted logistic regression model, using `LNTPI`, `MR`, and `EMP` as explanatory variables. The calculations were done using SAS PROC LOGISTIC. 
+
+## SECTION 9.2 Random effects nonlinear mixed effects model
+
+```{r comment = ""}
+library(glmmML) 
+# nlme can not be used to fit a mixed effects model with responses as binomially distributed 
+# In R nlme can be used to estimate a mechanistic model of the relationship between response and covariates
+# install library glmmML: menu - packages - install package(s) from CRAN - glmmML
+# glmmML estimates generalized linear model with random intercepts using Maximum Likelihood 
+# and numerical integration via Gauss-Hermite quadrature.
+prepglmml<-glmmML(PREP~LNTPI+MR+EMP, binomial(link=logit), data=taxprep, cluster=taxprep$SUBJECT)
+prepglmml
+```
+
+### Generalized linear mixed effects model
+
+```{r comment = ""}
+# FIT GLMM with multivariate normal random effects, using Penalized Quasi-Likelihood
+library(lme4)
+prepGLMM<-glmer(PREP~LNTPI+MR+EMP+ (1|SUBJECT), family=binomial(link=logit), data=taxprep)
+```
+
+## SECTION 9.3 Fixed effect model
+
+```{r comment = ""}
+taxprep$facsub<-factor(taxprep$SUBJECT)
+# The fixed - effects model did not converge under maximum likelihood method, because of the `facsub`
+# prepfxlogit<-lrm(PREP~LNTPI+MR+EMP+facsub,data=taxprep)
+# I assume we can use glm() to fit the model.
+prepfxlogit<-glm(PREP~LNTPI+MR+EMP+facsub,family=binomial(link=logit),data=taxprep)
+```
+
+## SECTION 9.4 Marginal model and generalized equation estimation
+
+```{r comment = ""}
+library(gee)
+prepgee1<-gee(PREP ~ LNTPI+MR+EMP, id=SUBJECT, data=taxprep, family=binomial(link=logit), corstr="exchangeable") 
+#gee Results match with SAS results
+summary(prepgee1)
+prepgee2<-gee(PREP ~ LNTPI+MR+EMP, id=SUBJECT, data=taxprep, family=binomial(link=logit), corstr="unstructured") #Results match with SAS results
+summary(prepgee2)
+```

@@ -1,0 +1,202 @@
+
+# Dynamic Models
+
+## Import Data
+
+```{r comment = ""}
+
+#insbeta=read.table(choose.files(), header=TRUE, sep="\t")
+library(nlme)
+insbeta=read.table("TXTData/insbeta.txt", sep ="\t", quote = "",header=TRUE)
+
+insbeta$YEAR=1995+(insbeta$Time-1)/12
+```
+
+ This is the data used at page 302 for 8.6 Example: Capital Asset Pricing Model. No more information could be found.
+ 
+## Example 8.6: Capital Asset Pricing Model (Page 302)
+
+The capital asset pricing model (CAPM) is a representation that is widely used in financial economics. An intuitively appealing idea, and one of the basic characteristics of the CAPM, is that there should be a relationship between the performance of a security and the performance of the market. One rationale is simply that if economic forces are such that the market improves, then those same forces should act upon an individual stock, suggesting that it also improve. We measure performance of a security through the return. To measure performance of the market, several market indices exist for each exchange. As an illustration, in the following we use the return from the "value-weighted" index of the market created by the Center for Research in Securities Prices (CRSP). The value-weighted index is defined by assuming a portfolio is created when investing an amount of money in proportion to the market value (at a certain date) of firms listed on the New York Stock Exchange, the American Stock Exchange, and the Nasdaq stock market.
+
+### Plot of RETFREE vs. VWFREE for Incoln insurance company
+
+```{r comment = ""}
+plot(retfree ~ vwfree, data = subset(insbeta, insbeta$PERMNO==49015), type="p", xaxt="n", yaxt="n", ylab="", xlab="", font=10, cex=1, pch="o", las=1, mkh=0.0001, lwd=0.5)
+axis(2, at=seq(-30, 30, by=10), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(-30, 30, by=1), lab=F, tck=0.005)
+axis(1, at=seq(-20,20, by=10), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(-20,20, by=1), lab=F, tck=0.005)
+axis(2, at=seq(-70, 110, by=10), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(-70, 110, by=1), lab=F, tck=0.005)
+axis(1, at=seq(-20,10, by=10), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(-20,10, by=1), lab=F, tck=0.005)
+mtext("retfree", side=2, line=0, at=28, font=10, cex=1, las=1)
+mtext("vwfree", side=1, line=2, at=-5, font=10, cex=1)
+```
+
+### Plot of RETFREE vs. VWFREE for 90 insurance firms
+
+```{r comment = ""}
+plot(retfree ~ vwfree, data =insbeta, type="p", xaxt="n", yaxt="n", ylab="", xlab="", font=10, cex=1, pch="o", las=1, mkh=0.0001, lwd=0.5)
+axis(2, at=seq(-70, 110, by=10), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(-70, 110, by=1), lab=F, tck=0.005)
+axis(1, at=seq(-20,10, by=10), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(-20,10, by=1), lab=F, tck=0.005)
+mtext("retfree", side=2, line=0, at=115, font=10, cex=1, las=1)
+mtext("vwfree", side=1, line=2, at=-5, font=10, cex=1)
+mtext("RETFREE vs. VWFREE for 90 Insurance Firms", side=1, line=4, at=-5, font=10, cex=1)
+```
+
+### Plot of RETFREE vs. YEAR for Lincoln insurance company
+
+```{r comment = ""}
+plot(retfree ~ YEAR, data = subset(insbeta, insbeta$PERMNO==49015), type="o", xaxt="n", yaxt="n", ylab="", xlab="", font=10, cex=1, pch=16, las=1, mkh=0.0001, lwd=0.5)
+axis(2, at=seq(-30, 30, by=10), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(-30, 30, by=1), lab=F, tck=0.005)
+axis(1, at=seq(1995,2000, by=1), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(1995,2000, by=0.1), lab=F, tck=0.005)
+mtext("retfree", side=2, line=0, at=28, font=10, cex=1, las=1)
+mtext("year", side=1, line=2, at=1997.50, font=10, cex=1)
+mtext("Lincoln RETFREE vs. YEAR", side=1, line=5, at=1997.50, font=10, cex=1)
+```
+
+### Table 8.2 Summary statistics for market index and risk-free security
+
+```{r comment = ""}
+LINCOLN<-subset(insbeta, insbeta$PERMNO==49015)
+summary(LINCOLN[, c("VWRETD", "SPRTRN", "riskf", "vwfree", "spfree")])
+sd1<-sqrt(diag(var(insbeta[,c("VWRETD", "SPRTRN", "riskf", "vwfree", "spfree")])))
+sd1
+cor(LINCOLN[,c("VWRETD", "SPRTRN", "riskf", "vwfree", "spfree")])
+```
+
+Table 8.2 summarizes the performance of the market through the return from the value-weighted index, `VWRETD`, and risk free instrument, `RISKFREE`. We also consider the difference between the two, `VWFREE`, and interpret this to be the return from the market in excess of the risk-free rate.
+
+### TABLE 8.3 Summary statistics for individual security returns 
+
+```{r comment = ""}
+summary(insbeta[,c("RET", "retfree", "PRC")]) 
+# STANDARD DEVIATION
+sd1<-sqrt(diag(var(insbeta[,c("RET", "retfree", "PRC")])))
+sd1
+cor(insbeta[,c("RET", "VWRETD", "SPRTRN", "riskf", "retfree", "vwfree", "spfree")])
+```
+
+Table 8.3 summarizes the performance of individual securities through the monthly return, `RET`. These summary statistics are based on 5,400 monthly observations taken from 90 firms. The difference between the return and the corresponding risk-free instrument is `RETFREE`.
+
+### TABLE 8.4 Fixed effects models
+
+```{r comment = ""}
+#HOMOGENEOUS MODEL
+insbetahomo<-gls(retfree~vwfree, method="REML", data=insbeta) 
+anova(insbetahomo)
+insbetahomo$sigma^2
+AIC(insbetahomo)
+logLik(insbetahomo)*(-2)
+insbeta$FACPERM<-factor(insbeta$PERMNO)
+#VARIABLE INTERCEPT MODEL
+insbetafx1<-gls(retfree~vwfree+FACPERM, method="REML", data=insbeta)
+anova(insbetafx1)
+insbetafx1$sigma^2
+AIC(insbetafx1)
+logLik(insbetafx1)*(-2)
+#VARIALBE SLOPES MODEL
+insbetafx2<-gls(retfree~vwfree*FACPERM-vwfree-FACPERM, method="REML", data=insbeta)
+anova(insbetafx2)
+insbetafx2$sigma^2
+AIC(insbetafx2)
+logLik(insbetafx2)*(-2)
+#VARIABLE INTERCEPTS AND SLOPES MODEL
+insbetafx3<-gls(retfree~vwfree*FACPERM, method="REML", data=insbeta)
+anova(insbetafx3)
+insbetafx3$sigma^2
+AIC(insbetafx3)
+logLik(insbetafx3)*(-2)
+#VARIABLE SLOPES MODEL WITH AR(1) TERM
+insbetafx4<-gls(retfree~vwfree:FACPERM, data=insbeta, method="REML", correlation=corAR1(form=~1|PERMNO)) #Model probably not working
+anova(insbetafx4)
+insbetafx4$sigma^2
+AIC(insbetafx4)
+logLik(insbetafx4)*(-2)
+insbetafx4$modelStruct
+```
+
+Table 8.4 summarizes the fit of each model. Based on these fits, we will use the variable slopes with an $AR(1)$ error term model as the baseline for investigating time-varying coefficients.
+
+Then we can include random effects:
+
+```{r comment = ""}
+insbetarm<-lme(retfree~vwfree, data=insbeta, random=~vwfree-1|PERMNO) #Random - Effects Model
+
+insbetarco<-lme(retfree~vwfree, data=insbeta, random=~1+vwfree|PERMNO, correlation=corAR1(form=~1|PERMNO),control = lmeControl(opt = "optim"))
+
+#due to convergence problem, I add the "control = lmeControl(opt = "optim")".
+
+#Random - Coefficients Model
+summary(insbetarm)
+summary(insbetarco)
+```
+
+Cleaning up companies with more than one Ticker names but having the same `PERMNO`:
+
+```{r comment = ""}
+tab<-as.matrix(xtabs(~PERMNO+TICKER, insbeta)) #a logical matrix cross-tabulation of PERMNO and TIcker
+which(rowSums(tab>0)>1)
+# PERMNOs that have more than one ticker
+#10085 10388 10933 11203 11371 11406 11713 22198 37226 48901 52936 58393 60687 
+#    1     5    10    12    13    14    16    24    30    41    44    50    56 
+#76099 76697 77052 77815 
+#   72    79    83    86 
+# For each PERMNO go through the following code check on the the TICKER names and frequency
+# which(tab["10388",]>0)
+#TREN  TWK 
+#  96   99 
+#> tab["10388", c(96,99)]
+# TREN  TWK 
+#  57    3  # THIS SHOWS THE FREQUENCY AS WELL AS THE TICKER NAMES FOR ONE SINGLE PERMNO "10388"
+```
+
+Recode Tickers:
+
+```{r comment = ""}
+insbeta$TICKER[insbeta$PERMNO=="10085"]<-"UICI"
+insbeta$TICKER[insbeta$PERMNO=="10388"]<-"TREN"
+insbeta$TICKER[insbeta$PERMNO=="10933"]<-"MKL"
+insbeta$TICKER[insbeta$PERMNO=="11203"]<-"PXT"
+insbeta$TICKER[insbeta$PERMNO=="11371"]<-"HCCC"
+insbeta$TICKER[insbeta$PERMNO=="11406"]<-"CSH"
+insbeta$TICKER[insbeta$PERMNO=="11713"]<-"PTAC"
+insbeta$TICKER[insbeta$PERMNO=="22198"]<-"CRLC"
+insbeta$TICKER[insbeta$PERMNO=="37226"]<-"FOM"
+insbeta$TICKER[insbeta$PERMNO=="48901"]<-"MLA"
+insbeta$TICKER[insbeta$PERMNO=="52936"]<-"MCY"
+insbeta$TICKER[insbeta$PERMNO=="58393"]<-"RLR"
+insbeta$TICKER[insbeta$PERMNO=="60687"]<-"AFG"
+insbeta$TICKER[insbeta$PERMNO=="76099"]<-"DFG"
+insbeta$TICKER[insbeta$PERMNO=="76697"]<-"FHS"
+insbeta$TICKER[insbeta$PERMNO=="77052"]<-"UWZ"
+insbeta$TICKER[insbeta$PERMNO=="77815"]<-"EQ"
+```
+
+Retuen the following checking the consistency between `PERMNO` and `TICKER`:
+
+```{r comment = ""}
+tab<-as.matrix(xtabs(~PERMNO+TICKER, insbeta)) 
+which(rowSums(tab>0)>1) #RESULT SHOULD BE ZERO
+```
+
+### Figure 8.1: Trellis plot of returns versus market return
+
+```{r comment = ""}
+#PRODUCE A TRELLIS PLOT TO SHOW VARYING BETAS
+library(lattice)
+insbeta$ID=factor(insbeta$PERMNO)
+insbeta$TK=factor(insbeta$TICKER)
+sampbeta <- subset(insbeta, ID %in% sample(levels(insbeta$ID), 18, replace=FALSE) )
+
+xyplot(RET ~ VWRETD | TK, data=sampbeta, layout=c(6,3,1), panel = function(x, y) {
+ panel.grid()
+ panel.xyplot(x, y)
+ panel.loess(x, y, span = 1.5)
+ })
+```

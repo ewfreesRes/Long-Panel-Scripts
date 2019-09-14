@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 10 Categorical Dependent Variables and Survival Models | R Scripts for Longitudinal and Panel Data</title>
+  <meta name="description" content="R scripts" />
+  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 10 Categorical Dependent Variables and Survival Models | R Scripts for Longitudinal and Panel Data" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R scripts" />
+  <meta name="github-repo" content="https://github.com/openacttexts/Loss-Data-Analytics" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 10 Categorical Dependent Variables and Survival Models | R Scripts for Longitudinal and Panel Data" />
+  
+  <meta name="twitter:description" content="R scripts" />
+  
+
+<meta name="author" content="Yumo Dong, Edward Frees, and others??" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="generalized-linear-models.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#import-data"><i class="fa fa-check"></i><b>1.1</b> Import Data</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#example-1.1-divorce-rates-page-2"><i class="fa fa-check"></i><b>1.2</b> Example 1.1: Divorce Rates (page 2)</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="introduction.html"><a href="introduction.html#figure-1.1-plot-of-1965-divorce-rates-versus-afdc-payments."><i class="fa fa-check"></i><b>1.2.1</b> Figure 1.1: Plot of 1965 divorce rates versus AFDC payments.</a></li>
+<li class="chapter" data-level="1.2.2" data-path="introduction.html"><a href="introduction.html#figure-1.2-plot-of-divorce-rate-versus-afdc-payments-from-1965-and-1975."><i class="fa fa-check"></i><b>1.2.2</b> Figure 1.2: Plot of divorce rate versus AFDC payments from 1965 and 1975.</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html"><i class="fa fa-check"></i><b>2</b> Fixed-Effects Models</a><ul>
+<li class="chapter" data-level="2.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#import-data-1"><i class="fa fa-check"></i><b>2.1</b> Import Data</a></li>
+<li class="chapter" data-level="2.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#example-2.2-medicare-hospital-costs-page-26"><i class="fa fa-check"></i><b>2.2</b> Example 2.2: Medicare Hospital Costs (Page 26)</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.1-ccpd-vs-year-multiple-time-series-plot"><i class="fa fa-check"></i><b>2.2.1</b> FIGURE 2.1: CCPD vs YEAR; multiple time series plot</a></li>
+<li class="chapter" data-level="2.2.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.2-ccpd-vs-num.dchg"><i class="fa fa-check"></i><b>2.2.2</b> FIGURE 2.2: CCPD vs NUM.DCHG</a></li>
+<li class="chapter" data-level="2.2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.3-ccpd-vs-ave.days"><i class="fa fa-check"></i><b>2.2.3</b> Figure 2.3: CCPD vs AVE.DAYS</a></li>
+<li class="chapter" data-level="2.2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.4-added-variable-plot-of-ccpd-versus-year"><i class="fa fa-check"></i><b>2.2.4</b> Figure 2.4: Added-variable plot of CCPD versus year</a></li>
+<li class="chapter" data-level="2.2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.5-trellis-plot"><i class="fa fa-check"></i><b>2.2.5</b> Figure 2.5: Trellis Plot</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-fixed-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.3</b> One way fixed effects model using lm, for linear model</a></li>
+<li class="chapter" data-level="2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.1---analysis-for-the-pooling-test"><i class="fa fa-check"></i><b>2.4</b> SECTION 2.4.1 - Analysis for the pooling test;</a></li>
+<li class="chapter" data-level="2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.2---correlation-corresponding-to-the-added-variable-plot"><i class="fa fa-check"></i><b>2.5</b> SECTION 2.4.2 - Correlation corresponding to the added variable plot;</a></li>
+<li class="chapter" data-level="2.6" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.5---testing-for-heteroscedasticity"><i class="fa fa-check"></i><b>2.6</b> SECTION 2.4.5 - Testing for heteroscedasticity;</a><ul>
+<li class="chapter" data-level="2.6.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-random-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.6.1</b> One way random effects model using lm, for linear model;</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html"><i class="fa fa-check"></i><b>3</b> Models with Random Effects</a><ul>
+<li class="chapter" data-level="3.1" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#import-data-2"><i class="fa fa-check"></i><b>3.1</b> Import Data</a></li>
+<li class="chapter" data-level="3.2" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#example-3.2-income-tax-payments-page-81"><i class="fa fa-check"></i><b>3.2</b> Example 3.2: Income Tax Payments (Page 81)</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.2.-averages-of-binary-variables"><i class="fa fa-check"></i><b>3.2.1</b> Table 3.2. Averages of binary variables</a></li>
+<li class="chapter" data-level="3.2.2" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.3---summary-statistics-for-continuous-variables"><i class="fa fa-check"></i><b>3.2.2</b> TABLE 3.3 - Summary statistics for continuous variables</a></li>
+<li class="chapter" data-level="3.2.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.4---averages-by-level-of-binary-explanatory-variable"><i class="fa fa-check"></i><b>3.2.3</b> TABLE 3.4 - Averages by level of binary explanatory variable</a></li>
+<li class="chapter" data-level="3.2.4" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.5---correlation-for-continous-variables"><i class="fa fa-check"></i><b>3.2.4</b> TABLE 3.5 - Correlation for continous variables</a></li>
+<li class="chapter" data-level="3.2.5" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#figure-3.2-basic-added-variable-plot-y-vs.-x"><i class="fa fa-check"></i><b>3.2.5</b> FIGURE 3.2: Basic added variable plot (y vs. x)</a></li>
+<li class="chapter" data-level="3.2.6" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#display-3.1---error-components-model"><i class="fa fa-check"></i><b>3.2.6</b> DISPLAY 3.1 - Error components model</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#section-3.3---random-coefficients-model"><i class="fa fa-check"></i><b>3.3</b> SECTION 3.3 - Random coefficients model</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html"><i class="fa fa-check"></i><b>4</b> Prediction and Bayesian Inference</a><ul>
+<li class="chapter" data-level="4.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#import-data-3"><i class="fa fa-check"></i><b>4.1</b> Import Data</a></li>
+<li class="chapter" data-level="4.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#example-forecasting-wisconsin-lottery-sales-page-138"><i class="fa fa-check"></i><b>4.2</b> Example: Forecasting Wisconsin Lottery Sales (Page 138)</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#table-4.2-time---invariant-summary-statistics"><i class="fa fa-check"></i><b>4.2.1</b> TABLE 4.2: Time - invariant summary statistics</a></li>
+<li class="chapter" data-level="4.2.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.2-look-at-the-relationship"><i class="fa fa-check"></i><b>4.2.2</b> FIGURE 4.2: Look at the relationship</a></li>
+<li class="chapter" data-level="4.2.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#sorting-the-data-by-zip-then-combine-vectors-into-another-data.frame"><i class="fa fa-check"></i><b>4.2.3</b> Sorting the data by zip then combine vectors into another data.frame</a></li>
+<li class="chapter" data-level="4.2.4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.3-lottery-vs.-week-number"><i class="fa fa-check"></i><b>4.2.4</b> FIGURE 4.3: Lottery vs. week number</a></li>
+<li class="chapter" data-level="4.2.5" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#figure-4.4-log-lottery-vs-week-number"><i class="fa fa-check"></i><b>4.2.5</b> FIGURE 4.4: Log lottery vs week number</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#create-model-development-sample"><i class="fa fa-check"></i><b>4.3</b> Create model development sample</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-1.-pooled-cross-setional-model"><i class="fa fa-check"></i><b>4.3.1</b> MODEL 1. Pooled cross-setional model</a></li>
+<li class="chapter" data-level="4.3.2" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-2.-error-components-model"><i class="fa fa-check"></i><b>4.3.2</b> MODEL 2. Error components model</a></li>
+<li class="chapter" data-level="4.3.3" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-3.-error-components-model-with-autocorrelated-errors"><i class="fa fa-check"></i><b>4.3.3</b> MODEL 3. Error components model with autocorrelated errors</a></li>
+<li class="chapter" data-level="4.3.4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-4.-more-parsimonious-random-effects-model"><i class="fa fa-check"></i><b>4.3.4</b> MODEL 4. More parsimonious random effects model</a></li>
+<li class="chapter" data-level="4.3.5" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#model-5.-fixed-effects-model-with-autocorrelated-errors"><i class="fa fa-check"></i><b>4.3.5</b> MODEL 5. Fixed effects model with autocorrelated errors</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="multilevel-models.html"><a href="multilevel-models.html"><i class="fa fa-check"></i><b>5</b> Multilevel Models</a><ul>
+<li class="chapter" data-level="5.1" data-path="multilevel-models.html"><a href="multilevel-models.html#import-data-4"><i class="fa fa-check"></i><b>5.1</b> Import Data</a></li>
+<li class="chapter" data-level="5.2" data-path="multilevel-models.html"><a href="multilevel-models.html#example-5.2-dental-data-page-175"><i class="fa fa-check"></i><b>5.2</b> Example 5.2: Dental Data (Page 175)</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="multilevel-models.html"><a href="multilevel-models.html#figure-5.1.-multiple-time-series-plot"><i class="fa fa-check"></i><b>5.2.1</b> Figure 5.1. Multiple time series plot</a></li>
+<li class="chapter" data-level="5.2.2" data-path="multilevel-models.html"><a href="multilevel-models.html#summary-statistics"><i class="fa fa-check"></i><b>5.2.2</b> Summary statistics</a></li>
+<li class="chapter" data-level="5.2.3" data-path="multilevel-models.html"><a href="multilevel-models.html#trellis-plot-unique-in-r"><i class="fa fa-check"></i><b>5.2.3</b> Trellis plot, unique in r</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-dental-data-growth-curve-model-parameter-estimates"><i class="fa fa-check"></i><b>5.3</b> TABLE 5.2: Dental data growth-curve-model parameter estimates</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-error-components-model"><i class="fa fa-check"></i><b>5.3.1</b> TABLE 5.2: Error components model</a></li>
+<li class="chapter" data-level="5.3.2" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-growth-curve-model"><i class="fa fa-check"></i><b>5.3.2</b> TABLE 5.2: Growth curve model</a></li>
+<li class="chapter" data-level="5.3.3" data-path="multilevel-models.html"><a href="multilevel-models.html#table-5.2-growth-curve-model---omitting-9th-boy"><i class="fa fa-check"></i><b>5.3.3</b> TABLE 5.2: Growth curve model - omitting 9th boy</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="modeling-issues.html"><a href="modeling-issues.html"><i class="fa fa-check"></i><b>6</b> Modeling Issues</a><ul>
+<li class="chapter" data-level="6.1" data-path="modeling-issues.html"><a href="modeling-issues.html#import-data-5"><i class="fa fa-check"></i><b>6.1</b> Import Data</a></li>
+<li class="chapter" data-level="6.2" data-path="modeling-issues.html"><a href="modeling-issues.html#example-7.2-income-tax-payments-page-248"><i class="fa fa-check"></i><b>6.2</b> Example 7.2: Income Tax Payments (Page 248)</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.1-fixed-effects-estimators"><i class="fa fa-check"></i><b>6.2.1</b> TABLE 7.1: Fixed effects estimators</a></li>
+<li class="chapter" data-level="6.2.2" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.1-random-effects-estimator"><i class="fa fa-check"></i><b>6.2.2</b> TABLE 7.1: Random effects estimator</a></li>
+<li class="chapter" data-level="6.2.3" data-path="modeling-issues.html"><a href="modeling-issues.html#hausmans-test"><i class="fa fa-check"></i><b>6.2.3</b> Hausman’s test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="modeling-issues.html"><a href="modeling-issues.html#example-7.2-income-tax-payments-continued-page-255"><i class="fa fa-check"></i><b>6.3</b> Example 7.2: Income Tax Payments (continued) (Page 255)</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.2-fixed-effects-estimators-with-two-variable-slopes"><i class="fa fa-check"></i><b>6.3.1</b> Table 7.2: Fixed effects estimators with two variable slopes</a></li>
+<li class="chapter" data-level="6.3.2" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.2-variable-slopes-model"><i class="fa fa-check"></i><b>6.3.2</b> Table 7.2: Variable slopes model</a></li>
+<li class="chapter" data-level="6.3.3" data-path="modeling-issues.html"><a href="modeling-issues.html#hausmans-test-1"><i class="fa fa-check"></i><b>6.3.3</b> Hausman’s test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="modeling-issues.html"><a href="modeling-issues.html#table-7.3-augmented-regressions"><i class="fa fa-check"></i><b>6.4</b> TABLE 7.3 Augmented regressions</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="modeling-issues.html"><a href="modeling-issues.html#create-panel-data-set-with-subject-averages"><i class="fa fa-check"></i><b>6.4.1</b> Create panel data set with subject averages</a></li>
+<li class="chapter" data-level="6.4.2" data-path="modeling-issues.html"><a href="modeling-issues.html#models-with-averages-as-omitted-variables"><i class="fa fa-check"></i><b>6.4.2</b> Models with averages as omitted variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="dynamic-models.html"><a href="dynamic-models.html"><i class="fa fa-check"></i><b>7</b> Dynamic Models</a><ul>
+<li class="chapter" data-level="7.1" data-path="dynamic-models.html"><a href="dynamic-models.html#import-data-6"><i class="fa fa-check"></i><b>7.1</b> Import Data</a></li>
+<li class="chapter" data-level="7.2" data-path="dynamic-models.html"><a href="dynamic-models.html#example-8.6-capital-asset-pricing-model-page-302"><i class="fa fa-check"></i><b>7.2</b> Example 8.6: Capital Asset Pricing Model (Page 302)</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-vwfree-for-incoln-insurance-company"><i class="fa fa-check"></i><b>7.2.1</b> Plot of RETFREE vs. VWFREE for Incoln insurance company</a></li>
+<li class="chapter" data-level="7.2.2" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-vwfree-for-90-insurance-firms"><i class="fa fa-check"></i><b>7.2.2</b> Plot of RETFREE vs. VWFREE for 90 insurance firms</a></li>
+<li class="chapter" data-level="7.2.3" data-path="dynamic-models.html"><a href="dynamic-models.html#plot-of-retfree-vs.-year-for-lincoln-insurance-company"><i class="fa fa-check"></i><b>7.2.3</b> Plot of RETFREE vs. YEAR for Lincoln insurance company</a></li>
+<li class="chapter" data-level="7.2.4" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.2-summary-statistics-for-market-index-and-risk-free-security"><i class="fa fa-check"></i><b>7.2.4</b> Table 8.2 Summary statistics for market index and risk-free security</a></li>
+<li class="chapter" data-level="7.2.5" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.3-summary-statistics-for-individual-security-returns"><i class="fa fa-check"></i><b>7.2.5</b> TABLE 8.3 Summary statistics for individual security returns</a></li>
+<li class="chapter" data-level="7.2.6" data-path="dynamic-models.html"><a href="dynamic-models.html#table-8.4-fixed-effects-models"><i class="fa fa-check"></i><b>7.2.6</b> TABLE 8.4 Fixed effects models</a></li>
+<li class="chapter" data-level="7.2.7" data-path="dynamic-models.html"><a href="dynamic-models.html#figure-8.1-trellis-plot-of-returns-versus-market-return"><i class="fa fa-check"></i><b>7.2.7</b> Figure 8.1: Trellis plot of returns versus market return</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html"><i class="fa fa-check"></i><b>8</b> Binary Dependent Variables</a><ul>
+<li class="chapter" data-level="8.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#import-data-7"><i class="fa fa-check"></i><b>8.1</b> Import Data</a></li>
+<li class="chapter" data-level="8.2" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#example-income-tax-payments-and-tax-preparers-page-326"><i class="fa fa-check"></i><b>8.2</b> Example: Income Tax Payments and Tax Preparers (page 326)</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.2.-means-for-binary-variables"><i class="fa fa-check"></i><b>8.2.1</b> TABLE 9.2. Means for binary variables</a></li>
+<li class="chapter" data-level="8.2.2" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.3.-summary-stats-for-other-variables"><i class="fa fa-check"></i><b>8.2.2</b> TABLE 9.3. Summary stats for other variables</a></li>
+<li class="chapter" data-level="8.2.3" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#table-9.4.-frequency-tables-for-some-of-the-binary-variables"><i class="fa fa-check"></i><b>8.2.3</b> TABLE 9.4. Frequency tables for some of the binary variables</a></li>
+<li class="chapter" data-level="8.2.4" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#display-9.1-fit-the-logistic-distribution-function-using-maximum-likelihood"><i class="fa fa-check"></i><b>8.2.4</b> DISPLAY 9.1 Fit the logistic distribution function using maximum likelihood</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.2-random-effects-nonlinear-mixed-effects-model"><i class="fa fa-check"></i><b>8.3</b> SECTION 9.2 Random effects nonlinear mixed effects model</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#generalized-linear-mixed-effects-model"><i class="fa fa-check"></i><b>8.3.1</b> Generalized linear mixed effects model</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.3-fixed-effect-model"><i class="fa fa-check"></i><b>8.4</b> SECTION 9.3 Fixed effect model</a></li>
+<li class="chapter" data-level="8.5" data-path="binary-dependent-variables.html"><a href="binary-dependent-variables.html#section-9.4-marginal-model-and-generalized-equation-estimation"><i class="fa fa-check"></i><b>8.5</b> SECTION 9.4 Marginal model and generalized equation estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>9</b> Generalized Linear Models</a><ul>
+<li class="chapter" data-level="9.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#import-data-8"><i class="fa fa-check"></i><b>9.1</b> Import Data</a></li>
+<li class="chapter" data-level="9.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-tort-filings-page-356"><i class="fa fa-check"></i><b>9.2</b> Example: Tort Filings (Page 356)</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.3-averages-with-explanatory-binary-variables"><i class="fa fa-check"></i><b>9.2.1</b> TABLE 10.3 Averages with explanatory binary variables</a></li>
+<li class="chapter" data-level="9.2.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.4-summary-statistics-for-other-variables"><i class="fa fa-check"></i><b>9.2.2</b> TABLE 10.4 Summary statistics for other variables</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#section-10.2-homogeneous-model"><i class="fa fa-check"></i><b>9.3</b> Section 10.2 Homogeneous model</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#table-10.5-tort-filings-model-coefficient-estimates"><i class="fa fa-check"></i><b>9.3.1</b> TABLE 10.5 Tort filings model coefficient estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#section-10.3-marginal-models"><i class="fa fa-check"></i><b>9.4</b> Section 10.3 Marginal Models</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#with-in-state-correlation-independent"><i class="fa fa-check"></i><b>9.4.1</b> With in state correlation independent</a></li>
+<li class="chapter" data-level="9.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#random-effects-model"><i class="fa fa-check"></i><b>9.4.2</b> Random effects model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html"><i class="fa fa-check"></i><b>10</b> Categorical Dependent Variables and Survival Models</a><ul>
+<li class="chapter" data-level="10.1" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#import-data-9"><i class="fa fa-check"></i><b>10.1</b> Import Data</a></li>
+<li class="chapter" data-level="10.2" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#chap11yogurt2013.r"><i class="fa fa-check"></i><b>10.2</b> Chap11Yogurt2013.R</a></li>
+<li class="chapter" data-level="10.3" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#table-11.2-number-of-choices"><i class="fa fa-check"></i><b>10.3</b> Table 11.2 Number of Choices</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#table-11.2-basic-summary-statistics-for-prices"><i class="fa fa-check"></i><b>10.3.1</b> Table 11.2 Basic summary statistics for prices</a></li>
+<li class="chapter" data-level="10.3.2" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#vissualize-the-data"><i class="fa fa-check"></i><b>10.3.2</b> vissualize the data</a></li>
+<li class="chapter" data-level="10.3.3" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#note-the-small-relationships-among-prices"><i class="fa fa-check"></i><b>10.3.3</b> Note the small relationships among prices</a></li>
+<li class="chapter" data-level="10.3.4" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#more-on-prices"><i class="fa fa-check"></i><b>10.3.4</b> More on prices</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#fitting-fixed-effects-multinomial-logit-model-by-the-poisson-log-linear-model"><i class="fa fa-check"></i><b>10.4</b> Fitting fixed effects multinomial logit model by the poisson log-linear model</a></li>
+<li class="chapter" data-level="10.5" data-path="categorical-dependent-variables-and-survival-models.html"><a href="categorical-dependent-variables-and-survival-models.html#fitting-multinomial-logit-model-with-random-intercepts-by-the-possion-log-linear-with-random-intercepts"><i class="fa fa-check"></i><b>10.5</b> Fitting multinomial logit model with random intercepts by the possion-log-linear with random intercepts</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Scripts for Longitudinal and Panel Data</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="categorical-dependent-variables-and-survival-models" class="section level1">
+<h1><span class="header-section-number">Chapter 10</span> Categorical Dependent Variables and Survival Models</h1>
+<div id="import-data-9" class="section level2">
+<h2><span class="header-section-number">10.1</span> Import Data</h2>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#yogurtbasic&lt;-read.table(choose.files(), header=TRUE, sep=&quot;\t&quot;) </span>
+
+<span class="co">#library(Ecdat)# You need to install package &#39;Ecdat&#39; for the data &#39;Yogurt&#39;.</span>
+<span class="co">#data(Yogurt) #the data used in this Chapter.</span>
+<span class="co">#yogurtdata&lt;-Yogurt</span>
+<span class="co">#now we need to modify the dataset</span>
+<span class="kw">colnames</span>(yogurtdata) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;id&quot;</span>,<span class="st">&quot;fy&quot;</span>,<span class="st">&quot;fd&quot;</span>,<span class="st">&quot;fh&quot;</span>,<span class="st">&quot;fw&quot;</span>,<span class="st">&quot;py&quot;</span>,<span class="st">&quot;pd&quot;</span>,<span class="st">&quot;ph&quot;</span>,<span class="st">&quot;pw&quot;</span>,<span class="st">&quot;choice&quot;</span>)
+
+yogurtdata<span class="op">$</span>yoplait&lt;-(yogurtdata<span class="op">$</span>choice<span class="op">==</span><span class="st">&quot;yoplait&quot;</span>)
+yogurtdata<span class="op">$</span>dannon&lt;-(yogurtdata<span class="op">$</span>choice<span class="op">==</span><span class="st">&quot;dannon&quot;</span>)
+yogurtdata<span class="op">$</span>hiland&lt;-(yogurtdata<span class="op">$</span>choice<span class="op">==</span><span class="st">&quot;hiland&quot;</span>)
+yogurtdata<span class="op">$</span>weight&lt;-(yogurtdata<span class="op">$</span>choice<span class="op">==</span><span class="st">&quot;weight&quot;</span>)</code></pre>
+<!-- ## Table 11.2 Number of Choices -->
+</div>
+<div id="chap11yogurt2013.r" class="section level2">
+<h2><span class="header-section-number">10.2</span> Chap11Yogurt2013.R</h2>
+<pre class="sourceCode r"><code class="sourceCode r">yogurtdata&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;TXTData/yogurt.dat&quot;</span>, <span class="dt">header=</span>F, <span class="dt">sep=</span><span class="st">&quot; &quot;</span>) 
+<span class="kw">colnames</span>(yogurtdata) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;id&quot;</span>,<span class="st">&quot;yoplait&quot;</span>,<span class="st">&quot;dannon&quot;</span>,<span class="st">&quot;weight&quot;</span>,<span class="st">&quot;hiland&quot;</span>,<span class="st">&quot;fy&quot;</span>,<span class="st">&quot;fd&quot;</span>,<span class="st">&quot;fw&quot;</span>,<span class="st">&quot;fh&quot;</span>,<span class="st">&quot;py&quot;</span>,<span class="st">&quot;pd&quot;</span>,<span class="st">&quot;pw&quot;</span>,<span class="st">&quot;ph&quot;</span>)</code></pre>
+</div>
+<div id="table-11.2-number-of-choices" class="section level2">
+<h2><span class="header-section-number">10.3</span> Table 11.2 Number of Choices</h2>
+<pre class="sourceCode r"><code class="sourceCode r">yogurtdata<span class="op">$</span>occasion&lt;-<span class="kw">seq</span>(yogurtdata<span class="op">$</span>id)
+
+yogurtdata<span class="op">$</span>TYPE&lt;-<span class="dv">1</span><span class="op">*</span>yogurtdata<span class="op">$</span>yoplait<span class="op">+</span><span class="dv">2</span><span class="op">*</span>yogurtdata<span class="op">$</span>dannon<span class="op">+</span><span class="dv">3</span><span class="op">*</span>yogurtdata<span class="op">$</span>weight<span class="op">+</span><span class="dv">4</span><span class="op">*</span>yogurtdata<span class="op">$</span>hiland 
+
+yogurtdata<span class="op">$</span>PRICE&lt;-yogurtdata<span class="op">$</span>py<span class="op">*</span>yogurtdata<span class="op">$</span>yoplait <span class="op">+</span><span class="st"> </span>yogurtdata<span class="op">$</span>pd<span class="op">*</span>yogurtdata<span class="op">$</span>dannon <span class="op">+</span><span class="st"> </span>yogurtdata<span class="op">$</span>pw<span class="op">*</span>yogurtdata<span class="op">$</span>weight <span class="op">+</span><span class="st"> </span>yogurtdata<span class="op">$</span>ph<span class="op">*</span>yogurtdata<span class="op">$</span>hiland
+
+yogurtdata<span class="op">$</span>FEATURE&lt;-yogurtdata<span class="op">$</span>fy<span class="op">*</span>yogurtdata<span class="op">$</span>yoplait <span class="op">+</span><span class="st"> </span>yogurtdata<span class="op">$</span>fd<span class="op">*</span>yogurtdata<span class="op">$</span>dannon <span class="op">+</span><span class="st"> </span>yogurtdata<span class="op">$</span>fw<span class="op">*</span>yogurtdata<span class="op">$</span>weight <span class="op">+</span><span class="st"> </span>yogurtdata<span class="op">$</span>fh<span class="op">*</span>yogurtdata<span class="op">$</span>hiland
+
+<span class="kw">table</span>(yogurtdata<span class="op">$</span>TYPE) </code></pre>
+<pre><code>
+  1   2   3   4 
+818 970 553  71 </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(yogurtdata[, <span class="kw">c</span>(<span class="st">&quot;fy&quot;</span>, <span class="st">&quot;fd&quot;</span>, <span class="st">&quot;fw&quot;</span>, <span class="st">&quot;fh&quot;</span>)])[<span class="dv">4</span>,]</code></pre>
+<pre><code>                 fy                  fd                  fw 
+&quot;Mean   :0.05597  &quot; &quot;Mean   :0.03773  &quot; &quot;Mean   :0.03773  &quot; 
+                 fh 
+ &quot;Mean   :0.0369  &quot; </code></pre>
+<p>Table 11.2 shows that Yoplait was the most frequently selected (33.9%) type ofyogurt in our sample whereas Hiland was the least frequently selected (2.9%). Yoplait was also the most heavily advertised, appearing in newspaper advertisements 5.6% of the time that the brand was chosen.</p>
+<div id="table-11.2-basic-summary-statistics-for-prices" class="section level3">
+<h3><span class="header-section-number">10.3.1</span> Table 11.2 Basic summary statistics for prices</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t</span>(<span class="kw">summary</span>(yogurtdata[, <span class="kw">c</span>(<span class="st">&quot;py&quot;</span>, <span class="st">&quot;pd&quot;</span>, <span class="st">&quot;pw&quot;</span>, <span class="st">&quot;ph&quot;</span>)])) </code></pre>
+<pre><code>                                                              
+      py Min.   :0.0030    1st Qu.:0.1030    Median :0.1080   
+      pd Min.   :0.01900   1st Qu.:0.08100   Median :0.08600  
+      pw Min.   :0.00400   1st Qu.:0.07900   Median :0.07900  
+      ph Min.   :0.02500   1st Qu.:0.05000   Median :0.05400  
+                                                              
+      py Mean   :0.1068    3rd Qu.:0.1150    Max.   :0.1930   
+      pd Mean   :0.08163   3rd Qu.:0.08600   Max.   :0.11100  
+      pw Mean   :0.07949   3rd Qu.:0.08600   Max.   :0.10400  
+      ph Mean   :0.05363   3rd Qu.:0.06100   Max.   :0.08600  </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sd</span>(<span class="kw">as.matrix</span>(yogurtdata[, <span class="kw">c</span>(<span class="st">&quot;py&quot;</span>)]))</code></pre>
+<pre><code>[1] 0.01906265</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sd</span>(<span class="kw">as.matrix</span>(yogurtdata[, <span class="kw">c</span>(<span class="st">&quot;pd&quot;</span>)]))</code></pre>
+<pre><code>[1] 0.01062886</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sd</span>(<span class="kw">as.matrix</span>(yogurtdata[, <span class="kw">c</span>(<span class="st">&quot;pw&quot;</span>)]))</code></pre>
+<pre><code>[1] 0.007735004</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sd</span>(<span class="kw">as.matrix</span>(yogurtdata[, <span class="kw">c</span>(<span class="st">&quot;ph&quot;</span>)]))</code></pre>
+<pre><code>[1] 0.00805391</code></pre>
+<p>Table 11.3 shows that Yoplait was also the most expensive, costing 10.7 cents per ounce, on average. Table 11.3 also shows that there are several prices that were far below the average, suggesting some potential influential observations.</p>
+</div>
+<div id="vissualize-the-data" class="section level3">
+<h3><span class="header-section-number">10.3.2</span> vissualize the data</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">boxplot</span>(PRICE<span class="op">~</span>TYPE, <span class="dt">range=</span><span class="dv">0</span>, <span class="dt">data=</span>yogurtdata, <span class="dt">boxwex=</span><span class="fl">0.5</span>, <span class="dt">border=</span><span class="st">&quot;red&quot;</span>, <span class="dt">yaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;&quot;</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="fl">0.125</span>, <span class="dt">by=</span><span class="fl">0.025</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">4</span>, <span class="dt">by=</span><span class="dv">1</span>), <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;Price&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">adj=</span><span class="op">-</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">5</span>, <span class="dt">at=</span><span class="fl">0.135</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">las=</span><span class="dv">1</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;Type&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">adj=</span><span class="dv">0</span>, <span class="dt">line=</span><span class="dv">3</span>, <span class="dt">at=</span><span class="fl">2.3</span>, <span class="dt">font=</span><span class="dv">10</span>)
+<span class="kw">box</span>()</code></pre>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-102-1.png" width="672" /></p>
+</div>
+<div id="note-the-small-relationships-among-prices" class="section level3">
+<h3><span class="header-section-number">10.3.3</span> Note the small relationships among prices</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(yogurtdata[, <span class="kw">c</span>(<span class="st">&quot;py&quot;</span>, <span class="st">&quot;pd&quot;</span>, <span class="st">&quot;pw&quot;</span>, <span class="st">&quot;ph&quot;</span>)])</code></pre>
+<pre><code>            py          pd         pw          ph
+py  1.00000000  0.03201738  0.1538099 -0.01844819
+pd  0.03201738  1.00000000  0.2428201 -0.04349290
+pw  0.15380986  0.24282008  1.0000000 -0.02755800
+ph -0.01844819 -0.04349290 -0.0275580  1.00000000</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pw<span class="op">~</span>pd, <span class="dt">data=</span>yogurtdata, <span class="dt">yaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;&quot;</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="fl">0.00</span>, <span class="fl">0.20</span>, <span class="dt">by=</span><span class="fl">0.01</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="fl">0.00</span>, <span class="fl">0.20</span>, <span class="dt">by=</span><span class="fl">0.002</span>),<span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.12</span>, <span class="dt">by=</span><span class="fl">0.01</span>), <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>)
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.12</span>, <span class="dt">by=</span><span class="fl">0.002</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;pw&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="dv">1</span>, <span class="dt">at=</span><span class="fl">0.11</span>, <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>)
+<span class="kw">mtext</span>(<span class="st">&quot;pd&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">3</span>, <span class="dt">at=</span><span class="fl">0.062</span>, <span class="dt">font=</span><span class="dv">10</span>)</code></pre>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-103-1.png" width="672" /></p>
+</div>
+<div id="more-on-prices" class="section level3">
+<h3><span class="header-section-number">10.3.4</span> More on prices</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(yogurtdata<span class="op">$</span>PRICE)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.00300 0.07900 0.08300 0.08495 0.10300 0.12500 </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">range</span>(yogurtdata<span class="op">$</span>PRICE)</code></pre>
+<pre><code>[1] 0.003 0.125</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">which</span>(yogurtdata<span class="op">$</span>PRICE <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(yogurtdata<span class="op">$</span>PRICE))</code></pre>
+<pre><code>[1] 1210 1215 1930 1931 2381</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">which</span>(yogurtdata<span class="op">$</span>PRICE <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(yogurtdata<span class="op">$</span>PRICE))</code></pre>
+<pre><code>[1]   71  952  961 1212 1213 1214 1929 2199</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(nnet)
+test &lt;-<span class="st"> </span><span class="kw">multinom</span>(TYPE <span class="op">~</span><span class="st"> </span>FEATURE<span class="op">+</span>PRICE, <span class="dt">data =</span> yogurtdata)</code></pre>
+<pre><code># weights:  16 (9 variable)
+initial  value 3343.741999 
+iter  10 value 2587.908201
+iter  20 value 2364.679552
+iter  30 value 2360.691887
+final  value 2360.191855 
+converged</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(test)</code></pre>
+<pre><code>Call:
+multinom(formula = TYPE ~ FEATURE + PRICE, data = yogurtdata)
+
+Coefficients:
+  (Intercept)    FEATURE      PRICE
+2    7.458657 -1.8039258  -80.44352
+3    6.883787 -1.7072398  -80.32860
+4    8.529886 -0.9595805 -139.53475
+
+Std. Errors:
+  (Intercept)   FEATURE    PRICE
+2   0.3509758 0.2400558 3.836776
+3   0.3756930 0.2673651 4.169266
+4   0.4773418 0.3787246 6.632942
+
+Residual Deviance: 4720.384 
+AIC: 4738.384 </code></pre>
+</div>
+</div>
+<div id="fitting-fixed-effects-multinomial-logit-model-by-the-poisson-log-linear-model" class="section level2">
+<h2><span class="header-section-number">10.4</span> Fitting fixed effects multinomial logit model by the poisson log-linear model</h2>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># RESHAPE yogurtdata FROM WIDE FORMAT INTO LONG FORMAT</span>
+yogurt&lt;-<span class="kw">reshape</span>(yogurtdata, <span class="dt">varying=</span><span class="kw">list</span>(<span class="kw">c</span>(<span class="st">&quot;yoplait&quot;</span>,<span class="st">&quot;dannon&quot;</span>,<span class="st">&quot;weight&quot;</span>,<span class="st">&quot;hiland&quot;</span>)), <span class="dt">v.names=</span>
+<span class="st">&quot;choice&quot;</span>, <span class="dt">idvar=</span><span class="st">&quot;occasion&quot;</span>,<span class="dt">timevar=</span><span class="st">&quot;brand&quot;</span>, <span class="dt">direction=</span><span class="st">&quot;long&quot;</span>) 
+yogurt&lt;-yogurt[<span class="kw">order</span>(yogurt<span class="op">$</span>occasion),]
+yogurt[<span class="dv">1</span><span class="op">:</span><span class="dv">8</span>,]</code></pre>
+<pre><code>    id fy fd fw fh    py    pd    pw    ph occasion TYPE PRICE FEATURE
+1.1  1  0  0  0  0 0.108 0.081 0.079 0.061        1    3 0.079       0
+1.2  1  0  0  0  0 0.108 0.081 0.079 0.061        1    3 0.079       0
+1.3  1  0  0  0  0 0.108 0.081 0.079 0.061        1    3 0.079       0
+1.4  1  0  0  0  0 0.108 0.081 0.079 0.061        1    3 0.079       0
+2.1  1  0  0  0  0 0.108 0.098 0.075 0.064        2    2 0.098       0
+2.2  1  0  0  0  0 0.108 0.098 0.075 0.064        2    2 0.098       0
+2.3  1  0  0  0  0 0.108 0.098 0.075 0.064        2    2 0.098       0
+2.4  1  0  0  0  0 0.108 0.098 0.075 0.064        2    2 0.098       0
+    brand choice
+1.1     1      0
+1.2     2      0
+1.3     3      1
+1.4     4      0
+2.1     1      0
+2.2     2      1
+2.3     3      0
+2.4     4      0</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">yogurt<span class="op">$</span>brand&lt;-<span class="kw">factor</span>(yogurt<span class="op">$</span>brand)
+yogurt<span class="op">$</span>occasion&lt;-<span class="kw">factor</span>(yogurt<span class="op">$</span>occasion)
+<span class="co"># yogurtloglinear&lt;-glm(choice~brand+occasion+FEATURE+PRICE-1, data=yogurt, family=# poisson(link=&quot;log&quot;))</span>
+<span class="co"># THE ABOVE GLM INCLUDES THE FIXED EFFECTS OF THE 2412 OCCASIONS, WHICH ARE</span>
+<span class="co"># NUISANCE PARAMETERS, THE ESTIMATES ARE NOT OBTAINED SIMPLY BECAUSE THE </span>
+<span class="co"># LARGE NUMBER. </span>
+<span class="co"># GLM USE ITERATIVELY REWEIGHTED LEAST SQUARES TO ESTIMATE, COMPARED WITH </span>
+<span class="co"># GENMOD IN SAS # USING MAXIMUMLIKELIHOOD.</span>
+<span class="co"># DROP occasion THE GLM IS ESTIMATABLE</span>
+model1 &lt;-<span class="st"> </span><span class="kw">glm</span>(choice<span class="op">~</span>brand<span class="op">+</span>FEATURE<span class="op">+</span>PRICE<span class="dv">-1</span>, <span class="dt">data=</span>yogurt, <span class="dt">family=</span><span class="kw">poisson</span>(<span class="dt">link=</span><span class="st">&quot;log&quot;</span>))
+<span class="kw">summary</span>(model1)</code></pre>
+<pre><code>
+Call:
+glm(formula = choice ~ brand + FEATURE + PRICE - 1, family = poisson(link = &quot;log&quot;), 
+    data = yogurt)
+
+Deviance Residuals: 
+     Min        1Q    Median        3Q       Max  
+-0.89683  -0.82357  -0.67716   0.01585   2.26052  
+
+Coefficients:
+          Estimate Std. Error z value Pr(&gt;|z|)    
+brand1  -1.081e+00  9.183e-02  -11.78   &lt;2e-16 ***
+brand2  -9.109e-01  9.079e-02  -10.03   &lt;2e-16 ***
+brand3  -1.473e+00  9.497e-02  -15.51   &lt;2e-16 ***
+brand4  -3.526e+00  1.459e-01  -24.16   &lt;2e-16 ***
+FEATURE  3.206e-16  8.028e-02    0.00        1    
+PRICE   -1.375e-13  9.840e-01    0.00        1    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 14472.0  on 9648  degrees of freedom
+Residual deviance:  5665.9  on 9642  degrees of freedom
+AIC: 10502
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+<div id="fitting-multinomial-logit-model-with-random-intercepts-by-the-possion-log-linear-with-random-intercepts" class="section level2">
+<h2><span class="header-section-number">10.5</span> Fitting multinomial logit model with random intercepts by the possion-log-linear with random intercepts</h2>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(MASS)
+<span class="co"># glmmPQL(choice~feature+price+occasion, data=yogurt, family=poisson(link=&quot;log&quot;), random=~1|brand)</span>
+<span class="co"># THE ABOVE HAS SIMILAR PROBLEM WHEN INCLUDING occasion AS FIXED EFFECTS</span>
+<span class="co"># OTHERWISE IT IS ESTIMATABLE IN R; HOWEVER THE RESULT IS QUITE DIFFERENT FROM # THAT OF SAS</span>
+<span class="kw">glmmPQL</span>(choice<span class="op">~</span>FEATURE<span class="op">+</span>PRICE, <span class="dt">data=</span>yogurt, <span class="dt">family=</span><span class="kw">poisson</span>(<span class="dt">link=</span><span class="st">&quot;log&quot;</span>), <span class="dt">random=</span><span class="op">~</span><span class="dv">1</span><span class="op">|</span>brand)</code></pre>
+<pre><code>iteration 1</code></pre>
+<pre><code>iteration 2</code></pre>
+<pre><code>iteration 3</code></pre>
+<pre><code>iteration 4</code></pre>
+<pre><code>iteration 5</code></pre>
+<pre><code>iteration 6</code></pre>
+<pre><code>Linear mixed-effects model fit by maximum likelihood
+  Data: yogurt 
+  Log-likelihood: NA
+  Fixed: choice ~ FEATURE + PRICE 
+  (Intercept)       FEATURE         PRICE 
+-1.743787e+00  2.005532e-14  2.982266e-13 
+
+Random effects:
+ Formula: ~1 | brand
+        (Intercept)  Residual
+StdDev:    1.040625 0.8639861
+
+Variance function:
+ Structure: fixed weights
+ Formula: ~invwt 
+Number of Observations: 9648
+Number of Groups: 4 </code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="generalized-linear-models.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["LongPanelDataScripts.pdf", "LongPanelDataScripts.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

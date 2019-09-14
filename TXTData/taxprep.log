@@ -1,0 +1,534 @@
+--------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  R:\Faculty\jfrees\Book2\Data\TXTData\taxprep.log
+  log type:  text
+ opened on:  29 Sep 2009, 13:21:43
+
+. 
+. 
+end of do-file
+
+. do "C:\DOCUME~1\jfrees\LOCALS~1\Temp\7\STD01000000.tmp"
+
+. insheet using taxprep.txt
+(16 vars, 1290 obs)
+
+. rename ms MS
+
+. rename hh HH
+
+. rename age AGE
+
+. rename emp EMP
+
+. rename prep PREP
+
+. rename depend DEPEND
+
+. rename lntpi LNTPI
+
+. rename mr MR
+
+. rename lntax LNTAX
+
+. generate year=time+1981
+
+. 
+end of do-file
+
+. do "C:\DOCUME~1\jfrees\LOCALS~1\Temp\7\STD01000000.tmp"
+
+. 
+. /*SECTION 3.2 SUMMARY STATISTICS*/
+. /*TABLE 3.2 AVERAGE OF BINARY VARIABLES*/
+. tabstat MS HH AGE EMP PREP, by(year) statistics(mean)nototal
+
+Summary statistics: mean
+  by categories of: year 
+
+    year |        MS        HH       AGE       EMP      PREP
+---------+--------------------------------------------------
+    1982 |  .5968992  .0813953  .0852713  .1395349  .4496124
+    1983 |  .5968992  .0930233  .1046512  .1589147  .4418605
+    1984 |   .624031  .0852713  .1124031  .1550388  .4844961
+    1985 |  .6472868  .0813953  .1317829  .1472868  .5077519
+    1986 |  .6472868  .0930233  .1472868  .1472868  .5155039
+------------------------------------------------------------
+
+. 
+. 
+end of do-file
+
+. do "C:\DOCUME~1\jfrees\LOCALS~1\Temp\7\STD01000000.tmp"
+
+. 
+. /*FREQUENCY FOR BINARY VARIABLES*/
+. sort time
+
+. by time, sort: tab1 MS HH AGE EMP PREP 
+
+--------------------------------------------------------------------------------
+-> time = 1
+
+-> tabulation of MS  
+
+         MS |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        104       40.31       40.31
+          1 |        154       59.69      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of HH  
+
+         HH |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        237       91.86       91.86
+          1 |         21        8.14      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of AGE  
+
+        AGE |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        236       91.47       91.47
+          1 |         22        8.53      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of EMP  
+
+        EMP |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        222       86.05       86.05
+          1 |         36       13.95      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of PREP  
+
+       PREP |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        142       55.04       55.04
+          1 |        116       44.96      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+--------------------------------------------------------------------------------
+-> time = 2
+
+-> tabulation of MS  
+
+         MS |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        104       40.31       40.31
+          1 |        154       59.69      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of HH  
+
+         HH |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        234       90.70       90.70
+          1 |         24        9.30      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of AGE  
+
+        AGE |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        231       89.53       89.53
+          1 |         27       10.47      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of EMP  
+
+        EMP |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        217       84.11       84.11
+          1 |         41       15.89      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of PREP  
+
+       PREP |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        144       55.81       55.81
+          1 |        114       44.19      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+--------------------------------------------------------------------------------
+-> time = 3
+
+-> tabulation of MS  
+
+         MS |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |         97       37.60       37.60
+          1 |        161       62.40      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of HH  
+
+         HH |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        236       91.47       91.47
+          1 |         22        8.53      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of AGE  
+
+        AGE |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        229       88.76       88.76
+          1 |         29       11.24      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of EMP  
+
+        EMP |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        218       84.50       84.50
+          1 |         40       15.50      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of PREP  
+
+       PREP |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        133       51.55       51.55
+          1 |        125       48.45      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+--------------------------------------------------------------------------------
+-> time = 4
+
+-> tabulation of MS  
+
+         MS |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |         91       35.27       35.27
+          1 |        167       64.73      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of HH  
+
+         HH |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        237       91.86       91.86
+          1 |         21        8.14      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of AGE  
+
+        AGE |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        224       86.82       86.82
+          1 |         34       13.18      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of EMP  
+
+        EMP |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        220       85.27       85.27
+          1 |         38       14.73      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of PREP  
+
+       PREP |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        127       49.22       49.22
+          1 |        131       50.78      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+--------------------------------------------------------------------------------
+-> time = 5
+
+-> tabulation of MS  
+
+         MS |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |         91       35.27       35.27
+          1 |        167       64.73      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of HH  
+
+         HH |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        234       90.70       90.70
+          1 |         24        9.30      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of AGE  
+
+        AGE |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        220       85.27       85.27
+          1 |         38       14.73      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of EMP  
+
+        EMP |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        220       85.27       85.27
+          1 |         38       14.73      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+-> tabulation of PREP  
+
+       PREP |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        125       48.45       48.45
+          1 |        133       51.55      100.00
+------------+-----------------------------------
+      Total |        258      100.00
+
+. 
+end of do-file
+
+. do "C:\DOCUME~1\jfrees\LOCALS~1\Temp\7\STD01000000.tmp"
+
+. /*FIGURE 3.1: BASIC ADDED VARIABLE PLOT (y VS x)*/
+. 
+. tempfile taxpreptemp
+
+. set matsize 260 /*the defaul number of variables included is 40, this command 
+> will increase the allowable number of variables to 260*/
+
+Current memory allocation
+
+                    current                                 memory usage
+    settable          value     description                 (1M = 1024k)
+    --------------------------------------------------------------------
+    set maxvar         5000     max. variables allowed           1.947M
+    set memory           32M    max. data space                 32.000M
+    set matsize         260     max. RHS vars in models          0.538M
+                                                            -----------
+                                                                34.485M
+
+. quietly xi: glm LNTAX i.subject /*no display of GLM results*/
+
+. predict double rLNTAX, deviance /*produce residuals from GLS of LNTAX*/
+
+. 
+. quietly xi: glm LNTPI i.subject /*no display of GLM results*/
+
+. predict double rLNTPI, deviance /*produce residuals from GLS of LNTPI*/
+
+. save `taxpreptemp'
+file C:\DOCUME~1\jfrees\LOCALS~1\Temp\7\ST_01000006.tmp saved
+
+. 
+. use `taxpreptemp'
+
+. 
+. scatter rLNTAX rLNTPI, name(Figure_3_1, replace) msymbol(oh) mlcolor(black) cl
+> color(black) xlabel(-8(2)4, labsize(small)) ylabel(-8(2)8, angle(horizontal) n
+> ogrid labsize(small)) graphregion(fcolor(white) lcolor(black) ifcolor(white) i
+> lcolor(white)) ytitle("Residuals" "from" "LNTAX", size(small) placement(north)
+>  orientation(horizontal) margin(small)) xtitle("Residuals from LNTPI", size(sm
+> all) margin(small)) b1(Figure 3.2 Added Variable Plot of LNTAX versus LNTPI, s
+> ize(small)) 
+
+. 
+. 
+end of do-file
+
+. do "C:\DOCUME~1\jfrees\LOCALS~1\Temp\7\STD01000000.tmp"
+
+. 
+. /*Display 3.1 ERROR COMPONENTS MODEL*/
+. xtreg LNTAX MS HH AGE EMP PREP LNTPI DEPEND MR, mle i(subject)/*using maximum 
+> likelihood estimator to estimate beta coefficients*/ 
+
+Fitting constant-only model:
+Iteration 0:   log likelihood = -3076.9889
+Iteration 1:   log likelihood =   -2891.74
+Iteration 2:   log likelihood = -2835.9262
+Iteration 3:   log likelihood = -2824.6371
+Iteration 4:   log likelihood =  -2823.606
+Iteration 5:   log likelihood = -2823.5905
+Iteration 6:   log likelihood = -2823.5905
+
+Fitting full model:
+Iteration 0:   log likelihood = -2396.7133
+Iteration 1:   log likelihood = -2395.6286
+Iteration 2:   log likelihood = -2395.6273
+
+Random-effects ML regression                    Number of obs      =      1290
+Group variable: subject                         Number of groups   =       258
+
+Random effects u_i ~ Gaussian                   Obs per group: min =         5
+                                                               avg =       5.0
+                                                               max =         5
+
+                                                LR chi2(8)         =    855.93
+Log likelihood  = -2395.6273                    Prob > chi2        =    0.0000
+
+------------------------------------------------------------------------------
+       LNTAX |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+          MS |   .0373001   .1818459     0.21   0.837    -.3191113    .3937114
+          HH |  -.6889876   .2311944    -2.98   0.003     -1.14212    -.235855
+         AGE |   .0207431   .1993041     0.10   0.917    -.3698857    .4113718
+         EMP |  -.5048036   .1677742    -3.01   0.003    -.8336351   -.1759721
+        PREP |  -.0217036   .1171199    -0.19   0.853    -.2512543    .2078471
+       LNTPI |   .7604058   .0698381    10.89   0.000     .6235258    .8972859
+      DEPEND |  -.1127475   .0591127    -1.91   0.056    -.2286063    .0031113
+          MR |   .1153752   .0073035    15.80   0.000     .1010607    .1296898
+       _cons |  -2.960337   .5689989    -5.20   0.000    -4.075555    -1.84512
+-------------+----------------------------------------------------------------
+    /sigma_u |   .9602154   .0603772                      .8488796    1.086154
+    /sigma_e |   1.368897   .0301652                      1.311032    1.429315
+         rho |   .3297745   .0307739                      .2718819    .3920651
+------------------------------------------------------------------------------
+Likelihood-ratio test of sigma_u=0: chibar2(01)=  193.43 Prob>=chibar2 = 0.000
+
+. 
+. 
+end of do-file
+
+. do "C:\DOCUME~1\jfrees\LOCALS~1\Temp\7\STD01000000.tmp"
+
+. /****SECTION 3.3 - RANDOM COEFFICIENTS MODEL, NOT ESTIMATABLE IN STATA*****/
+. xtrchh LNTAX MS HH AGE EMP PREP LNTPI DEPEND MR,  i(subject) t(time)
+Note: 1290 obs. dropped (panels too small)
+invalid syntax
+r(198);
+
+end of do-file
+
+r(198);
+
+. xtline LNTAX, recast(line)
+--Break--
+r(1);
+
+. xtline LNTAX
+--Break--
+r(1);
+
+. . xtset SUBJECT TIME
+variable SUBJECT not found
+r(111);
+
+. . xtset subject time
+       panel variable:  subject (strongly balanced)
+        time variable:  time, 1 to 5
+                delta:  1 unit
+
+. xtline LNTPI
+
+. clear
+
+. do "C:\DOCUME~1\jfrees\LOCALS~1\Temp\7\STD01000000.tmp"
+
+. insheet using taxprep.txt
+(16 vars, 1290 obs)
+
+. 
+end of do-file
+
+. do "C:\DOCUME~1\jfrees\LOCALS~1\Temp\7\STD01000000.tmp"
+
+. rename ms MS
+
+. rename hh HH
+
+. rename age AGE
+
+. rename emp EMP
+
+. rename prep PREP
+
+. rename depend DEPEND
+
+. rename lntpi LNTPI
+
+. rename mr MR
+
+. rename lntax LNTAX
+
+. generate year=time+1981
+
+. 
+end of do-file
+
+. do "C:\DOCUME~1\jfrees\LOCALS~1\Temp\7\STD01000000.tmp"
+
+. /*Display 3.1 ERROR COMPONENTS MODEL*/
+. xtreg LNTAX MS HH AGE EMP PREP LNTPI DEPEND MR, mle i(subject)/*using maximum 
+> likelihood estimator to estimate beta coefficients*/ 
+
+Fitting constant-only model:
+Iteration 0:   log likelihood = -3076.9889
+Iteration 1:   log likelihood =   -2891.74
+Iteration 2:   log likelihood = -2835.9262
+Iteration 3:   log likelihood = -2824.6371
+Iteration 4:   log likelihood =  -2823.606
+Iteration 5:   log likelihood = -2823.5905
+Iteration 6:   log likelihood = -2823.5905
+
+Fitting full model:
+Iteration 0:   log likelihood = -2396.7133
+Iteration 1:   log likelihood = -2395.6286
+Iteration 2:   log likelihood = -2395.6273
+
+Random-effects ML regression                    Number of obs      =      1290
+Group variable: subject                         Number of groups   =       258
+
+Random effects u_i ~ Gaussian                   Obs per group: min =         5
+                                                               avg =       5.0
+                                                               max =         5
+
+                                                LR chi2(8)         =    855.93
+Log likelihood  = -2395.6273                    Prob > chi2        =    0.0000
+
+------------------------------------------------------------------------------
+       LNTAX |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+          MS |   .0373001   .1818459     0.21   0.837    -.3191113    .3937114
+          HH |  -.6889876   .2311944    -2.98   0.003     -1.14212    -.235855
+         AGE |   .0207431   .1993041     0.10   0.917    -.3698857    .4113718
+         EMP |  -.5048036   .1677742    -3.01   0.003    -.8336351   -.1759721
+        PREP |  -.0217036   .1171199    -0.19   0.853    -.2512543    .2078471
+       LNTPI |   .7604058   .0698381    10.89   0.000     .6235258    .8972859
+      DEPEND |  -.1127475   .0591127    -1.91   0.056    -.2286063    .0031113
+          MR |   .1153752   .0073035    15.80   0.000     .1010607    .1296898
+       _cons |  -2.960337   .5689989    -5.20   0.000    -4.075555    -1.84512
+-------------+----------------------------------------------------------------
+    /sigma_u |   .9602154   .0603772                      .8488796    1.086154
+    /sigma_e |   1.368897   .0301652                      1.311032    1.429315
+         rho |   .3297745   .0307739                      .2718819    .3920651
+------------------------------------------------------------------------------
+Likelihood-ratio test of sigma_u=0: chibar2(01)=  193.43 Prob>=chibar2 = 0.000
+
+. 
+. 
+end of do-file
+
+. exit, clear

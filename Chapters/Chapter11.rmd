@@ -1,0 +1,133 @@
+
+# Categorical Dependent Variables and Survival Models
+
+## Import Data
+
+```{r comment = "", eval = FALSE}
+#yogurtbasic<-read.table(choose.files(), header=TRUE, sep="\t") 
+
+#library(Ecdat)# You need to install package 'Ecdat' for the data 'Yogurt'.
+#data(Yogurt) #the data used in this Chapter.
+#yogurtdata<-Yogurt
+#now we need to modify the dataset
+colnames(yogurtdata) = c("id","fy","fd","fh","fw","py","pd","ph","pw","choice")
+
+yogurtdata$yoplait<-(yogurtdata$choice=="yoplait")
+yogurtdata$dannon<-(yogurtdata$choice=="dannon")
+yogurtdata$hiland<-(yogurtdata$choice=="hiland")
+yogurtdata$weight<-(yogurtdata$choice=="weight")
+
+```
+
+<!-- ## Table 11.2 Number of Choices -->
+
+
+## Chap11Yogurt2013.R
+
+```{r comment = ""}
+yogurtdata<-read.csv("TXTData/yogurt.dat", header=F, sep=" ") 
+colnames(yogurtdata) = c("id","yoplait","dannon","weight","hiland","fy","fd","fw","fh","py","pd","pw","ph")
+```
+
+##  Table 11.2 Number of Choices
+
+```{r comment = ""}
+yogurtdata$occasion<-seq(yogurtdata$id)
+
+yogurtdata$TYPE<-1*yogurtdata$yoplait+2*yogurtdata$dannon+3*yogurtdata$weight+4*yogurtdata$hiland 
+
+yogurtdata$PRICE<-yogurtdata$py*yogurtdata$yoplait + yogurtdata$pd*yogurtdata$dannon + yogurtdata$pw*yogurtdata$weight + yogurtdata$ph*yogurtdata$hiland
+
+yogurtdata$FEATURE<-yogurtdata$fy*yogurtdata$yoplait + yogurtdata$fd*yogurtdata$dannon + yogurtdata$fw*yogurtdata$weight + yogurtdata$fh*yogurtdata$hiland
+
+table(yogurtdata$TYPE) 
+summary(yogurtdata[, c("fy", "fd", "fw", "fh")])[4,]
+
+```
+
+ Table 11.2 shows that Yoplait was the most frequently selected (33.9%) type ofyogurt in our sample whereas Hiland was the least frequently selected (2.9%). Yoplait was also the most heavily advertised, appearing in newspaper advertisements 5.6% of the time that the brand was chosen. 
+ 
+### Table 11.2 Basic summary statistics for prices
+
+```{r comment = ""}
+
+t(summary(yogurtdata[, c("py", "pd", "pw", "ph")])) 
+sd(as.matrix(yogurtdata[, c("py")]))
+sd(as.matrix(yogurtdata[, c("pd")]))
+sd(as.matrix(yogurtdata[, c("pw")]))
+sd(as.matrix(yogurtdata[, c("ph")]))
+```
+
+Table 11.3 shows that Yoplait was also the most expensive, costing 10.7 cents per ounce, on average. Table 11.3 also shows that there are several prices that were far below the average, suggesting some potential influential observations.
+
+### vissualize the data
+
+```{r comment = ""}
+boxplot(PRICE~TYPE, range=0, data=yogurtdata, boxwex=0.5, border="red", yaxt="n", xaxt="n", ylab="")
+axis(2, at=seq(0,0.125, by=0.025), las=1, font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(1,4, by=1), font=10, cex=0.005, tck=0.01)
+mtext("Price", side=2, adj=-1, line=5, at=0.135, font=10, las=1)
+mtext("Type", side=1, adj=0, line=3, at=2.3, font=10)
+box()
+```
+
+### Note the small relationships among prices
+
+```{r comment = ""}
+cor(yogurtdata[, c("py", "pd", "pw", "ph")])
+plot(pw~pd, data=yogurtdata, yaxt="n", xaxt="n", ylab="", xlab="")
+axis(2, at=seq(0.00, 0.20, by=0.01), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(0.00, 0.20, by=0.002),lab=F, tck=0.005)
+axis(1, at=seq(0.01, 0.12, by=0.01), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(0.01, 0.12, by=0.002), lab=F, tck=0.005)
+mtext("pw", side=2, line=1, at=0.11, las=1, font=10)
+mtext("pd", side=1, line=3, at=0.062, font=10)
+```
+
+### More on prices
+
+```{r comment = ""}
+summary(yogurtdata$PRICE)
+range(yogurtdata$PRICE)
+which(yogurtdata$PRICE == min(yogurtdata$PRICE))
+which(yogurtdata$PRICE == max(yogurtdata$PRICE))
+
+
+library(nnet)
+test <- multinom(TYPE ~ FEATURE+PRICE, data = yogurtdata)
+summary(test)
+```
+
+
+## Fitting fixed effects multinomial logit model by the poisson log-linear model 
+
+```{r comment = ""}
+# RESHAPE yogurtdata FROM WIDE FORMAT INTO LONG FORMAT
+yogurt<-reshape(yogurtdata, varying=list(c("yoplait","dannon","weight","hiland")), v.names=
+"choice", idvar="occasion",timevar="brand", direction="long") 
+yogurt<-yogurt[order(yogurt$occasion),]
+yogurt[1:8,]
+yogurt$brand<-factor(yogurt$brand)
+yogurt$occasion<-factor(yogurt$occasion)
+# yogurtloglinear<-glm(choice~brand+occasion+FEATURE+PRICE-1, data=yogurt, family=# poisson(link="log"))
+# THE ABOVE GLM INCLUDES THE FIXED EFFECTS OF THE 2412 OCCASIONS, WHICH ARE
+# NUISANCE PARAMETERS, THE ESTIMATES ARE NOT OBTAINED SIMPLY BECAUSE THE 
+# LARGE NUMBER. 
+# GLM USE ITERATIVELY REWEIGHTED LEAST SQUARES TO ESTIMATE, COMPARED WITH 
+# GENMOD IN SAS # USING MAXIMUMLIKELIHOOD.
+# DROP occasion THE GLM IS ESTIMATABLE
+model1 <- glm(choice~brand+FEATURE+PRICE-1, data=yogurt, family=poisson(link="log"))
+summary(model1)
+
+```
+
+## Fitting multinomial logit model with random intercepts by the possion-log-linear with random intercepts
+
+```{r comment = ""}
+library(MASS)
+# glmmPQL(choice~feature+price+occasion, data=yogurt, family=poisson(link="log"), random=~1|brand)
+# THE ABOVE HAS SIMILAR PROBLEM WHEN INCLUDING occasion AS FIXED EFFECTS
+# OTHERWISE IT IS ESTIMATABLE IN R; HOWEVER THE RESULT IS QUITE DIFFERENT FROM # THAT OF SAS
+glmmPQL(choice~FEATURE+PRICE, data=yogurt, family=poisson(link="log"), random=~1|brand)
+```
+
