@@ -48,6 +48,148 @@
 
 
 
+<!-- Mathjax -->
+<script type='text/x-mathjax-config'>
+		MathJax.Hub.Config({
+			extensions: ['tex2jax.js'],
+			jax: ['input/TeX', 'output/HTML-CSS'],
+			tex2jax: {
+				inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+				displayMath: [ ['$$','$$'], ['\\[','\\]'] ],
+				processEscapes: true
+			},
+			'HTML-CSS': { availableFonts: ['TeX'] }
+		});
+</script>
+
+<!-- The following code is for the quizzes -->
+<script src="https://surveyjs.azureedge.net/1.0.50/survey.jquery.js"></script>
+<link href="https://surveyjs.azureedge.net/1.0.50/survey.css" type="text/css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.6.4/showdown.min.js"></script>  
+
+<script>
+function markdownConverterEWF() {  
+//Create showdown markdown converter
+var converter = new showdown.Converter();
+converter.setOption('ghCompatibleHeaderId', true);
+survey
+    .onTextMarkdown
+    .add(function (survey, options) {
+        //convert the mardown text to html
+        var str = converter.makeHtml(options.text);
+        //remove root paragraphs <p></p>
+        str = str.substring(3);
+        str = str.substring(0, str.length - 4);
+        //set html
+        options.html = str;
+         MathJax.Hub.Queue(['Typeset',MathJax.Hub, 'options']);
+    });  
+};
+// Quiz Header info
+const jsonHeader = { 
+    showProgressBar: "bottom",
+    showTimerPanel: "none",
+    maxTimeToFinishPage: 10000,
+    maxTimeToFinish: 25000,
+    firstPageIsStarted: true,
+    startSurveyText: "Start Quiz" //,
+//    title: "Does This Make Sense?"
+}
+
+// Three, four, and five question quizzes
+function jsonSummary3EWF(json) {  
+let jsonEnd3 = { 
+completedHtml: 
+json["pages"][1]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][1]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][1]["questions"][0]["correctAnswer"]
++"<br>"+
+json["pages"][2]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][2]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][2]["questions"][0]["correctAnswer"]
++"<br>"+
+json["pages"][3]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][3]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][3]["questions"][0]["correctAnswer"]
+};  
+return jsonEnd3;
+};
+
+function jsonSummary4EWF(json) {  
+jsonEnd4 = jsonSummary3EWF(json);
+jsonEnd4.completedHtml = jsonEnd4.completedHtml +  
+"<br>"+
+json["pages"][4]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][4]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][4]["questions"][0]["correctAnswer"]
+;  
+return jsonEnd4;
+};
+
+function jsonSummary5EWF(json) {  
+jsonEnd5 = jsonSummary4EWF(json);
+jsonEnd5.completedHtml = jsonEnd5.completedHtml +  
+"<br>"+
+json["pages"][5]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][5]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][5]["questions"][0]["correctAnswer"]
+;  
+return jsonEnd5;
+};
+</script>  
+<!-- This completes the code for the quizzes -->
+
+
+<!-- Various toggle functions used throughout --> 
+<script language="javascript">
+function toggle(id1,id2) {
+	var ele = document.getElementById(id1); var text = document.getElementById(id2);
+	if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show Solution";}
+		else {ele.style.display = "block"; text.innerHTML = "Hide Solution";}}
+function togglecode(id1,id2) {
+   var ele = document.getElementById(id1); var text = document.getElementById(id2);
+   if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show R Code";}
+      else {ele.style.display = "block"; text.innerHTML = "Hide R Code";}}
+function toggleEX(id1,id2) {
+   var ele = document.getElementById(id1); var text = document.getElementById(id2);
+   if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show Example";}
+      else {ele.style.display = "block"; text.innerHTML = "Hide Example";}}
+function toggleTheory(id1,id2) {
+   var ele = document.getElementById(id1); var text = document.getElementById(id2);
+   if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show Theory";}
+      else {ele.style.display = "block"; text.innerHTML = "Hide Theory";}}
+function toggleQuiz(id1,id2) {
+   var ele = document.getElementById(id1); var text = document.getElementById(id2);
+   if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show Quiz Solution";}
+      else {ele.style.display = "block"; text.innerHTML = "Hide Quiz Solution";}}      
+</script>
+
+<!-- A few functions for revealing definitions -->
+<script language="javascript">
+<!--   $( function() {
+    $("#tabs").tabs();
+  } ); -->
+
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover(); 
+});
+</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125587869-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125587869-1');
+</script>
+
+
 <style type="text/css">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
@@ -112,6 +254,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -124,6 +267,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
+<li><a href="./">R Scripts for Longitudinal and Panel Data</a></li>
+
+<li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
 <li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
 <li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#import-data"><i class="fa fa-check"></i><b>1.1</b> Import Data</a></li>
@@ -142,10 +288,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.5-trellis-plot"><i class="fa fa-check"></i><b>2.2.5</b> Figure 2.5: Trellis Plot</a></li>
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-fixed-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.3</b> One way fixed effects model using lm, for linear model</a></li>
-<li class="chapter" data-level="2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.1---analysis-for-the-pooling-test"><i class="fa fa-check"></i><b>2.4</b> SECTION 2.4.1 - Analysis for the pooling test;</a></li>
-<li class="chapter" data-level="2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.2---correlation-corresponding-to-the-added-variable-plot"><i class="fa fa-check"></i><b>2.5</b> SECTION 2.4.2 - Correlation corresponding to the added variable plot;</a></li>
-<li class="chapter" data-level="2.6" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.5---testing-for-heteroscedasticity"><i class="fa fa-check"></i><b>2.6</b> SECTION 2.4.5 - Testing for heteroscedasticity;</a><ul>
+<li class="chapter" data-level="2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.1---analysis-for-the-pooling-test"><i class="fa fa-check"></i><b>2.4</b> Section 2.4.1 - Analysis for the pooling test;</a></li>
+<li class="chapter" data-level="2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.2---correlation-corresponding-to-the-added-variable-plot"><i class="fa fa-check"></i><b>2.5</b> Section 2.4.2 - Correlation corresponding to the added variable plot;</a></li>
+<li class="chapter" data-level="2.6" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.5---testing-for-heteroscedasticity"><i class="fa fa-check"></i><b>2.6</b> Section 2.4.5 - Testing for heteroscedasticity;</a><ul>
 <li class="chapter" data-level="2.6.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-random-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.6.1</b> One way random effects model using lm, for linear model;</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#more-fun"><i class="fa fa-check"></i><b>2.7</b> More Fun</a></li>
+<li class="chapter" data-level="2.8" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#plm-panel-linear-model-package"><i class="fa fa-check"></i><b>2.8</b> PLM (Panel Linear Model) package</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#pooling-test"><i class="fa fa-check"></i><b>2.8.1</b> Pooling Test</a></li>
+<li class="chapter" data-level="2.8.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#two-way-model"><i class="fa fa-check"></i><b>2.8.2</b> Two-way Model</a></li>
+<li class="chapter" data-level="2.8.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#three-different-ways-to-doing-the-same-thing"><i class="fa fa-check"></i><b>2.8.3</b> Three different ways to doing the same thing</a></li>
+<li class="chapter" data-level="2.8.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#different-r-squared---go-figure"><i class="fa fa-check"></i><b>2.8.4</b> Different r-squared - go figure</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html"><i class="fa fa-check"></i><b>3</b> Models with Random Effects</a><ul>
@@ -156,9 +309,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.4---averages-by-level-of-binary-explanatory-variable"><i class="fa fa-check"></i><b>3.2.3</b> TABLE 3.4 - Averages by level of binary explanatory variable</a></li>
 <li class="chapter" data-level="3.2.4" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.5---correlation-for-continous-variables"><i class="fa fa-check"></i><b>3.2.4</b> TABLE 3.5 - Correlation for continous variables</a></li>
 <li class="chapter" data-level="3.2.5" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#figure-3.2-basic-added-variable-plot-y-vs.-x"><i class="fa fa-check"></i><b>3.2.5</b> FIGURE 3.2: Basic added variable plot (y vs. x)</a></li>
-<li class="chapter" data-level="3.2.6" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#display-3.1---error-components-model"><i class="fa fa-check"></i><b>3.2.6</b> DISPLAY 3.1 - Error components model</a></li>
+<li class="chapter" data-level="3.2.6" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#five-ways-of-doing-the-pooling-model"><i class="fa fa-check"></i><b>3.2.6</b> Five ways of doing the pooling model</a></li>
+<li class="chapter" data-level="3.2.7" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#display-3.1---error-components-model"><i class="fa fa-check"></i><b>3.2.7</b> DISPLAY 3.1 - Error components model</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#section-3.3---random-coefficients-model"><i class="fa fa-check"></i><b>3.3</b> SECTION 3.3 - Random coefficients model</a></li>
+<li class="chapter" data-level="3.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#section-3.3---random-coefficients-model"><i class="fa fa-check"></i><b>3.3</b> Section 3.3 - Random coefficients model</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html"><i class="fa fa-check"></i><b>4</b> Prediction and Bayesian Inference</a><ul>
 <li class="chapter" data-level="4.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#import-data-3"><i class="fa fa-check"></i><b>4.1</b> Import Data</a></li>
@@ -287,8 +441,8 @@ taxprep  =<span class="st"> </span><span class="kw">read.table</span>(<span clas
 <p>Data for this study are from the Statistics of Income (SOI) Panel of Individual Returns, a part of the Ernst and Young/University of Michigan Tax Research Database. The SOI Panel represents a simple random sample of unaudited individual income tax returns filed for tax years 1979-1990. The data are compiled from a stratified probability sample of unaudited individual income tax returns, Forms 1040, 1040A and 1040EZ, filed by U.S. taxpayers. The estimates that are obtained from these data are intended to represent all returns filed for the income tax years under review. All returns processed are subjected to sampling except tentative and amended returns.</p>
 <table>
 <colgroup>
-<col width="6%" />
-<col width="93%" />
+<col width="57%" />
+<col width="42%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -372,55 +526,55 @@ taxprep  =<span class="st"> </span><span class="kw">read.table</span>(<span clas
 <p>The binary variables in Table 3.2 indicate that over half the sample is married (MS) and approximately half the sample uses a paid preparer (PREP).</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(nlme)
 <span class="kw">gsummary</span>(taxprep[, <span class="kw">c</span>(<span class="st">&quot;MS&quot;</span>, <span class="st">&quot;HH&quot;</span>, <span class="st">&quot;AGE&quot;</span>, <span class="st">&quot;EMP&quot;</span>, <span class="st">&quot;PREP&quot;</span>)], <span class="dt">groups=</span>taxprep<span class="op">$</span>TIME, <span class="dt">FUN=</span>mean)</code></pre>
-<pre><code>         MS         HH        AGE       EMP      PREP
-1 0.5968992 0.08139535 0.08527132 0.1395349 0.4496124
-2 0.5968992 0.09302326 0.10465116 0.1589147 0.4418605
-3 0.6240310 0.08527132 0.11240310 0.1550388 0.4844961
-4 0.6472868 0.08139535 0.13178295 0.1472868 0.5077519
-5 0.6472868 0.09302326 0.14728682 0.1472868 0.5155039</code></pre>
+<pre><code>##          MS         HH        AGE       EMP      PREP
+## 1 0.5968992 0.08139535 0.08527132 0.1395349 0.4496124
+## 2 0.5968992 0.09302326 0.10465116 0.1589147 0.4418605
+## 3 0.6240310 0.08527132 0.11240310 0.1550388 0.4844961
+## 4 0.6472868 0.08139535 0.13178295 0.1472868 0.5077519
+## 5 0.6472868 0.09302326 0.14728682 0.1472868 0.5155039</code></pre>
 </div>
 <div id="table-3.3---summary-statistics-for-continuous-variables" class="section level3">
 <h3><span class="header-section-number">3.2.2</span> TABLE 3.3 - Summary statistics for continuous variables</h3>
 <p>Tables 3.2 and 3.3 describe the basic taxpayer characteristics used in our analysis. The summary statistics for the other nonbinary variables are in Table 3.3.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(taxprep[, <span class="kw">c</span>(<span class="st">&quot;DEPEND&quot;</span>, <span class="st">&quot;LNTPI&quot;</span>, <span class="st">&quot;MR&quot;</span>, <span class="st">&quot;LNTAX&quot;</span>)]) <span class="co">#summary does not provid standard deviation</span></code></pre>
-<pre><code>     DEPEND          LNTPI               MR            LNTAX       
- Min.   :0.000   Min.   :-0.1275   Min.   : 0.00   Min.   : 0.000  
- 1st Qu.:1.000   1st Qu.: 9.4467   1st Qu.:15.00   1st Qu.: 6.645  
- Median :2.000   Median :10.0506   Median :22.00   Median : 7.701  
- Mean   :2.419   Mean   : 9.8886   Mean   :23.52   Mean   : 6.880  
- 3rd Qu.:3.000   3rd Qu.:10.5320   3rd Qu.:33.00   3rd Qu.: 8.420  
- Max.   :6.000   Max.   :13.2220   Max.   :50.00   Max.   :11.860  </code></pre>
+<pre><code>##      DEPEND          LNTPI               MR            LNTAX       
+##  Min.   :0.000   Min.   :-0.1275   Min.   : 0.00   Min.   : 0.000  
+##  1st Qu.:1.000   1st Qu.: 9.4467   1st Qu.:15.00   1st Qu.: 6.645  
+##  Median :2.000   Median :10.0506   Median :22.00   Median : 7.701  
+##  Mean   :2.419   Mean   : 9.8886   Mean   :23.52   Mean   : 6.880  
+##  3rd Qu.:3.000   3rd Qu.:10.5320   3rd Qu.:33.00   3rd Qu.: 8.420  
+##  Max.   :6.000   Max.   :13.2220   Max.   :50.00   Max.   :11.860</code></pre>
 <p>Standard deviation of some variables.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Standard Deviation</span>
 var&lt;-<span class="kw">var</span>(taxprep[, <span class="kw">c</span>(<span class="st">&quot;DEPEND&quot;</span>, <span class="st">&quot;LNTPI&quot;</span>, <span class="st">&quot;MR&quot;</span>, <span class="st">&quot;LNTAX&quot;</span>)])
 <span class="kw">sqrt</span>(<span class="kw">diag</span>(var))</code></pre>
-<pre><code>   DEPEND     LNTPI        MR     LNTAX 
- 1.337562  1.164625 11.453800  2.694961 </code></pre>
+<pre><code>##    DEPEND     LNTPI        MR     LNTAX 
+##  1.337562  1.164625 11.453800  2.694961</code></pre>
 </div>
 <div id="table-3.4---averages-by-level-of-binary-explanatory-variable" class="section level3">
 <h3><span class="header-section-number">3.2.3</span> TABLE 3.4 - Averages by level of binary explanatory variable</h3>
 <p>To explore the relationship between each indicator variable and logarithmic tax, Table 3.4 presents the average logarithmic tax liability by level of indicator variable. This table shows that married filers pay greater tax, head-of-household filers pay less tax, taxpayers 65 or over pay less, taxpayers with self-employed income pay less, and taxpayers who use a professional tax preparer pay more.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(Hmisc)
 <span class="kw">summarize</span>(taxprep<span class="op">$</span>LNTAX, taxprep<span class="op">$</span>MS, mean) </code></pre>
-<pre><code>  taxprep$MS taxprep$LNTAX
-1          0      5.973412
-2          1      7.429948</code></pre>
+<pre><code>##   taxprep$MS taxprep$LNTAX
+## 1          0      5.973412
+## 2          1      7.429948</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(taxprep<span class="op">$</span>LNTAX, taxprep<span class="op">$</span>HH, mean)</code></pre>
-<pre><code>  taxprep$HH taxprep$LNTAX
-1          0      7.013197
-2          1      5.479947</code></pre>
+<pre><code>##   taxprep$HH taxprep$LNTAX
+## 1          0      7.013197
+## 2          1      5.479947</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(taxprep<span class="op">$</span>LNTAX, taxprep<span class="op">$</span>AGE, mean)</code></pre>
-<pre><code>  taxprep$AGE taxprep$LNTAX
-1           0      6.939184
-2           1      6.430867</code></pre>
+<pre><code>##   taxprep$AGE taxprep$LNTAX
+## 1           0      6.939184
+## 2           1      6.430867</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(taxprep<span class="op">$</span>LNTAX, taxprep<span class="op">$</span>EMP, mean)</code></pre>
-<pre><code>  taxprep$EMP taxprep$LNTAX
-1           0      6.982682
-2           1      6.296879</code></pre>
+<pre><code>##   taxprep$EMP taxprep$LNTAX
+## 1           0      6.982682
+## 2           1      6.296879</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(taxprep<span class="op">$</span>LNTAX, taxprep<span class="op">$</span>PREP, mean)</code></pre>
-<pre><code>  taxprep$PREP taxprep$LNTAX
-1            0      6.623648
-2            1      7.158049</code></pre>
+<pre><code>##   taxprep$PREP taxprep$LNTAX
+## 1            0      6.623648
+## 2            1      7.158049</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># TABLE counts of BINARY EXPLANATORY VARIABLE</span>
 <span class="co"># CREATE CATEGORICAL VARIABLE</span>
 taxprep<span class="op">$</span>MSF=taxprep<span class="op">$</span>MS
@@ -429,35 +583,35 @@ taxprep<span class="op">$</span>AGEF=taxprep<span class="op">$</span>AGE
 taxprep<span class="op">$</span>EMPF=taxprep<span class="op">$</span>EMP
 taxprep<span class="op">$</span>PREPF=taxprep<span class="op">$</span>PREP
 <span class="kw">table</span>(taxprep<span class="op">$</span>MSF)</code></pre>
-<pre><code>
-  0   1 
-487 803 </code></pre>
+<pre><code>## 
+##   0   1 
+## 487 803</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(taxprep<span class="op">$</span>HHF)</code></pre>
-<pre><code>
-   0    1 
-1178  112 </code></pre>
+<pre><code>## 
+##    0    1 
+## 1178  112</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(taxprep<span class="op">$</span>AGEF)</code></pre>
-<pre><code>
-   0    1 
-1140  150 </code></pre>
+<pre><code>## 
+##    0    1 
+## 1140  150</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(taxprep<span class="op">$</span>EMPF)</code></pre>
-<pre><code>
-   0    1 
-1097  193 </code></pre>
+<pre><code>## 
+##    0    1 
+## 1097  193</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(taxprep<span class="op">$</span>PREPF)</code></pre>
-<pre><code>
-  0   1 
-671 619 </code></pre>
+<pre><code>## 
+##   0   1 
+## 671 619</code></pre>
 </div>
 <div id="table-3.5---correlation-for-continous-variables" class="section level3">
 <h3><span class="header-section-number">3.2.4</span> TABLE 3.5 - Correlation for continous variables</h3>
 <p>Table 3.5 summarizes basic relations among logarithmic tax and the other nonbinary explanatory variables. Both <code>LNTPI</code> and <code>MR</code> are strongly correlated with logarithmic tax whereas the relationship between <code>DEPEND</code> and logarithmic tax is positive, yet weaker. Table 3.5 also shows that <code>LNTPI</code> and <code>MR</code> are strongly positively correlated.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(taxprep[,<span class="kw">c</span>(<span class="st">&quot;LNTAX&quot;</span>, <span class="st">&quot;DEPEND&quot;</span>, <span class="st">&quot;LNTPI&quot;</span>, <span class="st">&quot;MR&quot;</span>)])</code></pre>
-<pre><code>            LNTAX     DEPEND     LNTPI        MR
-LNTAX  1.00000000 0.08519899 0.7176476 0.7466574
-DEPEND 0.08519899 1.00000000 0.2777381 0.1275044
-LNTPI  0.71764760 0.27773808 1.0000000 0.7958007
-MR     0.74665744 0.12750438 0.7958007 1.0000000</code></pre>
+<pre><code>##             LNTAX     DEPEND     LNTPI        MR
+## LNTAX  1.00000000 0.08519899 0.7176476 0.7466574
+## DEPEND 0.08519899 1.00000000 0.2777381 0.1275044
+## LNTPI  0.71764760 0.27773808 1.0000000 0.7958007
+## MR     0.74665744 0.12750438 0.7958007 1.0000000</code></pre>
 </div>
 <div id="figure-3.2-basic-added-variable-plot-y-vs.-x" class="section level3">
 <h3><span class="header-section-number">3.2.5</span> FIGURE 3.2: Basic added variable plot (y vs. x)</h3>
@@ -475,60 +629,311 @@ taxprep<span class="op">$</span>Resid2=<span class="kw">residuals</span>(lntpi.l
 <span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">8</span>, <span class="dv">4</span>, <span class="dt">by=</span><span class="fl">0.2</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
 <span class="kw">mtext</span>(<span class="st">&quot;Residuals from LNTAX&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="op">-</span><span class="dv">7</span>, <span class="dt">at=</span><span class="fl">7.5</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)
 <span class="kw">mtext</span>(<span class="st">&quot;Residuals from LNTPI&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">3</span>, <span class="dt">at=</span><span class="op">-</span><span class="dv">2</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>)</code></pre>
-<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+</div>
+<div id="five-ways-of-doing-the-pooling-model" class="section level3">
+<h3><span class="header-section-number">3.2.6</span> Five ways of doing the pooling model</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#1</span>
+<span class="kw">summary</span>(<span class="kw">lm</span>(LNTAX<span class="op">~</span>MS<span class="op">+</span>HH<span class="op">+</span>AGE<span class="op">+</span>EMP<span class="op">+</span>PREP<span class="op">+</span>LNTPI<span class="op">+</span>DEPEND<span class="op">+</span>MR, <span class="dt">data=</span>taxprep))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = LNTAX ~ MS + HH + AGE + EMP + PREP + LNTPI + DEPEND + 
+##     MR, data = taxprep)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -9.6371 -0.4145  0.3875  0.9473 10.2893 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -3.4303158  0.5647315  -6.074 1.64e-09 ***
+## MS           0.0417333  0.1546948   0.270 0.787374    
+## HH          -0.6969164  0.1924733  -3.621 0.000305 ***
+## AGE          0.0121770  0.1562682   0.078 0.937901    
+## EMP         -0.6216132  0.1351459  -4.600 4.65e-06 ***
+## PREP        -0.0004085  0.0976086  -0.004 0.996661    
+## LNTPI        0.8332396  0.0715145  11.651  &lt; 2e-16 ***
+## DEPEND      -0.1395622  0.0496814  -2.809 0.005043 ** 
+## MR           0.1077579  0.0069511  15.502  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.676 on 1281 degrees of freedom
+## Multiple R-squared:  0.6155, Adjusted R-squared:  0.6131 
+## F-statistic: 256.3 on 8 and 1281 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#2</span>
+<span class="kw">summary</span>(<span class="kw">glm</span>(LNTAX<span class="op">~</span>MS<span class="op">+</span>HH<span class="op">+</span>AGE<span class="op">+</span>EMP<span class="op">+</span>PREP<span class="op">+</span>LNTPI<span class="op">+</span>DEPEND<span class="op">+</span>MR,<span class="dt">data=</span>taxprep, 
+              <span class="dt">family=</span><span class="kw">gaussian</span>(<span class="dt">link=</span>identity)) )</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = LNTAX ~ MS + HH + AGE + EMP + PREP + LNTPI + DEPEND + 
+##     MR, family = gaussian(link = identity), data = taxprep)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -9.6371  -0.4145   0.3875   0.9473  10.2893  
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -3.4303158  0.5647315  -6.074 1.64e-09 ***
+## MS           0.0417333  0.1546948   0.270 0.787374    
+## HH          -0.6969164  0.1924733  -3.621 0.000305 ***
+## AGE          0.0121770  0.1562682   0.078 0.937901    
+## EMP         -0.6216132  0.1351459  -4.600 4.65e-06 ***
+## PREP        -0.0004085  0.0976086  -0.004 0.996661    
+## LNTPI        0.8332396  0.0715145  11.651  &lt; 2e-16 ***
+## DEPEND      -0.1395622  0.0496814  -2.809 0.005043 ** 
+## MR           0.1077579  0.0069511  15.502  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 2.810093)
+## 
+##     Null deviance: 9361.8  on 1289  degrees of freedom
+## Residual deviance: 3599.7  on 1281  degrees of freedom
+## AIC: 5004.7
+## 
+## Number of Fisher Scoring iterations: 2</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#3</span>
+<span class="kw">library</span>(plm)
+<span class="kw">summary</span>(<span class="kw">plm</span>(LNTAX<span class="op">~</span>MS<span class="op">+</span>HH<span class="op">+</span>AGE<span class="op">+</span>EMP<span class="op">+</span>PREP<span class="op">+</span>LNTPI<span class="op">+</span>DEPEND<span class="op">+</span>MR, <span class="dt">data=</span>taxprep, 
+       <span class="dt">index=</span><span class="kw">c</span>(<span class="st">&quot;SUBJECT&quot;</span>,<span class="st">&quot;TIME&quot;</span>),<span class="dt">model=</span><span class="st">&quot;pooling&quot;</span>))</code></pre>
+<pre><code>## Pooling Model
+## 
+## Call:
+## plm(formula = LNTAX ~ MS + HH + AGE + EMP + PREP + LNTPI + DEPEND + 
+##     MR, data = taxprep, model = &quot;pooling&quot;, index = c(&quot;SUBJECT&quot;, 
+##     &quot;TIME&quot;))
+## 
+## Balanced Panel: n = 258, T = 5, N = 1290
+## 
+## Residuals:
+##     Min.  1st Qu.   Median  3rd Qu.     Max. 
+## -9.63705 -0.41454  0.38751  0.94730 10.28935 
+## 
+## Coefficients:
+##                Estimate  Std. Error t-value  Pr(&gt;|t|)    
+## (Intercept) -3.43031582  0.56473154 -6.0742 1.640e-09 ***
+## MS           0.04173327  0.15469480  0.2698 0.7873744    
+## HH          -0.69691637  0.19247327 -3.6208 0.0003051 ***
+## AGE          0.01217701  0.15626823  0.0779 0.9379009    
+## EMP         -0.62161319  0.13514593 -4.5996 4.653e-06 ***
+## PREP        -0.00040854  0.09760862 -0.0042 0.9966612    
+## LNTPI        0.83323956  0.07151445 11.6513 &lt; 2.2e-16 ***
+## DEPEND      -0.13956224  0.04968138 -2.8091 0.0050428 ** 
+## MR           0.10775788  0.00695106 15.5024 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Total Sum of Squares:    9361.8
+## Residual Sum of Squares: 3599.7
+## R-Squared:      0.61549
+## Adj. R-Squared: 0.61308
+## F-statistic: 256.31 on 8 and 1281 DF, p-value: &lt; 2.22e-16</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#4</span>
+<span class="kw">library</span>(nlme)
+<span class="kw">summary</span>(<span class="kw">gls</span>(LNTAX<span class="op">~</span>MS<span class="op">+</span>HH<span class="op">+</span>AGE<span class="op">+</span>EMP<span class="op">+</span>PREP<span class="op">+</span>LNTPI<span class="op">+</span>DEPEND<span class="op">+</span>MR,<span class="dt">data=</span>taxprep))</code></pre>
+<pre><code>## Generalized least squares fit by REML
+##   Model: LNTAX ~ MS + HH + AGE + EMP + PREP + LNTPI + DEPEND + MR 
+##   Data: taxprep 
+##        AIC      BIC    logLik
+##   5037.135 5088.688 -2508.567
+## 
+## Coefficients:
+##                 Value Std.Error   t-value p-value
+## (Intercept) -3.430316 0.5647315 -6.074242  0.0000
+## MS           0.041733 0.1546948  0.269778  0.7874
+## HH          -0.696916 0.1924733 -3.620848  0.0003
+## AGE          0.012177 0.1562682  0.077924  0.9379
+## EMP         -0.621613 0.1351459 -4.599570  0.0000
+## PREP        -0.000409 0.0976086 -0.004185  0.9967
+## LNTPI        0.833240 0.0715145 11.651345  0.0000
+## DEPEND      -0.139562 0.0496814 -2.809146  0.0050
+## MR           0.107758 0.0069511 15.502370  0.0000
+## 
+##  Correlation: 
+##        (Intr) MS     HH     AGE    EMP    PREP   LNTPI  DEPEND
+## MS      0.225                                                 
+## HH      0.061  0.485                                          
+## AGE    -0.011 -0.218 -0.045                                   
+## EMP    -0.119 -0.093  0.025 -0.038                            
+## PREP   -0.024 -0.024  0.013 -0.158 -0.141                     
+## LNTPI  -0.969 -0.208 -0.100 -0.062  0.107 -0.008              
+## DEPEND -0.015 -0.644 -0.316  0.292 -0.037 -0.064 -0.100       
+## MR      0.654 -0.002  0.066  0.162 -0.049 -0.076 -0.778  0.151
+## 
+## Standardized residuals:
+##        Min         Q1        Med         Q3        Max 
+## -5.7488891 -0.2472916  0.2311642  0.5651018  6.1380086 
+## 
+## Residual standard error: 1.676333 
+## Degrees of freedom: 1290 total; 1281 residual</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;gee&quot;)</span>
+<span class="co">#5</span>
+<span class="kw">library</span>(gee)
+<span class="kw">summary</span>(<span class="kw">gee</span>(LNTAX<span class="op">~</span>MS<span class="op">+</span>HH<span class="op">+</span>AGE<span class="op">+</span>EMP<span class="op">+</span>PREP<span class="op">+</span>LNTPI<span class="op">+</span>DEPEND<span class="op">+</span>MR, <span class="dt">id=</span>SUBJECT, <span class="dt">data=</span>taxprep, 
+              <span class="dt">family=</span><span class="kw">gaussian</span>(<span class="dt">link=</span>identity), <span class="dt">corstr=</span><span class="st">&quot;independence&quot;</span>) )</code></pre>
+<pre><code>## Beginning Cgee S-function, @(#) geeformula.q 4.13 98/01/27</code></pre>
+<pre><code>## running glm to get initial regression estimate</code></pre>
+<pre><code>##   (Intercept)            MS            HH           AGE           EMP 
+## -3.4303158248  0.0417332677 -0.6969163659  0.0121770081 -0.6216131914 
+##          PREP         LNTPI        DEPEND            MR 
+## -0.0004085366  0.8332395616 -0.1395622388  0.1077578820</code></pre>
+<pre><code>## 
+##  GEE:  GENERALIZED LINEAR MODELS FOR DEPENDENT DATA
+##  gee S-function, version 4.13 modified 98/01/27 (1998) 
+## 
+## Model:
+##  Link:                      Identity 
+##  Variance to Mean Relation: Gaussian 
+##  Correlation Structure:     Independent 
+## 
+## Call:
+## gee(formula = LNTAX ~ MS + HH + AGE + EMP + PREP + LNTPI + DEPEND + 
+##     MR, id = SUBJECT, data = taxprep, family = gaussian(link = identity), 
+##     corstr = &quot;independence&quot;)
+## 
+## Summary of Residuals:
+##        Min         1Q     Median         3Q        Max 
+## -9.6370540 -0.4145432  0.3875082  0.9472989 10.2893480 
+## 
+## 
+## Coefficients:
+##                  Estimate  Naive S.E.      Naive z Robust S.E.
+## (Intercept) -3.4303158248 0.564731536 -6.074241663  1.54222163
+## MS           0.0417332677 0.154694799  0.269778091  0.14854310
+## HH          -0.6969163659 0.192473270 -3.620847529  0.23465427
+## AGE          0.0121770081 0.156268232  0.077923759  0.18216326
+## EMP         -0.6216131914 0.135145927 -4.599570312  0.17738436
+## PREP        -0.0004085366 0.097608623 -0.004185456  0.09723974
+## LNTPI        0.8332395616 0.071514453 11.651345042  0.19444654
+## DEPEND      -0.1395622388 0.049681383 -2.809145616  0.05180461
+## MR           0.1077578820 0.006951058 15.502370457  0.01417988
+##                 Robust z
+## (Intercept) -2.224269044
+## MS           0.280950564
+## HH          -2.969970915
+## AGE          0.066846673
+## EMP         -3.504329265
+## PREP        -0.004201333
+## LNTPI        4.285185792
+## DEPEND      -2.694012121
+## MR           7.599350059
+## 
+## Estimated Scale Parameter:  2.810093
+## Number of Iterations:  1
+## 
+## Working Correlation
+##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    1    0    0    0    0
+## [2,]    0    0    0    0    0
+## [3,]    0    0    0    0    0
+## [4,]    0    0    0    0    0
+## [5,]    0    0    0    0    0</code></pre>
 </div>
 <div id="display-3.1---error-components-model" class="section level3">
-<h3><span class="header-section-number">3.2.6</span> DISPLAY 3.1 - Error components model</h3>
+<h3><span class="header-section-number">3.2.7</span> DISPLAY 3.1 - Error components model</h3>
 <p>The estimated model appears in Display 3.1, from a fit using the statistical package SAS. Display 3.1 shows that HH, EMP, LNTPI, and MR are statistically significant variables that affect LNTAX. Somewhat surprisingly, the PREP variable was not statistically significant.</p>
 <pre class="sourceCode r"><code class="sourceCode r">random&lt;-<span class="kw">lme</span>(LNTAX<span class="op">~</span>MS<span class="op">+</span>HH<span class="op">+</span>AGE<span class="op">+</span>EMP<span class="op">+</span>PREP<span class="op">+</span>LNTPI<span class="op">+</span>DEPEND<span class="op">+</span>MR, <span class="dt">data=</span>taxprep, <span class="dt">random=</span><span class="op">~</span><span class="dv">1</span><span class="op">|</span>SUBJECT, <span class="dt">method=</span><span class="st">&quot;ML&quot;</span>)
 <span class="co">## </span><span class="al">NOTE</span><span class="co">* THE DEFAULT METHOD IN lme IS &quot;REML&quot;</span>
 <span class="kw">summary</span>(random)</code></pre>
-<pre><code>Linear mixed-effects model fit by maximum likelihood
- Data: taxprep 
-       AIC      BIC    logLik
-  4813.255 4870.041 -2395.627
-
-Random effects:
- Formula: ~1 | SUBJECT
-        (Intercept) Residual
-StdDev:   0.9602161 1.368896
-
-Fixed effects: LNTAX ~ MS + HH + AGE + EMP + PREP + LNTPI + DEPEND + MR 
-                 Value Std.Error   DF   t-value p-value
-(Intercept) -2.9603371 0.5705536 1024 -5.188534  0.0000
-MS           0.0373000 0.1824839 1024  0.204402  0.8381
-HH          -0.6889876 0.2320057 1024 -2.969702  0.0031
-AGE          0.0207431 0.2000035 1024  0.103713  0.9174
-EMP         -0.5048035 0.1679848 1024 -3.005054  0.0027
-PREP        -0.0217036 0.1175229 1024 -0.184675  0.8535
-LNTPI        0.7604058 0.0699692 1024 10.867728  0.0000
-DEPEND      -0.1127475 0.0592818 1024 -1.901891  0.0575
-MR           0.1153752 0.0073142 1024 15.774213  0.0000
- Correlation: 
-       (Intr) MS     HH     AGE    EMP    PREP   LNTPI  DEPEND
-MS      0.176                                                 
-HH      0.030  0.419                                          
-AGE    -0.043 -0.167 -0.023                                   
-EMP    -0.116 -0.069  0.024 -0.030                            
-PREP   -0.035 -0.045  0.004 -0.115 -0.112                     
-LNTPI  -0.948 -0.180 -0.081 -0.043  0.099 -0.016              
-DEPEND -0.074 -0.604 -0.269  0.224 -0.038 -0.039 -0.068       
-MR      0.522 -0.020  0.055  0.149 -0.041 -0.051 -0.698  0.102
-
-Standardized Within-Group Residuals:
-        Min          Q1         Med          Q3         Max 
--5.83483692 -0.21263981  0.09677632  0.39814646  5.79731648 
-
-Number of Observations: 1290
-Number of Groups: 258 </code></pre>
+<pre><code>## Linear mixed-effects model fit by maximum likelihood
+##  Data: taxprep 
+##        AIC      BIC    logLik
+##   4813.255 4870.041 -2395.627
+## 
+## Random effects:
+##  Formula: ~1 | SUBJECT
+##         (Intercept) Residual
+## StdDev:   0.9602161 1.368896
+## 
+## Fixed effects: LNTAX ~ MS + HH + AGE + EMP + PREP + LNTPI + DEPEND + MR 
+##                  Value Std.Error   DF   t-value p-value
+## (Intercept) -2.9603371 0.5705536 1024 -5.188534  0.0000
+## MS           0.0373000 0.1824839 1024  0.204402  0.8381
+## HH          -0.6889876 0.2320057 1024 -2.969702  0.0031
+## AGE          0.0207431 0.2000035 1024  0.103713  0.9174
+## EMP         -0.5048035 0.1679848 1024 -3.005054  0.0027
+## PREP        -0.0217036 0.1175229 1024 -0.184675  0.8535
+## LNTPI        0.7604058 0.0699692 1024 10.867728  0.0000
+## DEPEND      -0.1127475 0.0592818 1024 -1.901891  0.0575
+## MR           0.1153752 0.0073142 1024 15.774213  0.0000
+##  Correlation: 
+##        (Intr) MS     HH     AGE    EMP    PREP   LNTPI  DEPEND
+## MS      0.176                                                 
+## HH      0.030  0.419                                          
+## AGE    -0.043 -0.167 -0.023                                   
+## EMP    -0.116 -0.069  0.024 -0.030                            
+## PREP   -0.035 -0.045  0.004 -0.115 -0.112                     
+## LNTPI  -0.948 -0.180 -0.081 -0.043  0.099 -0.016              
+## DEPEND -0.074 -0.604 -0.269  0.224 -0.038 -0.039 -0.068       
+## MR      0.522 -0.020  0.055  0.149 -0.041 -0.051 -0.698  0.102
+## 
+## Standardized Within-Group Residuals:
+##         Min          Q1         Med          Q3         Max 
+## -5.83483692 -0.21263981  0.09677632  0.39814646  5.79731648 
+## 
+## Number of Observations: 1290
+## Number of Groups: 258</code></pre>
 </div>
 </div>
 <div id="section-3.3---random-coefficients-model" class="section level2">
-<h2><span class="header-section-number">3.3</span> SECTION 3.3 - Random coefficients model</h2>
+<h2><span class="header-section-number">3.3</span> Section 3.3 - Random coefficients model</h2>
+<p>If we include all random coefficients of eight covariates (<code>MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR</code>), then the number of cofficients exceeds the number of observations and it leads to warnings. If we only include a few of covariates, then <code>lmer()</code> can be used to estimate the random coefficients model. Here is an example of including (<code>1+MS+HH|SUBJECT</code>) as the random part.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#randomcoeff&lt;-lme(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR, data=taxprep, random=~1+MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR|SUBJECT, method=&quot;ML&quot;) </span>
+
 <span class="co"># </span><span class="al">NOTE</span><span class="co">*:It takes forever to run the estimation, in the end a warning messaged was given. </span>
 <span class="co"># No estimation result was produced. </span>
-<span class="co"># The reason is due to the fact that in SAS, the method of mivque0 allows estimation for this model, in R this method is not readily available to be coded.</span></code></pre>
+<span class="co"># The reason is due to the fact that in SAS, the method of mivque0 allows estimation for this model, in R this method is not readily available to be coded.</span>
+<span class="kw">library</span>(lme4)
+<span class="co">#randomcoeff&lt;-lmer(LNTAX ~ MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR+(1+MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR|SUBJECT),data=taxprep)</span>
+
+randomcoeff&lt;-<span class="kw">lmer</span>(LNTAX <span class="op">~</span><span class="st"> </span>MS<span class="op">+</span>HH<span class="op">+</span>AGE<span class="op">+</span>EMP<span class="op">+</span>PREP<span class="op">+</span>LNTPI<span class="op">+</span>DEPEND<span class="op">+</span>MR<span class="op">+</span>(<span class="dv">1</span><span class="op">+</span>MS<span class="op">+</span>HH<span class="op">|</span>SUBJECT),<span class="dt">data=</span>taxprep)</code></pre>
+<pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(randomcoeff)</code></pre>
+<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
+## Formula: LNTAX ~ MS + HH + AGE + EMP + PREP + LNTPI + DEPEND + MR + (1 +  
+##     MS + HH | SUBJECT)
+##    Data: taxprep
+## 
+## REML criterion at convergence: 4796
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -5.9447 -0.2058  0.0971  0.3869  5.7321 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev. Corr       
+##  SUBJECT  (Intercept) 0.94837  0.9738              
+##           MS          0.01595  0.1263   -1.00      
+##           HH          1.89191  1.3755    0.13 -0.13
+##  Residual             1.84028  1.3566              
+## Number of obs: 1290, groups:  SUBJECT, 258
+## 
+## Fixed effects:
+##              Estimate Std. Error t value
+## (Intercept) -2.751324   0.564033  -4.878
+## MS           0.092114   0.178701   0.515
+## HH          -0.615376   0.340976  -1.805
+## AGE         -0.008254   0.192330  -0.043
+## EMP         -0.545085   0.161306  -3.379
+## PREP        -0.056847   0.114553  -0.496
+## LNTPI        0.747633   0.069049  10.828
+## DEPEND      -0.122449   0.056746  -2.158
+## MR           0.112551   0.007152  15.737
+## 
+## Correlation of Fixed Effects:
+##        (Intr) MS     HH     AGE    EMP    PREP   LNTPI  DEPEND
+## MS      0.169                                                 
+## HH      0.023  0.278                                          
+## AGE    -0.043 -0.170 -0.016                                   
+## EMP    -0.119 -0.073  0.009 -0.032                            
+## PREP   -0.037 -0.047  0.002 -0.111 -0.111                     
+## LNTPI  -0.947 -0.185 -0.057 -0.044  0.101 -0.015              
+## DEPEND -0.072 -0.595 -0.168  0.235 -0.035 -0.036 -0.067       
+## MR      0.525 -0.018  0.038  0.154 -0.039 -0.051 -0.700  0.107
+## convergence code: 0
+## boundary (singular) fit: see ?isSingular</code></pre>
 
 </div>
 </div>

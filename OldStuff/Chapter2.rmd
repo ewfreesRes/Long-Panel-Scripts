@@ -1,0 +1,234 @@
+
+
+# Fixed-Effects Models
+
+## Import Data
+
+We consider T=6 years, 1990-1995, of data for inpatient hospital charges that are covered by the Medicare program. The data were obtained from the Health Care Financing Administration, Bureau of Data Management and Strategy. To illustrate, in 1995 the total covered charges were $157.8 billions for twelve million discharges. For this analysis, we use state as the subject, or risk class. Thus, we consider n=54 states that include the 50 states in the Union, the District of Columbia, Virgin Islands, Puerto Rico and an unspecified “other” category. 
+
+Variable| Description
+---- | ------------------------------------ 
+STATE | State identifier, 1-54
+YEAR | Year identifier, 1-6
+TOT_CHG | Total hospital charges, in millions of dollars.
+COV_CHG | Total hospital charges covered by Medicare, in millions of dollars.
+MED_REIM | Total hospital charges reimbursed by the Medicare program, in millions of dollars.
+TOT_D | Total number of hospitals stays, in days.
+NUM_DSHG | Number discharged, in thousands. 
+AVE_T_D | Average hospital stay per discharge in days.
+
+```{r}
+
+#  "\t"  INDICATES SEPARATED BY TABLES  ;
+Medicare  = read.table("TXTData/Medicare.txt", sep ="\t", quote = "",header=TRUE)
+
+# Medicare = read.table(choose.files(), sep ="\t", quote = "",header=TRUE)
+```
+
+Let's have a look at the dataset. The names of variables and the first 8 rows observations.
+
+```{r comment = ""}
+#  PROVIDES THE NAMES IN THE FILE AND LISTS THE FIRST 8 OBSERVATIONS  ;
+names (Medicare)
+Medicare [1:8, ]
+```
+
+Then we need to create some other variables for later use.
+
+```{r comment = ""}
+#  CREATE OTHER VARIABLES;
+# Firstly, we need change the names of existing variables.
+names(Medicare)[names(Medicare)=="TOT_CHG"]="TOT.CHG";
+names(Medicare)[names(Medicare)=="COV_CHG"]="COV.CHG";
+names(Medicare)[names(Medicare)=="MED_REIB"]="MED.REIB";
+names(Medicare)[names(Medicare)=="TOT_D"]="TOT.D";
+names(Medicare)[names(Medicare)=="NUM_DCHG"]="NUM.DCHG";
+names(Medicare)[names(Medicare)=="AVE_T_D"]="AVE.T.D";
+
+Medicare$AVE.DAYS= Medicare$TOT.D/Medicare$NUM.DCHG
+Medicare$CCPD=Medicare$COV.CHG/Medicare$NUM.DCHG
+Medicare$NUM.DCHG=Medicare$NUM.DCHG/1000
+str (Medicare)
+```
+
+ Some summary statistics of `CCPD`, `NUM.DCHG`, `AVE>DAYS`, `YEAR` in each year.
+
+```{r comment = ""}
+library(nlme)
+attach(Medicare)
+#  SUMMARY STATISTICS ;
+dim(Medicare)
+summary(Medicare[, c("CCPD", "NUM.DCHG", "AVE.DAYS" )])
+
+gsummary(Medicare[, c("CCPD", "NUM.DCHG", "AVE.DAYS", "YEAR")], groups = YEAR, FUN=sd)
+
+gsummary(Medicare[, c("CCPD", "NUM.DCHG", "AVE.DAYS", "YEAR")], groups = YEAR, FUN=mean)
+
+gsummary(Medicare[, c("CCPD", "NUM.DCHG", "AVE.DAYS", "YEAR")], groups = YEAR, FUN=median)
+
+gsummary(Medicare[, c("CCPD", "NUM.DCHG", "AVE.DAYS", "YEAR")], groups = YEAR, FUN=min)
+
+gsummary(Medicare[, c("CCPD", "NUM.DCHG", "AVE.DAYS", "YEAR")], groups = YEAR, FUN=max)
+```
+
+See the box plots of different variables in each year.
+
+```{r comment = ""}
+#  ATTACH THE DATA SET FOR SOME PRELIMINARLY LOOKS;
+attach (Medicare)
+Medicare$YEAR=Medicare$YEAR+1989
+boxplot (CCPD ~ YEAR)
+boxplot (NUM.DCHG ~ YEAR)
+boxplot (AVE.DAYS ~ YEAR)
+```
+
+## Example 2.2: Medicare Hospital Costs (Page 26)
+
+### FIGURE 2.1: CCPD vs YEAR; multiple time series plot
+
+ Figure 2.1 illustrates the multiple time-series plot. Here, we see that not only are overall claims increasing but also that claims increase for each state.
+ 
+```{r comment = ""}
+plot(CCPD ~ YEAR, data = Medicare, xaxt="n", yaxt="n", ylab="", xlab="")
+ for (i in Medicare$STATE) {
+ lines(CCPD ~ YEAR, data = subset(Medicare, STATE == i)) }
+axis(2, at=seq(0, 22000, by=2000), las=1, font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(1990,1995, by=1), font=10, cex=0.005, tck=0.01)
+mtext("CCPD", side=2, line=0, at=23000, font=12, cex=1, las=1)
+mtext("YEAR", side=1, line=3, at=1992.5, font=12, cex=1)
+
+```
+
+### FIGURE 2.2: CCPD vs NUM.DCHG
+
+Figure 2.2 illustrates the scatter plot with symbols. This plot ofCCPD versus number ofdischarges, connecting observations over time, shows a positive overall relationship between CCPD and the number of discharges.
+
+```{r comment = ""}
+plot(CCPD ~ NUM.DCHG, data = Medicare, xaxt="n", yaxt="n", ylab="", xlab="")
+for (i in Medicare$STATE) {
+ lines(CCPD ~ NUM.DCHG, data = subset(Medicare, STATE == i)) }
+axis(2, at=seq(0, 22000, by=2000), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(0, 22000, by=200), lab=F, tck=0.005)
+axis(1, at=seq(0,1200, by=200), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(0,1200, by=20), lab=F, tck=0.005)
+mtext("CCPD", side=2, line=0, at=23000, font=12, cex=1, las=1)
+mtext("Number of Discharges in Thousands", side=1, line=3, at=500, font=12, cex=1)
+
+```
+
+### Figure 2.3: CCPD vs AVE.DAYS
+
+Figure 2.3 is a scatter plot of CCPD versus average total days, connecting observations over time. This plot demonstrates the unusual nature of the second observation for the 54th state. 
+
+```{r comment = ""}
+plot(CCPD ~ AVE.DAYS, data = Medicare, ylab="", xlab="", xaxt="n", yaxt="n")
+for (i in Medicare$STATE) {
+ lines(CCPD ~ AVE.DAYS, data = subset(Medicare, STATE== i)) }
+axis(2, at=seq(0, 22000, by=2000), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(0, 22000, by=200), lab=F, tck=0.005)
+axis(1, at=seq(0,70, by=10), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(0,70, by=1), lab=F, tck=0.005)
+mtext("CCPD", side=2, line=0, at=23000, font=12, cex=1, las=1)
+mtext("Average Hospital Stay", side=1, line=3, at=35, font=12, cex=1)
+
+```
+
+### Figure 2.4: Added-variable plot of CCPD versus year
+
+```{r comment = ""}
+#  CREATE A CATEGORICAL VARIABLE for STATE;
+Medicare$FSTATE = factor(Medicare$STATE)
+
+#  CREATE A NEW VARIABLE;
+Medicare$YEAR=Medicare$YEAR-1989
+# THE NEW VARIABLES YR31 WILL BE USED IN THE FINAL MODEL TO GIVE THE 31st STATE A SPECIFIC SLOPE;
+Medicare$Yr31=(Medicare$STATE==31)*Medicare$YEAR
+
+#  CREATE A NEW DATA SET, REMOVING THE OUTLIER BY EXCLUDING THE 2ND OBSERVATION OF THE 54TH STATE;
+Medicare2 = subset(Medicare, STATE != 54 | YEAR != 2)
+```
+
+ Figure 2.4 illustrates the basic added-variable plot. This plot portrays CCPD versus year, after excluding the second observation for the 54th state.
+ 
+```{r comment = ""}
+#  BASIC ADDED VARIABLE PLOT;
+#  CREATE RESIDUALS;
+Med1.lm = lm(CCPD ~ FSTATE, data=Medicare2)
+Med2.lm = lm(YEAR ~ FSTATE, data=Medicare2)
+Medicare2$rCCPD=residuals(Med1.lm)
+Medicare2$rYEAR=residuals(Med2.lm)
+plot(rCCPD ~ rYEAR, data=Medicare2, ylab="", xlab="", xaxt="n", yaxt="n")
+for (i in Medicare2$STATE) {
+  lines(rCCPD ~ rYEAR, data = subset(Medicare2, STATE== i)) }
+axis(2, at=seq(-6000, 4000, by=2000), las=1, font=10, cex=0.005, tck=0.01)
+axis(2, at=seq(-6000, 4000, by=200), lab=F, tck=0.005)
+axis(1, at=seq(-3,3, by=1), font=10, cex=0.005, tck=0.01)
+axis(1, at=seq(-3,3, by=0.1), lab=F, tck=0.005)
+mtext("Residuals from CCPD", side=2, line=-8, at=5000, font=12, cex=1, las=1)
+mtext("Residuals from YEAR", side=1, line=3, at=0, font=12, cex=1)
+
+```
+
+### Figure 2.5: Trellis Plot
+
+ A technique for graphical display that has recently become popular in the statistical literature is a trellis plot. This graphical technique takes its name from a trellis, which is a structure of open latticework. 
+ Figure 2.5 illustrates the use of small multiples. In each panel, the plot portrayed is identical except that it is based on a different state; this use of
+parallel structure allows us to demonstrate the increasing CCPD for each state.
+
+```{r comment = ""}
+GrpMedicare = groupedData(CCPD ~ YEAR| NMSTATE, data=Medicare2)
+plot(GrpMedicare, xlab="YEAR", ylab="CCPD", scale = list(x=list(draw=FALSE)), layout=c(18,3))
+```
+
+## One way fixed effects model using lm, for linear model
+
+See Example 2.2: Medicare Hospital Costs.
+
+```{r comment = ""}
+Medicare.lm = lm(CCPD ~ NUM.DCHG + Yr31 + YEAR + AVE.DAYS + FSTATE - 1, data=Medicare2)
+summary(Medicare.lm)
+anova(Medicare.lm)
+```
+
+## SECTION 2.4.1 - Analysis for the pooling test;
+
+We can check the F-ratio by `anova(Medicare.lm,Medicare3.lm)`. We reject the null hypothesis from the result below.
+
+```{r comment = ""}
+Medicare3.lm = lm(CCPD ~ NUM.DCHG+ Yr31 + YEAR + AVE.DAYS , data=Medicare2)
+summary(Medicare3.lm)
+anova(Medicare3.lm)
+anova(Medicare3.lm,Medicare.lm) # pooling test
+
+```
+
+## SECTION 2.4.2 - Correlation corresponding to the added variable plot;
+
+ As with all scatter plots, the added-variable plot can be summarized numerically through a correlation coefficient that we will denote by $corr(e_1, e_2)$.
+ 
+```{r comment = ""}
+#  SECTION 2.4.2 - CORRELATION CORRESPONDING TO THE ADDED VARIABLE PLOT;
+library(boot)
+cor(Medicare2$rCCPD , Medicare2$rYEAR)
+
+```
+
+## SECTION 2.4.5 - Testing for heteroscedasticity;
+ When fitting regression models to data, an important assumption is that the variability is common among all observations. This assumption of common variability is called homoscedasticity, meaning "same scatter".
+ 
+```{r comment = ""}
+Medicare2$Resids=residuals(Medicare.lm)
+Medicare2$ResidSq=Medicare2$Resids*Medicare2$Resids
+MedHet.lm = lm(ResidSq ~ NUM.DCHG, data=Medicare2)
+summary(MedHet.lm)
+anova(MedHet.lm)
+```
+
+### One way random effects model using lm, for linear model;
+
+ We will learn random effects model in Chapter 3. Here is an example.
+ 
+```{r comment = ""}
+Medicare.lme = lme(CCPD ~ NUM.DCHG, data=Medicare2, random = ~1|STATE)
+summary(Medicare.lme)
+```

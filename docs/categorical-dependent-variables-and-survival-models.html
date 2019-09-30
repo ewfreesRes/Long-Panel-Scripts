@@ -48,6 +48,148 @@
 
 
 
+<!-- Mathjax -->
+<script type='text/x-mathjax-config'>
+		MathJax.Hub.Config({
+			extensions: ['tex2jax.js'],
+			jax: ['input/TeX', 'output/HTML-CSS'],
+			tex2jax: {
+				inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+				displayMath: [ ['$$','$$'], ['\\[','\\]'] ],
+				processEscapes: true
+			},
+			'HTML-CSS': { availableFonts: ['TeX'] }
+		});
+</script>
+
+<!-- The following code is for the quizzes -->
+<script src="https://surveyjs.azureedge.net/1.0.50/survey.jquery.js"></script>
+<link href="https://surveyjs.azureedge.net/1.0.50/survey.css" type="text/css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.6.4/showdown.min.js"></script>  
+
+<script>
+function markdownConverterEWF() {  
+//Create showdown markdown converter
+var converter = new showdown.Converter();
+converter.setOption('ghCompatibleHeaderId', true);
+survey
+    .onTextMarkdown
+    .add(function (survey, options) {
+        //convert the mardown text to html
+        var str = converter.makeHtml(options.text);
+        //remove root paragraphs <p></p>
+        str = str.substring(3);
+        str = str.substring(0, str.length - 4);
+        //set html
+        options.html = str;
+         MathJax.Hub.Queue(['Typeset',MathJax.Hub, 'options']);
+    });  
+};
+// Quiz Header info
+const jsonHeader = { 
+    showProgressBar: "bottom",
+    showTimerPanel: "none",
+    maxTimeToFinishPage: 10000,
+    maxTimeToFinish: 25000,
+    firstPageIsStarted: true,
+    startSurveyText: "Start Quiz" //,
+//    title: "Does This Make Sense?"
+}
+
+// Three, four, and five question quizzes
+function jsonSummary3EWF(json) {  
+let jsonEnd3 = { 
+completedHtml: 
+json["pages"][1]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][1]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][1]["questions"][0]["correctAnswer"]
++"<br>"+
+json["pages"][2]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][2]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][2]["questions"][0]["correctAnswer"]
++"<br>"+
+json["pages"][3]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][3]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][3]["questions"][0]["correctAnswer"]
+};  
+return jsonEnd3;
+};
+
+function jsonSummary4EWF(json) {  
+jsonEnd4 = jsonSummary3EWF(json);
+jsonEnd4.completedHtml = jsonEnd4.completedHtml +  
+"<br>"+
+json["pages"][4]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][4]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][4]["questions"][0]["correctAnswer"]
+;  
+return jsonEnd4;
+};
+
+function jsonSummary5EWF(json) {  
+jsonEnd5 = jsonSummary4EWF(json);
+jsonEnd5.completedHtml = jsonEnd5.completedHtml +  
+"<br>"+
+json["pages"][5]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][5]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][5]["questions"][0]["correctAnswer"]
+;  
+return jsonEnd5;
+};
+</script>  
+<!-- This completes the code for the quizzes -->
+
+
+<!-- Various toggle functions used throughout --> 
+<script language="javascript">
+function toggle(id1,id2) {
+	var ele = document.getElementById(id1); var text = document.getElementById(id2);
+	if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show Solution";}
+		else {ele.style.display = "block"; text.innerHTML = "Hide Solution";}}
+function togglecode(id1,id2) {
+   var ele = document.getElementById(id1); var text = document.getElementById(id2);
+   if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show R Code";}
+      else {ele.style.display = "block"; text.innerHTML = "Hide R Code";}}
+function toggleEX(id1,id2) {
+   var ele = document.getElementById(id1); var text = document.getElementById(id2);
+   if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show Example";}
+      else {ele.style.display = "block"; text.innerHTML = "Hide Example";}}
+function toggleTheory(id1,id2) {
+   var ele = document.getElementById(id1); var text = document.getElementById(id2);
+   if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show Theory";}
+      else {ele.style.display = "block"; text.innerHTML = "Hide Theory";}}
+function toggleQuiz(id1,id2) {
+   var ele = document.getElementById(id1); var text = document.getElementById(id2);
+   if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show Quiz Solution";}
+      else {ele.style.display = "block"; text.innerHTML = "Hide Quiz Solution";}}      
+</script>
+
+<!-- A few functions for revealing definitions -->
+<script language="javascript">
+<!--   $( function() {
+    $("#tabs").tabs();
+  } ); -->
+
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover(); 
+});
+</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125587869-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125587869-1');
+</script>
+
+
 <style type="text/css">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
@@ -112,6 +254,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -124,6 +267,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
+<li><a href="./">R Scripts for Longitudinal and Panel Data</a></li>
+
+<li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
 <li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
 <li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#import-data"><i class="fa fa-check"></i><b>1.1</b> Import Data</a></li>
@@ -142,10 +288,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.5-trellis-plot"><i class="fa fa-check"></i><b>2.2.5</b> Figure 2.5: Trellis Plot</a></li>
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-fixed-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.3</b> One way fixed effects model using lm, for linear model</a></li>
-<li class="chapter" data-level="2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.1---analysis-for-the-pooling-test"><i class="fa fa-check"></i><b>2.4</b> SECTION 2.4.1 - Analysis for the pooling test;</a></li>
-<li class="chapter" data-level="2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.2---correlation-corresponding-to-the-added-variable-plot"><i class="fa fa-check"></i><b>2.5</b> SECTION 2.4.2 - Correlation corresponding to the added variable plot;</a></li>
-<li class="chapter" data-level="2.6" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.5---testing-for-heteroscedasticity"><i class="fa fa-check"></i><b>2.6</b> SECTION 2.4.5 - Testing for heteroscedasticity;</a><ul>
+<li class="chapter" data-level="2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.1---analysis-for-the-pooling-test"><i class="fa fa-check"></i><b>2.4</b> Section 2.4.1 - Analysis for the pooling test;</a></li>
+<li class="chapter" data-level="2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.2---correlation-corresponding-to-the-added-variable-plot"><i class="fa fa-check"></i><b>2.5</b> Section 2.4.2 - Correlation corresponding to the added variable plot;</a></li>
+<li class="chapter" data-level="2.6" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.5---testing-for-heteroscedasticity"><i class="fa fa-check"></i><b>2.6</b> Section 2.4.5 - Testing for heteroscedasticity;</a><ul>
 <li class="chapter" data-level="2.6.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-random-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.6.1</b> One way random effects model using lm, for linear model;</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#more-fun"><i class="fa fa-check"></i><b>2.7</b> More Fun</a></li>
+<li class="chapter" data-level="2.8" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#plm-panel-linear-model-package"><i class="fa fa-check"></i><b>2.8</b> PLM (Panel Linear Model) package</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#pooling-test"><i class="fa fa-check"></i><b>2.8.1</b> Pooling Test</a></li>
+<li class="chapter" data-level="2.8.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#two-way-model"><i class="fa fa-check"></i><b>2.8.2</b> Two-way Model</a></li>
+<li class="chapter" data-level="2.8.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#three-different-ways-to-doing-the-same-thing"><i class="fa fa-check"></i><b>2.8.3</b> Three different ways to doing the same thing</a></li>
+<li class="chapter" data-level="2.8.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#different-r-squared---go-figure"><i class="fa fa-check"></i><b>2.8.4</b> Different r-squared - go figure</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html"><i class="fa fa-check"></i><b>3</b> Models with Random Effects</a><ul>
@@ -156,9 +309,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.4---averages-by-level-of-binary-explanatory-variable"><i class="fa fa-check"></i><b>3.2.3</b> TABLE 3.4 - Averages by level of binary explanatory variable</a></li>
 <li class="chapter" data-level="3.2.4" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.5---correlation-for-continous-variables"><i class="fa fa-check"></i><b>3.2.4</b> TABLE 3.5 - Correlation for continous variables</a></li>
 <li class="chapter" data-level="3.2.5" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#figure-3.2-basic-added-variable-plot-y-vs.-x"><i class="fa fa-check"></i><b>3.2.5</b> FIGURE 3.2: Basic added variable plot (y vs. x)</a></li>
-<li class="chapter" data-level="3.2.6" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#display-3.1---error-components-model"><i class="fa fa-check"></i><b>3.2.6</b> DISPLAY 3.1 - Error components model</a></li>
+<li class="chapter" data-level="3.2.6" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#five-ways-of-doing-the-pooling-model"><i class="fa fa-check"></i><b>3.2.6</b> Five ways of doing the pooling model</a></li>
+<li class="chapter" data-level="3.2.7" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#display-3.1---error-components-model"><i class="fa fa-check"></i><b>3.2.7</b> DISPLAY 3.1 - Error components model</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#section-3.3---random-coefficients-model"><i class="fa fa-check"></i><b>3.3</b> SECTION 3.3 - Random coefficients model</a></li>
+<li class="chapter" data-level="3.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#section-3.3---random-coefficients-model"><i class="fa fa-check"></i><b>3.3</b> Section 3.3 - Random coefficients model</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html"><i class="fa fa-check"></i><b>4</b> Prediction and Bayesian Inference</a><ul>
 <li class="chapter" data-level="4.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#import-data-3"><i class="fa fa-check"></i><b>4.1</b> Import Data</a></li>
@@ -350,7 +504,7 @@ yogurtdata<span class="op">$</span>FEATURE&lt;-yogurtdata<span class="op">$</spa
 <span class="kw">mtext</span>(<span class="st">&quot;Price&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">adj=</span><span class="op">-</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">5</span>, <span class="dt">at=</span><span class="fl">0.135</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">las=</span><span class="dv">1</span>)
 <span class="kw">mtext</span>(<span class="st">&quot;Type&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">adj=</span><span class="dv">0</span>, <span class="dt">line=</span><span class="dv">3</span>, <span class="dt">at=</span><span class="fl">2.3</span>, <span class="dt">font=</span><span class="dv">10</span>)
 <span class="kw">box</span>()</code></pre>
-<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-102-1.png" width="672" /></p>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-109-1.png" width="672" /></p>
 </div>
 <div id="note-the-small-relationships-among-prices" class="section level3">
 <h3><span class="header-section-number">10.3.3</span> Note the small relationships among prices</h3>
@@ -367,7 +521,7 @@ ph -0.01844819 -0.04349290 -0.0275580  1.00000000</code></pre>
 <span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.12</span>, <span class="dt">by=</span><span class="fl">0.002</span>), <span class="dt">lab=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
 <span class="kw">mtext</span>(<span class="st">&quot;pw&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="dv">1</span>, <span class="dt">at=</span><span class="fl">0.11</span>, <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">font=</span><span class="dv">10</span>)
 <span class="kw">mtext</span>(<span class="st">&quot;pd&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">3</span>, <span class="dt">at=</span><span class="fl">0.062</span>, <span class="dt">font=</span><span class="dv">10</span>)</code></pre>
-<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-103-1.png" width="672" /></p>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-110-1.png" width="672" /></p>
 </div>
 <div id="more-on-prices" class="section level3">
 <h3><span class="header-section-number">10.3.4</span> More on prices</h3>

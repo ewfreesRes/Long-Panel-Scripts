@@ -1,10 +1,9 @@
 
-
 # Prediction and Bayesian Inference
 
 ## Import Data
 
-```{r comment = ""}
+```{r}
 lottery  = read.table("TXTData/Lottery.txt", sep ="\t", quote = "",header=TRUE)
 
 #lottery=read.table(choose.files(), header=TRUE, sep="\t")
@@ -23,11 +22,12 @@ HHMEDAGE | Household median age
 MEDINC | Estimated median household income, in $1000s
 POPULATN | Population, in thousands
 
-```{r comment = ""}
+```{r}
 #EXTRACT TIME - INVARIANT INFORMATION TO ANALYZE
 mzip=d=as.data.frame(t(sapply(split(lottery[, c("NRETAIL", "PERPERHH", "OLSALES", "MEDSCHYR", "MEDHVL", "PRCRENT", "PRC55P", "HHMEDAGE", "MEDINC", "POPULATN")], lottery$ZIP),function(x) colMeans(x))))
  # Extract time invariant information to analyze
 # Notice: the code for this part on website is wrong.
+
 
 ```
 
@@ -37,11 +37,11 @@ In this section, we forecast the sale of state lottery tickets from 50 postal (Z
 
 ### TABLE 4.2: Time - invariant summary statistics
 
-```{r comment = ""}
+```{r}
 summary(mzip[,c("NRETAIL", "PERPERHH", "OLSALES", "MEDSCHYR", "MEDHVL", "PRCRENT", "PRC55P", "HHMEDAGE", "MEDINC", "POPULATN")]) 
 ```
 
-```{r comment = ""}
+```{r}
 # STANDARD DEVIATION
 sqrt(diag(var(mzip[,c("NRETAIL", "PERPERHH", "OLSALES", "MEDSCHYR", "MEDHVL", "PRCRENT", "PRC55P", "HHMEDAGE", "MEDINC", "POPULATN")]))) 
 
@@ -51,7 +51,7 @@ sqrt(diag(var(mzip[,c("NRETAIL", "PERPERHH", "OLSALES", "MEDSCHYR", "MEDHVL", "P
 
 Figure 4.2 shows a positive relationship between average online sales and population. Further, the ZIP code corresponding to the city of Kenosha, Wisconsin, has unusually large average sales for its population size.
 
-```{r comment = ""}
+```{r}
 plot(OLSALES ~ POPULATN, data = mzip, xlab="", ylab="", xaxt="n", yaxt="n",pch="o", las=1, cex=1)
 
 axis(2, at=seq(0, 40000, by=10000), las=1, font=10, cex=0.005, tck=0.01)
@@ -69,7 +69,7 @@ mtext("Population in Thousands", side=1, line=2, at=20, font=10, cex=1, las=1)
 
 ### Sorting the data by zip then combine vectors into another data.frame
 
-```{r comment = ""}
+```{r}
 lottery$logsales<-log10(lottery$OLSALES)
 m<-order(lottery$ZIP, lottery$TIME, lottery$OLSALES,lottery$logsales)
 
@@ -82,7 +82,7 @@ names(index)<-c("ZIP", "TIME", "OLSALES", "LOGSALES")
 
 Figure 4.3 presents a multiple time-series plot of (weekly) sales over time. Here, each line traces the sales patterns for a particular ZIP code. This figure shows the dramatic increase in sales for most ZIP codes, at approximately weeks 8 and 18.
 
-```{r comment = ""}
+```{r}
 plot(OLSALES ~ TIME, data = lottery, axes=F, ylab="", xlab="", xaxt="n", yaxt="n")
 for (i in index$ZIP) {
      lines(OLSALES ~ TIME, data = subset(index, ZIP == i)) }
@@ -96,7 +96,7 @@ mtext("Lottery Sales", side=2, line=-3, at=310000, font=10, cex=1, las=1)
 
  Another way of producing multiple time series graph by using trellis xyplot:
  
-```{r comment = ""}
+```{r}
 
 library(lattice)
 trellis.device(color=F) # telling the trellis device to mimic 'black and white'
@@ -111,7 +111,7 @@ lottery$lnsales<-log(lottery$OLSALES)
 
 Figure 4.4 shows the same information as in Figure 4.3 but on a common (base 10) logarithmic scale. Here, we still see the effects of the PowerBall jackpots on sales. However, Figure 4.4 suggests a dynamic pattern that is common to all ZIP codes. Specifically, logarithmic sales for each ZIP code are relatively stable with the same approximate level of variability. Further, logarithmic sales for each ZIP code peak at the same time, corresponding to large PowerBall jackpots.
 
-```{r comment = ""}
+```{r}
 #FIGURE 4.4 LOG LOTTERY vs WEEK NUMBER
 plot(LOGSALES ~ TIME, data = index, type="p", axes=F, ylab="", xlab="", pch=16, mkh=0.0001, lwd=0.5)
 axis(1, at=seq(0,40, by=1), labels=F, tck=0.005)
@@ -127,7 +127,7 @@ mtext("Logarithmic Lottery Sales", side=2, line=-1, at=5.8, font=10, cex=0.7, la
 
 ## Create model development sample
 
-```{r comment = ""}
+```{r}
 Lottery=lottery
 Lottery$LNSALES<-log(Lottery$OLSALES)
 Lottery2<-subset(Lottery, Lottery$TIME<36)
@@ -135,14 +135,15 @@ Lottery2<-subset(Lottery, Lottery$TIME<36)
 
 ### MODEL 1. Pooled cross-setional model
 
-```{r comment = ""}
+```{r}
 lm1<-lm(LNSALES~PERPERHH+MEDSCHYR+MEDHVL+PRCRENT+PRC55P+HHMEDAGE+MEDINC+POPULATN+NRETAIL, data=Lottery2)
-summary(lm1)
+summary(lm1)#Pooled cross-sectional model 
+
 ```
 
 ### MODEL 2. Error components model
 
-```{r comment = ""}
+```{r}
 library(nlme)
 lme1<-lme(LNSALES~PERPERHH+MEDSCHYR+MEDHVL+PRCRENT+PRC55P+HHMEDAGE+MEDINC+POPULATN+NRETAIL, data=Lottery2, random=~1|ZIP, method="REML") 
 # NOTE* THE DEFAULT METHOD IN lme IS "REML"
@@ -150,7 +151,7 @@ lme1<-lme(LNSALES~PERPERHH+MEDSCHYR+MEDHVL+PRCRENT+PRC55P+HHMEDAGE+MEDINC+POPULA
 summary(lme1)
 ```
 
-```{r comment = ""}
+```{r}
 # CHECK AUTOCORRELATION PATTERNS
 ACF(lme1, maxlag=10) #Obtain ACF of residuals from lme1
 lag.plot(lme1$residuals, lags=-1) #Autocorrelation patterns one lag, needs to refine
@@ -158,32 +159,39 @@ lag.plot(lme1$residuals, lags=-1) #Autocorrelation patterns one lag, needs to re
 
 ### MODEL 3. Error components model with autocorrelated errors
 
-```{r comment = ""}
+```{r}
 lme2<-update(lme1, correlation=corAR1(form=~TIME|ZIP))
 summary(lme2)
-
 ```
 
 ### MODEL 4. More parsimonious random effects model
 
-```{r comment = ""}
+With fewer covariates:
+
+```{r }
 lme3<-lme(LNSALES~MEDSCHYR+POPULATN, data=Lottery2, random=~1|ZIP, correlation=corAR1(form=~TIME|ZIP))
-summary(lme3)
+
 ```
 
-```{r comment = ""}
-#THE POOLED CROSS-SECTIONAL MODEL WITH AUTOCORRELATED ERRORS
+```{r }
+#The pooled cross-sectional model with autocorrelated errors
 #Default method for gls is reml, gls can be viewed as an lme function without the argument random
+library(nlme)
 gls1<-gls(LNSALES~PERPERHH+MEDSCHYR+MEDHVL+PRCRENT+PRC55P+HHMEDAGE+MEDINC+POPULATN+NRETAIL, data=Lottery2, correlation=corAR1(form=~TIME|ZIP)) 
-gls1
+summary(gls1)
+#getVarCov(gls1)
+anova(gls1,lm1)
+#using anova for the models with serial correlation and the pooled cross–sectional regression.
 ```
 
 ### MODEL 5. Fixed effects model with autocorrelated errors
 
-```{r comment = ""}
+```{r}
 Lottery2$ZIPfac=factor(Lottery2$ZIP)
 gls2<-gls(LNSALES~ZIPfac, data=Lottery2, correlation=corAR1(form=~TIME|ZIPfac)) 
 gls2
+#getVarCov(gls2) # Show the covariance matrix, the AR(1) structure
+
 # Note the difference between R estimates and SAS estimates is because in SAS the estimate 
 # for ZIP 54956 is restricted to be zero, in R the intercept and estimates for Zip are 
 # scaled differently, but both estimates should give us approximately the same answer#
@@ -191,4 +199,3 @@ gls2
 ```
 
 The five models listed are summarized in Table 4.4 at Page 146.
-

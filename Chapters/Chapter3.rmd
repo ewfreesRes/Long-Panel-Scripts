@@ -3,7 +3,7 @@
 
 ## Import Data
 
-```{r comment = ""}
+```{r}
 
 #  "\t"  INDICATES SEPARATED BY TABLES  ;
 taxprep  = read.table("TXTData/TaxPrep.txt", sep ="\t", quote = "",header=TRUE)
@@ -14,7 +14,7 @@ taxprep  = read.table("TXTData/TaxPrep.txt", sep ="\t", quote = "",header=TRUE)
  Data for this study are from the Statistics of Income (SOI) Panel of Individual Returns, a part of the Ernst and Young/University of Michigan Tax Research Database. The SOI Panel represents a simple random sample of unaudited individual income tax returns filed for tax years 1979-1990. The data are compiled from a stratified probability sample of unaudited individual income tax returns, Forms 1040, 1040A and 1040EZ, filed by U.S. taxpayers. The estimates that are obtained from these data are intended to represent all returns filed for the income tax years under review. All returns processed are subjected to sampling except tentative and amended returns.
  
  Variable| Description
----- | --------------------------------------------------------- 
+---- | --- 
 MS |is an indicator variable of the taxpayer's marital status. It is coded one if the taxpayer is married and zero otherwise.
 HH | is an indicator variable, one if the taxpayer is a head of household and zero otherwise.
 DEPEND | is the number of dependents claimed by the taxpayer.
@@ -40,7 +40,7 @@ LNTPI | is the natural logarithm of the sum of all positive income line items on
 
 The binary variables in Table 3.2 indicate that over half the sample is married (MS) and approximately half the sample uses a paid preparer (PREP).
 
-```{r comment = ""}
+```{r}
 library(nlme)
 gsummary(taxprep[, c("MS", "HH", "AGE", "EMP", "PREP")], groups=taxprep$TIME, FUN=mean)
 ```
@@ -50,24 +50,24 @@ gsummary(taxprep[, c("MS", "HH", "AGE", "EMP", "PREP")], groups=taxprep$TIME, FU
 
 Tables 3.2 and 3.3 describe the basic taxpayer characteristics used in our analysis. The summary statistics for the other nonbinary variables are in Table 3.3.
 
-```{r comment = ""}
-
+```{r}
 summary(taxprep[, c("DEPEND", "LNTPI", "MR", "LNTAX")]) #summary does not provid standard deviation
 ```
 
  Standard deviation of some variables.
 
-```{r comment = ""}
+```{r}
 #Standard Deviation
 var<-var(taxprep[, c("DEPEND", "LNTPI", "MR", "LNTAX")])
 sqrt(diag(var))
+
 ```
 
 ### TABLE 3.4 - Averages by level of binary explanatory variable
  
  To explore the relationship between each indicator variable and logarithmic tax, Table 3.4 presents the average logarithmic tax liability by level of indicator variable. This table shows that married filers pay greater tax, head-of-household filers pay less tax, taxpayers 65 or over pay less, taxpayers with self-employed income pay less, and taxpayers who use a professional tax preparer pay more.
 
-```{r comment = ""}
+```{r}
 library(Hmisc)
 summarize(taxprep$LNTAX, taxprep$MS, mean) 
 summarize(taxprep$LNTAX, taxprep$HH, mean)
@@ -92,7 +92,7 @@ table(taxprep$PREPF)
 ### TABLE 3.5 - Correlation for continous variables
  Table 3.5 summarizes basic relations among logarithmic tax and the other nonbinary explanatory variables. Both `LNTPI` and `MR` are strongly correlated with logarithmic tax whereas the relationship between `DEPEND` and logarithmic tax is positive, yet weaker. Table 3.5 also shows that `LNTPI` and `MR` are strongly positively correlated.
  
-```{r comment = ""}
+```{r}
 cor(taxprep[,c("LNTAX", "DEPEND", "LNTPI", "MR")])
 ```
  
@@ -101,7 +101,7 @@ cor(taxprep[,c("LNTAX", "DEPEND", "LNTPI", "MR")])
 
 Moreover, both the mean and median marginal tax rates (`MR`) are decreasing, although mean and median tax liabilities (`LNTAX`) are stable (see Figure 3.2). These results are consistent with congressional efforts to reduce rates and expand the tax base through broadening the definition of income and eliminating deductions.
 
-```{r comment = ""}
+```{r}
 #CREATE CATEGORICAL VARIABLE
 taxprep$SUBJECT1=factor(taxprep$SUBJECT)
 lntax.lm = lm(LNTAX ~ SUBJECT1, data=taxprep)
@@ -117,23 +117,54 @@ mtext("Residuals from LNTAX", side=2, line=-7, at=7.5, font=10, cex=1, las=1)
 mtext("Residuals from LNTPI", side=1, line=3, at=-2, font=10, cex=1)
 ```
 
+### Five ways of doing the pooling model
+
+```{r}
+#1
+summary(lm(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR, data=taxprep))
+#2
+summary(glm(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR,data=taxprep, 
+              family=gaussian(link=identity)) )
+#3
+library(plm)
+summary(plm(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR, data=taxprep, 
+       index=c("SUBJECT","TIME"),model="pooling"))
+#4
+library(nlme)
+summary(gls(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR,data=taxprep))
+#install.packages("gee")
+#5
+library(gee)
+summary(gee(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR, id=SUBJECT, data=taxprep, 
+              family=gaussian(link=identity), corstr="independence") )
+
+```
+
 ### DISPLAY 3.1 - Error components model
  
  The estimated model appears in Display 3.1, from a fit using the statistical package SAS. Display 3.1 shows that HH, EMP, LNTPI, and MR are statistically significant variables that affect LNTAX. Somewhat surprisingly, the PREP variable was not statistically significant.
  
-```{r comment = ""}
+```{r}
 random<-lme(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR, data=taxprep, random=~1|SUBJECT, method="ML")
 ## NOTE* THE DEFAULT METHOD IN lme IS "REML"
 summary(random)
 ```
  
-## SECTION 3.3 - Random coefficients model
+## Section 3.3 - Random coefficients model
 
-```{r comment = ""}
+If we include all random coefficients of eight covariates (`MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR`), then the number of cofficients exceeds the number of observations and it leads to warnings. If we only include a few of covariates, then `lmer()` can be used to estimate the random coefficients model. Here is an example of including (`1+MS+HH|SUBJECT`) as the random part.
+
+```{r}
 
 #randomcoeff<-lme(LNTAX~MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR, data=taxprep, random=~1+MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR|SUBJECT, method="ML") 
+
 # NOTE*:It takes forever to run the estimation, in the end a warning messaged was given. 
 # No estimation result was produced. 
 # The reason is due to the fact that in SAS, the method of mivque0 allows estimation for this model, in R this method is not readily available to be coded.
+library(lme4)
+#randomcoeff<-lmer(LNTAX ~ MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR+(1+MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR|SUBJECT),data=taxprep)
 
+randomcoeff<-lmer(LNTAX ~ MS+HH+AGE+EMP+PREP+LNTPI+DEPEND+MR+(1+MS+HH|SUBJECT),data=taxprep)
+
+summary(randomcoeff)
 ```

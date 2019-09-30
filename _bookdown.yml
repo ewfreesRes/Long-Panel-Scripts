@@ -11,7 +11,6 @@ rmd_files: ["index.Rmd",
             "Chapters/Chapter9.Rmd",
             "Chapters/Chapter10.Rmd",
             "Chapters/Chapter11.Rmd"]
-#            "Chapters/Bibliography.Rmd"]
            
 language:
   ui:

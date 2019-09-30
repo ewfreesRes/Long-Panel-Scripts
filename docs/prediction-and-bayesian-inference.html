@@ -48,6 +48,148 @@
 
 
 
+<!-- Mathjax -->
+<script type='text/x-mathjax-config'>
+		MathJax.Hub.Config({
+			extensions: ['tex2jax.js'],
+			jax: ['input/TeX', 'output/HTML-CSS'],
+			tex2jax: {
+				inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+				displayMath: [ ['$$','$$'], ['\\[','\\]'] ],
+				processEscapes: true
+			},
+			'HTML-CSS': { availableFonts: ['TeX'] }
+		});
+</script>
+
+<!-- The following code is for the quizzes -->
+<script src="https://surveyjs.azureedge.net/1.0.50/survey.jquery.js"></script>
+<link href="https://surveyjs.azureedge.net/1.0.50/survey.css" type="text/css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.6.4/showdown.min.js"></script>  
+
+<script>
+function markdownConverterEWF() {  
+//Create showdown markdown converter
+var converter = new showdown.Converter();
+converter.setOption('ghCompatibleHeaderId', true);
+survey
+    .onTextMarkdown
+    .add(function (survey, options) {
+        //convert the mardown text to html
+        var str = converter.makeHtml(options.text);
+        //remove root paragraphs <p></p>
+        str = str.substring(3);
+        str = str.substring(0, str.length - 4);
+        //set html
+        options.html = str;
+         MathJax.Hub.Queue(['Typeset',MathJax.Hub, 'options']);
+    });  
+};
+// Quiz Header info
+const jsonHeader = { 
+    showProgressBar: "bottom",
+    showTimerPanel: "none",
+    maxTimeToFinishPage: 10000,
+    maxTimeToFinish: 25000,
+    firstPageIsStarted: true,
+    startSurveyText: "Start Quiz" //,
+//    title: "Does This Make Sense?"
+}
+
+// Three, four, and five question quizzes
+function jsonSummary3EWF(json) {  
+let jsonEnd3 = { 
+completedHtml: 
+json["pages"][1]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][1]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][1]["questions"][0]["correctAnswer"]
++"<br>"+
+json["pages"][2]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][2]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][2]["questions"][0]["correctAnswer"]
++"<br>"+
+json["pages"][3]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][3]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][3]["questions"][0]["correctAnswer"]
+};  
+return jsonEnd3;
+};
+
+function jsonSummary4EWF(json) {  
+jsonEnd4 = jsonSummary3EWF(json);
+jsonEnd4.completedHtml = jsonEnd4.completedHtml +  
+"<br>"+
+json["pages"][4]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][4]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][4]["questions"][0]["correctAnswer"]
+;  
+return jsonEnd4;
+};
+
+function jsonSummary5EWF(json) {  
+jsonEnd5 = jsonSummary4EWF(json);
+jsonEnd5.completedHtml = jsonEnd5.completedHtml +  
+"<br>"+
+json["pages"][5]["questions"][0]["name"]+ "<br>"+
+"<i>Question: </i>"+json["pages"][5]["questions"][0]["title"]+"<br>"+
+"<i>Answer: </i>"+json["pages"][5]["questions"][0]["correctAnswer"]
+;  
+return jsonEnd5;
+};
+</script>  
+<!-- This completes the code for the quizzes -->
+
+
+<!-- Various toggle functions used throughout --> 
+<script language="javascript">
+function toggle(id1,id2) {
+	var ele = document.getElementById(id1); var text = document.getElementById(id2);
+	if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show Solution";}
+		else {ele.style.display = "block"; text.innerHTML = "Hide Solution";}}
+function togglecode(id1,id2) {
+   var ele = document.getElementById(id1); var text = document.getElementById(id2);
+   if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show R Code";}
+      else {ele.style.display = "block"; text.innerHTML = "Hide R Code";}}
+function toggleEX(id1,id2) {
+   var ele = document.getElementById(id1); var text = document.getElementById(id2);
+   if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show Example";}
+      else {ele.style.display = "block"; text.innerHTML = "Hide Example";}}
+function toggleTheory(id1,id2) {
+   var ele = document.getElementById(id1); var text = document.getElementById(id2);
+   if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show Theory";}
+      else {ele.style.display = "block"; text.innerHTML = "Hide Theory";}}
+function toggleQuiz(id1,id2) {
+   var ele = document.getElementById(id1); var text = document.getElementById(id2);
+   if (ele.style.display == "block") {ele.style.display = "none"; text.innerHTML = "Show Quiz Solution";}
+      else {ele.style.display = "block"; text.innerHTML = "Hide Quiz Solution";}}      
+</script>
+
+<!-- A few functions for revealing definitions -->
+<script language="javascript">
+<!--   $( function() {
+    $("#tabs").tabs();
+  } ); -->
+
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover(); 
+});
+</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125587869-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125587869-1');
+</script>
+
+
 <style type="text/css">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
@@ -112,6 +254,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -124,6 +267,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
+<li><a href="./">R Scripts for Longitudinal and Panel Data</a></li>
+
+<li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
 <li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
 <li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#import-data"><i class="fa fa-check"></i><b>1.1</b> Import Data</a></li>
@@ -142,10 +288,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#figure-2.5-trellis-plot"><i class="fa fa-check"></i><b>2.2.5</b> Figure 2.5: Trellis Plot</a></li>
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-fixed-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.3</b> One way fixed effects model using lm, for linear model</a></li>
-<li class="chapter" data-level="2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.1---analysis-for-the-pooling-test"><i class="fa fa-check"></i><b>2.4</b> SECTION 2.4.1 - Analysis for the pooling test;</a></li>
-<li class="chapter" data-level="2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.2---correlation-corresponding-to-the-added-variable-plot"><i class="fa fa-check"></i><b>2.5</b> SECTION 2.4.2 - Correlation corresponding to the added variable plot;</a></li>
-<li class="chapter" data-level="2.6" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.5---testing-for-heteroscedasticity"><i class="fa fa-check"></i><b>2.6</b> SECTION 2.4.5 - Testing for heteroscedasticity;</a><ul>
+<li class="chapter" data-level="2.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.1---analysis-for-the-pooling-test"><i class="fa fa-check"></i><b>2.4</b> Section 2.4.1 - Analysis for the pooling test;</a></li>
+<li class="chapter" data-level="2.5" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.2---correlation-corresponding-to-the-added-variable-plot"><i class="fa fa-check"></i><b>2.5</b> Section 2.4.2 - Correlation corresponding to the added variable plot;</a></li>
+<li class="chapter" data-level="2.6" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#section-2.4.5---testing-for-heteroscedasticity"><i class="fa fa-check"></i><b>2.6</b> Section 2.4.5 - Testing for heteroscedasticity;</a><ul>
 <li class="chapter" data-level="2.6.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#one-way-random-effects-model-using-lm-for-linear-model"><i class="fa fa-check"></i><b>2.6.1</b> One way random effects model using lm, for linear model;</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#more-fun"><i class="fa fa-check"></i><b>2.7</b> More Fun</a></li>
+<li class="chapter" data-level="2.8" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#plm-panel-linear-model-package"><i class="fa fa-check"></i><b>2.8</b> PLM (Panel Linear Model) package</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#pooling-test"><i class="fa fa-check"></i><b>2.8.1</b> Pooling Test</a></li>
+<li class="chapter" data-level="2.8.2" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#two-way-model"><i class="fa fa-check"></i><b>2.8.2</b> Two-way Model</a></li>
+<li class="chapter" data-level="2.8.3" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#three-different-ways-to-doing-the-same-thing"><i class="fa fa-check"></i><b>2.8.3</b> Three different ways to doing the same thing</a></li>
+<li class="chapter" data-level="2.8.4" data-path="fixed-effects-models.html"><a href="fixed-effects-models.html#different-r-squared---go-figure"><i class="fa fa-check"></i><b>2.8.4</b> Different r-squared - go figure</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html"><i class="fa fa-check"></i><b>3</b> Models with Random Effects</a><ul>
@@ -156,9 +309,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.4---averages-by-level-of-binary-explanatory-variable"><i class="fa fa-check"></i><b>3.2.3</b> TABLE 3.4 - Averages by level of binary explanatory variable</a></li>
 <li class="chapter" data-level="3.2.4" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#table-3.5---correlation-for-continous-variables"><i class="fa fa-check"></i><b>3.2.4</b> TABLE 3.5 - Correlation for continous variables</a></li>
 <li class="chapter" data-level="3.2.5" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#figure-3.2-basic-added-variable-plot-y-vs.-x"><i class="fa fa-check"></i><b>3.2.5</b> FIGURE 3.2: Basic added variable plot (y vs. x)</a></li>
-<li class="chapter" data-level="3.2.6" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#display-3.1---error-components-model"><i class="fa fa-check"></i><b>3.2.6</b> DISPLAY 3.1 - Error components model</a></li>
+<li class="chapter" data-level="3.2.6" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#five-ways-of-doing-the-pooling-model"><i class="fa fa-check"></i><b>3.2.6</b> Five ways of doing the pooling model</a></li>
+<li class="chapter" data-level="3.2.7" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#display-3.1---error-components-model"><i class="fa fa-check"></i><b>3.2.7</b> DISPLAY 3.1 - Error components model</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#section-3.3---random-coefficients-model"><i class="fa fa-check"></i><b>3.3</b> SECTION 3.3 - Random coefficients model</a></li>
+<li class="chapter" data-level="3.3" data-path="models-with-random-effects.html"><a href="models-with-random-effects.html#section-3.3---random-coefficients-model"><i class="fa fa-check"></i><b>3.3</b> Section 3.3 - Random coefficients model</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html"><i class="fa fa-check"></i><b>4</b> Prediction and Bayesian Inference</a><ul>
 <li class="chapter" data-level="4.1" data-path="prediction-and-bayesian-inference.html"><a href="prediction-and-bayesian-inference.html#import-data-3"><i class="fa fa-check"></i><b>4.1</b> Import Data</a></li>
@@ -337,33 +491,33 @@ mzip=d=<span class="kw">as.data.frame</span>(<span class="kw">t</span>(<span cla
 <div id="table-4.2-time---invariant-summary-statistics" class="section level3">
 <h3><span class="header-section-number">4.2.1</span> TABLE 4.2: Time - invariant summary statistics</h3>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(mzip[,<span class="kw">c</span>(<span class="st">&quot;NRETAIL&quot;</span>, <span class="st">&quot;PERPERHH&quot;</span>, <span class="st">&quot;OLSALES&quot;</span>, <span class="st">&quot;MEDSCHYR&quot;</span>, <span class="st">&quot;MEDHVL&quot;</span>, <span class="st">&quot;PRCRENT&quot;</span>, <span class="st">&quot;PRC55P&quot;</span>, <span class="st">&quot;HHMEDAGE&quot;</span>, <span class="st">&quot;MEDINC&quot;</span>, <span class="st">&quot;POPULATN&quot;</span>)]) </code></pre>
-<pre><code>    NRETAIL          PERPERHH        OLSALES           MEDSCHYR    
- Min.   : 1.000   Min.   :2.200   Min.   :  189.0   Min.   :12.20  
- 1st Qu.: 3.000   1st Qu.:2.600   1st Qu.:  821.3   1st Qu.:12.50  
- Median : 6.362   Median :2.700   Median : 2426.4   Median :12.60  
- Mean   :11.942   Mean   :2.706   Mean   : 6494.8   Mean   :12.70  
- 3rd Qu.:15.312   3rd Qu.:2.800   3rd Qu.:10016.5   3rd Qu.:12.78  
- Max.   :68.625   Max.   :3.200   Max.   :33181.4   Max.   :15.90  
-     MEDHVL          PRCRENT          PRC55P        HHMEDAGE    
- Min.   : 34.50   Min.   : 6.00   Min.   :25.0   Min.   :41.00  
- 1st Qu.: 43.77   1st Qu.:19.25   1st Qu.:35.0   1st Qu.:46.00  
- Median : 53.90   Median :24.00   Median :40.0   Median :48.00  
- Mean   : 57.09   Mean   :24.68   Mean   :39.7   Mean   :48.76  
- 3rd Qu.: 66.47   3rd Qu.:27.00   3rd Qu.:44.0   3rd Qu.:51.00  
- Max.   :120.00   Max.   :62.00   Max.   :56.0   Max.   :59.00  
-     MEDINC         POPULATN     
- Min.   :27.90   Min.   : 0.280  
- 1st Qu.:38.17   1st Qu.: 1.964  
- Median :43.10   Median : 4.405  
- Mean   :45.12   Mean   : 9.311  
- 3rd Qu.:53.62   3rd Qu.:15.446  
- Max.   :70.70   Max.   :39.098  </code></pre>
+<pre><code>##     NRETAIL          PERPERHH        OLSALES           MEDSCHYR    
+##  Min.   : 1.000   Min.   :2.200   Min.   :  189.0   Min.   :12.20  
+##  1st Qu.: 3.000   1st Qu.:2.600   1st Qu.:  821.3   1st Qu.:12.50  
+##  Median : 6.362   Median :2.700   Median : 2426.4   Median :12.60  
+##  Mean   :11.942   Mean   :2.706   Mean   : 6494.8   Mean   :12.70  
+##  3rd Qu.:15.312   3rd Qu.:2.800   3rd Qu.:10016.5   3rd Qu.:12.78  
+##  Max.   :68.625   Max.   :3.200   Max.   :33181.4   Max.   :15.90  
+##      MEDHVL          PRCRENT          PRC55P        HHMEDAGE    
+##  Min.   : 34.50   Min.   : 6.00   Min.   :25.0   Min.   :41.00  
+##  1st Qu.: 43.77   1st Qu.:19.25   1st Qu.:35.0   1st Qu.:46.00  
+##  Median : 53.90   Median :24.00   Median :40.0   Median :48.00  
+##  Mean   : 57.09   Mean   :24.68   Mean   :39.7   Mean   :48.76  
+##  3rd Qu.: 66.47   3rd Qu.:27.00   3rd Qu.:44.0   3rd Qu.:51.00  
+##  Max.   :120.00   Max.   :62.00   Max.   :56.0   Max.   :59.00  
+##      MEDINC         POPULATN     
+##  Min.   :27.90   Min.   : 0.280  
+##  1st Qu.:38.17   1st Qu.: 1.964  
+##  Median :43.10   Median : 4.405  
+##  Mean   :45.12   Mean   : 9.311  
+##  3rd Qu.:53.62   3rd Qu.:15.446  
+##  Max.   :70.70   Max.   :39.098</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># STANDARD DEVIATION</span>
 <span class="kw">sqrt</span>(<span class="kw">diag</span>(<span class="kw">var</span>(mzip[,<span class="kw">c</span>(<span class="st">&quot;NRETAIL&quot;</span>, <span class="st">&quot;PERPERHH&quot;</span>, <span class="st">&quot;OLSALES&quot;</span>, <span class="st">&quot;MEDSCHYR&quot;</span>, <span class="st">&quot;MEDHVL&quot;</span>, <span class="st">&quot;PRCRENT&quot;</span>, <span class="st">&quot;PRC55P&quot;</span>, <span class="st">&quot;HHMEDAGE&quot;</span>, <span class="st">&quot;MEDINC&quot;</span>, <span class="st">&quot;POPULATN&quot;</span>)]))) </code></pre>
-<pre><code>     NRETAIL     PERPERHH      OLSALES     MEDSCHYR       MEDHVL 
-  13.2918231    0.2093820 8103.0125037    0.5514212   18.3731152 
-     PRCRENT       PRC55P     HHMEDAGE       MEDINC     POPULATN 
-   9.3425513    7.5112161    4.1431527    9.7835616   11.0981570 </code></pre>
+<pre><code>##      NRETAIL     PERPERHH      OLSALES     MEDSCHYR       MEDHVL 
+##   13.2918231    0.2093820 8103.0125037    0.5514212   18.3731152 
+##      PRCRENT       PRC55P     HHMEDAGE       MEDINC     POPULATN 
+##    9.3425513    7.5112161    4.1431527    9.7835616   11.0981570</code></pre>
 </div>
 <div id="figure-4.2-look-at-the-relationship" class="section level3">
 <h3><span class="header-section-number">4.2.2</span> FIGURE 4.2: Look at the relationship</h3>
@@ -381,7 +535,7 @@ mzip=d=<span class="kw">as.data.frame</span>(<span class="kw">t</span>(<span cla
 <span class="kw">mtext</span>(<span class="st">&quot;Average Lottery Sales&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="op">-</span><span class="fl">3.5</span>, <span class="dt">at=</span><span class="dv">36000</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)
 
 <span class="kw">mtext</span>(<span class="st">&quot;Population in Thousands&quot;</span>, <span class="dt">side=</span><span class="dv">1</span>, <span class="dt">line=</span><span class="dv">2</span>, <span class="dt">at=</span><span class="dv">20</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)</code></pre>
-<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-47-1.png" width="672" /></p>
 </div>
 <div id="sorting-the-data-by-zip-then-combine-vectors-into-another-data.frame" class="section level3">
 <h3><span class="header-section-number">4.2.3</span> Sorting the data by zip then combine vectors into another data.frame</h3>
@@ -404,7 +558,7 @@ index&lt;-<span class="kw">as.data.frame</span>(<span class="kw">cbind</span>(lo
 <span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">300000</span>, <span class="dt">by=</span><span class="dv">10000</span>), <span class="dt">labels=</span>F, <span class="dt">tck=</span><span class="fl">0.005</span>)
 <span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">at=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">305000</span>, <span class="dt">by=</span><span class="dv">100000</span>), <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">cex=</span><span class="fl">0.005</span>, <span class="dt">tck=</span><span class="fl">0.01</span>) 
 <span class="kw">mtext</span>(<span class="st">&quot;Lottery Sales&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="op">-</span><span class="dv">3</span>, <span class="dt">at=</span><span class="dv">310000</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="dv">1</span>, <span class="dt">las=</span><span class="dv">1</span>)</code></pre>
-<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
 <p>Another way of producing multiple time series graph by using trellis xyplot:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(lattice)
 <span class="kw">trellis.device</span>(<span class="dt">color=</span>F) <span class="co"># telling the trellis device to mimic &#39;black and white&#39;</span>
@@ -427,7 +581,7 @@ lottery<span class="op">$</span>lnsales&lt;-<span class="kw">log</span>(lottery<
 <span class="kw">mtext</span>(<span class="st">&quot;Logarithmic Lottery Sales&quot;</span>, <span class="dt">side=</span><span class="dv">2</span>, <span class="dt">line=</span><span class="op">-</span><span class="dv">1</span>, <span class="dt">at=</span><span class="fl">5.8</span>, <span class="dt">font=</span><span class="dv">10</span>, <span class="dt">cex=</span><span class="fl">0.7</span>, <span class="dt">las=</span><span class="dv">1</span>)
     <span class="cf">for</span> (i <span class="cf">in</span> index<span class="op">$</span>ZIP) {
     <span class="kw">lines</span>(LOGSALES <span class="op">~</span><span class="st"> </span>TIME, <span class="dt">data=</span><span class="kw">subset</span>(index, ZIP<span class="op">==</span>i)) }</code></pre>
-<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
 </div>
 </div>
 <div id="create-model-development-sample" class="section level2">
@@ -438,34 +592,34 @@ Lottery2&lt;-<span class="kw">subset</span>(Lottery, Lottery<span class="op">$</
 <div id="model-1.-pooled-cross-setional-model" class="section level3">
 <h3><span class="header-section-number">4.3.1</span> MODEL 1. Pooled cross-setional model</h3>
 <pre class="sourceCode r"><code class="sourceCode r">lm1&lt;-<span class="kw">lm</span>(LNSALES<span class="op">~</span>PERPERHH<span class="op">+</span>MEDSCHYR<span class="op">+</span>MEDHVL<span class="op">+</span>PRCRENT<span class="op">+</span>PRC55P<span class="op">+</span>HHMEDAGE<span class="op">+</span>MEDINC<span class="op">+</span>POPULATN<span class="op">+</span>NRETAIL, <span class="dt">data=</span>Lottery2)
-<span class="kw">summary</span>(lm1)</code></pre>
-<pre><code>
-Call:
-lm(formula = LNSALES ~ PERPERHH + MEDSCHYR + MEDHVL + PRCRENT + 
-    PRC55P + HHMEDAGE + MEDINC + POPULATN + NRETAIL, data = Lottery2)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--1.9743 -0.6012 -0.0774  0.5430  4.2015 
-
-Coefficients:
-             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 13.821060   1.339594  10.317  &lt; 2e-16 ***
-PERPERHH    -1.084705   0.160224  -6.770 1.76e-11 ***
-MEDSCHYR    -0.821644   0.069049 -11.899  &lt; 2e-16 ***
-MEDHVL       0.013822   0.002662   5.192 2.33e-07 ***
-PRCRENT      0.031820   0.003738   8.512  &lt; 2e-16 ***
-PRC55P      -0.069578   0.013397  -5.194 2.30e-07 ***
-HHMEDAGE     0.118136   0.020961   5.636 2.03e-08 ***
-MEDINC       0.043373   0.005304   8.177 5.53e-16 ***
-POPULATN     0.057025   0.006060   9.410  &lt; 2e-16 ***
-NRETAIL      0.021278   0.004076   5.220 2.00e-07 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-Residual standard error: 0.8365 on 1740 degrees of freedom
-Multiple R-squared:  0.6963,    Adjusted R-squared:  0.6947 
-F-statistic: 443.3 on 9 and 1740 DF,  p-value: &lt; 2.2e-16</code></pre>
+<span class="kw">summary</span>(lm1)<span class="co">#Pooled cross-sectional model </span></code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = LNSALES ~ PERPERHH + MEDSCHYR + MEDHVL + PRCRENT + 
+##     PRC55P + HHMEDAGE + MEDINC + POPULATN + NRETAIL, data = Lottery2)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.9743 -0.6012 -0.0774  0.5430  4.2015 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 13.821060   1.339594  10.317  &lt; 2e-16 ***
+## PERPERHH    -1.084705   0.160224  -6.770 1.76e-11 ***
+## MEDSCHYR    -0.821644   0.069049 -11.899  &lt; 2e-16 ***
+## MEDHVL       0.013822   0.002662   5.192 2.33e-07 ***
+## PRCRENT      0.031820   0.003738   8.512  &lt; 2e-16 ***
+## PRC55P      -0.069578   0.013397  -5.194 2.30e-07 ***
+## HHMEDAGE     0.118136   0.020961   5.636 2.03e-08 ***
+## MEDINC       0.043373   0.005304   8.177 5.53e-16 ***
+## POPULATN     0.057025   0.006060   9.410  &lt; 2e-16 ***
+## NRETAIL      0.021278   0.004076   5.220 2.00e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.8365 on 1740 degrees of freedom
+## Multiple R-squared:  0.6963, Adjusted R-squared:  0.6947 
+## F-statistic: 443.3 on 9 and 1740 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <div id="model-2.-error-components-model" class="section level3">
 <h3><span class="header-section-number">4.3.2</span> MODEL 2. Error components model</h3>
@@ -474,214 +628,217 @@ lme1&lt;-<span class="kw">lme</span>(LNSALES<span class="op">~</span>PERPERHH<sp
 <span class="co"># </span><span class="al">NOTE</span><span class="co">* THE DEFAULT METHOD IN lme IS &quot;REML&quot;</span>
 <span class="co"># Use REML method in estimating fixed effects beta coefficients </span>
 <span class="kw">summary</span>(lme1)</code></pre>
-<pre><code>Linear mixed-effects model fit by REML
- Data: Lottery2 
-       AIC      BIC    logLik
-  2907.889 2973.428 -1441.944
-
-Random effects:
- Formula: ~1 | ZIP
-        (Intercept)  Residual
-StdDev:     0.77897 0.5130729
-
-Fixed effects: LNSALES ~ PERPERHH + MEDSCHYR + MEDHVL + PRCRENT + PRC55P + HHMEDAGE +      MEDINC + POPULATN + NRETAIL 
-                Value Std.Error   DF   t-value p-value
-(Intercept) 18.095695  7.316764 1699  2.473183  0.0135
-PERPERHH    -1.287021  0.886172   41 -1.452337  0.1540
-MEDSCHYR    -1.077937  0.375131   41 -2.873491  0.0064
-MEDHVL       0.007360  0.014633   41  0.502935  0.6177
-PRCRENT      0.026321  0.020660   41  1.274032  0.2098
-PRC55P      -0.072547  0.074259   41 -0.976939  0.3343
-HHMEDAGE     0.118637  0.116199   41  1.020986  0.3132
-MEDINC       0.045540  0.029396   41  1.549194  0.1290
-POPULATN     0.121851  0.027529   41  4.426231  0.0001
-NRETAIL     -0.027177  0.017420 1699 -1.560055  0.1189
- Correlation: 
-         (Intr) PERPER MEDSCH MEDHVL PRCREN PRC55P HHMEDA MEDINC POPULA
-PERPERHH -0.632                                                        
-MEDSCHYR -0.745  0.204                                                 
-MEDHVL    0.303  0.093 -0.394                                          
-PRCRENT  -0.198  0.402 -0.258  0.008                                   
-PRC55P    0.146  0.236 -0.018  0.069  0.039                            
-HHMEDAGE -0.461  0.049  0.109 -0.128  0.151 -0.898                     
-MEDINC   -0.171 -0.013  0.080 -0.653  0.214  0.392 -0.200              
-POPULATN  0.180 -0.021 -0.228 -0.171 -0.287 -0.035  0.035 -0.050       
-NRETAIL  -0.210  0.082  0.246  0.159  0.096  0.014 -0.002 -0.027 -0.847
-
-Standardized Within-Group Residuals:
-        Min          Q1         Med          Q3         Max 
--2.06921597 -0.49881173 -0.29717361  0.02767368  6.60150830 
-
-Number of Observations: 1750
-Number of Groups: 50 </code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##  Data: Lottery2 
+##        AIC      BIC    logLik
+##   2907.889 2973.428 -1441.944
+## 
+## Random effects:
+##  Formula: ~1 | ZIP
+##         (Intercept)  Residual
+## StdDev:     0.77897 0.5130729
+## 
+## Fixed effects: LNSALES ~ PERPERHH + MEDSCHYR + MEDHVL + PRCRENT + PRC55P + HHMEDAGE +      MEDINC + POPULATN + NRETAIL 
+##                 Value Std.Error   DF   t-value p-value
+## (Intercept) 18.095695  7.316764 1699  2.473183  0.0135
+## PERPERHH    -1.287021  0.886172   41 -1.452337  0.1540
+## MEDSCHYR    -1.077937  0.375131   41 -2.873491  0.0064
+## MEDHVL       0.007360  0.014633   41  0.502935  0.6177
+## PRCRENT      0.026321  0.020660   41  1.274032  0.2098
+## PRC55P      -0.072547  0.074259   41 -0.976939  0.3343
+## HHMEDAGE     0.118637  0.116199   41  1.020986  0.3132
+## MEDINC       0.045540  0.029396   41  1.549194  0.1290
+## POPULATN     0.121851  0.027529   41  4.426231  0.0001
+## NRETAIL     -0.027177  0.017420 1699 -1.560055  0.1189
+##  Correlation: 
+##          (Intr) PERPER MEDSCH MEDHVL PRCREN PRC55P HHMEDA MEDINC POPULA
+## PERPERHH -0.632                                                        
+## MEDSCHYR -0.745  0.204                                                 
+## MEDHVL    0.303  0.093 -0.394                                          
+## PRCRENT  -0.198  0.402 -0.258  0.008                                   
+## PRC55P    0.146  0.236 -0.018  0.069  0.039                            
+## HHMEDAGE -0.461  0.049  0.109 -0.128  0.151 -0.898                     
+## MEDINC   -0.171 -0.013  0.080 -0.653  0.214  0.392 -0.200              
+## POPULATN  0.180 -0.021 -0.228 -0.171 -0.287 -0.035  0.035 -0.050       
+## NRETAIL  -0.210  0.082  0.246  0.159  0.096  0.014 -0.002 -0.027 -0.847
+## 
+## Standardized Within-Group Residuals:
+##         Min          Q1         Med          Q3         Max 
+## -2.06921597 -0.49881173 -0.29717361  0.02767368  6.60150830 
+## 
+## Number of Observations: 1750
+## Number of Groups: 50</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># CHECK AUTOCORRELATION PATTERNS</span>
 <span class="kw">ACF</span>(lme1, <span class="dt">maxlag=</span><span class="dv">10</span>) <span class="co">#Obtain ACF of residuals from lme1</span></code></pre>
-<pre><code>   lag         ACF
-1    0  1.00000000
-2    1  0.52724776
-3    2  0.10000857
-4    3 -0.03788895
-5    4 -0.15969734
-6    5 -0.23410399
-7    6 -0.24984691
-8    7 -0.18355756
-9    8 -0.02825433
-10   9  0.19456638
-11  10  0.47143962
-12  11  0.17601528
-13  12 -0.10862546
-14  13 -0.16449717
-15  14 -0.31225995
-16  15 -0.40819498</code></pre>
+<pre><code>##    lag         ACF
+## 1    0  1.00000000
+## 2    1  0.52724776
+## 3    2  0.10000857
+## 4    3 -0.03788895
+## 5    4 -0.15969734
+## 6    5 -0.23410399
+## 7    6 -0.24984691
+## 8    7 -0.18355756
+## 9    8 -0.02825433
+## 10   9  0.19456638
+## 11  10  0.47143962
+## 12  11  0.17601528
+## 13  12 -0.10862546
+## 14  13 -0.16449717
+## 15  14 -0.31225995
+## 16  15 -0.40819498</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lag.plot</span>(lme1<span class="op">$</span>residuals, <span class="dt">lags=</span><span class="op">-</span><span class="dv">1</span>) <span class="co">#Autocorrelation patterns one lag, needs to refine</span></code></pre>
-<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-48-1.png" width="672" /><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-48-2.png" width="672" /><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-48-3.png" width="672" /><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-48-4.png" width="672" /><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-48-5.png" width="672" /><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-48-6.png" width="672" /></p>
+<p><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-55-1.png" width="672" /><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-55-2.png" width="672" /><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-55-3.png" width="672" /><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-55-4.png" width="672" /><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-55-5.png" width="672" /><img src="LongPanelDataScripts_files/figure-html/unnamed-chunk-55-6.png" width="672" /></p>
 </div>
 <div id="model-3.-error-components-model-with-autocorrelated-errors" class="section level3">
 <h3><span class="header-section-number">4.3.3</span> MODEL 3. Error components model with autocorrelated errors</h3>
 <pre class="sourceCode r"><code class="sourceCode r">lme2&lt;-<span class="kw">update</span>(lme1, <span class="dt">correlation=</span><span class="kw">corAR1</span>(<span class="dt">form=</span><span class="op">~</span>TIME<span class="op">|</span>ZIP))
 <span class="kw">summary</span>(lme2)</code></pre>
-<pre><code>Linear mixed-effects model fit by REML
- Data: Lottery2 
-       AIC      BIC    logLik
-  2318.834 2389.835 -1146.417
-
-Random effects:
- Formula: ~1 | ZIP
-        (Intercept)  Residual
-StdDev:    0.726541 0.5282642
-
-Correlation Structure: AR(1)
- Formula: ~TIME | ZIP 
- Parameter estimate(s):
-      Phi 
-0.5552575 
-Fixed effects: LNSALES ~ PERPERHH + MEDSCHYR + MEDHVL + PRCRENT + PRC55P + HHMEDAGE +      MEDINC + POPULATN + NRETAIL 
-                Value Std.Error   DF    t-value p-value
-(Intercept) 15.254535  7.005477 1699  2.1775157  0.0296
-PERPERHH    -1.149312  0.842554   41 -1.3640808  0.1800
-MEDSCHYR    -0.911242  0.360225   41 -2.5296504  0.0154
-MEDHVL       0.011273  0.013960   41  0.8074825  0.4240
-PRCRENT      0.030104  0.019652   41  1.5319015  0.1332
-PRC55P      -0.071434  0.070515   41 -1.0130333  0.3170
-HHMEDAGE     0.119779  0.110336   41  1.0855851  0.2840
-MEDINC       0.044082  0.027916   41  1.5790867  0.1220
-POPULATN     0.080430  0.029449   41  2.7311900  0.0093
-NRETAIL      0.003887  0.019402 1699  0.2003424  0.8412
- Correlation: 
-         (Intr) PERPER MEDSCH MEDHVL PRCREN PRC55P HHMEDA MEDINC POPULA
-PERPERHH -0.632                                                        
-MEDSCHYR -0.750  0.209                                                 
-MEDHVL    0.286  0.097 -0.373                                          
-PRCRENT  -0.204  0.403 -0.246  0.014                                   
-PRC55P    0.144  0.236 -0.017  0.069  0.039                            
-HHMEDAGE -0.457  0.049  0.108 -0.128  0.151 -0.898                     
-MEDINC   -0.167 -0.014  0.077 -0.652  0.212  0.392 -0.200              
-POPULATN  0.217 -0.042 -0.269 -0.196 -0.281 -0.035  0.032 -0.037       
-NRETAIL  -0.245  0.097  0.285  0.185  0.112  0.017 -0.002 -0.031 -0.881
-
-Standardized Within-Group Residuals:
-        Min          Q1         Med          Q3         Max 
--1.87105785 -0.46121477 -0.26278521  0.04905521  6.55032232 
-
-Number of Observations: 1750
-Number of Groups: 50 </code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##  Data: Lottery2 
+##        AIC      BIC    logLik
+##   2318.834 2389.835 -1146.417
+## 
+## Random effects:
+##  Formula: ~1 | ZIP
+##         (Intercept)  Residual
+## StdDev:    0.726541 0.5282642
+## 
+## Correlation Structure: AR(1)
+##  Formula: ~TIME | ZIP 
+##  Parameter estimate(s):
+##       Phi 
+## 0.5552575 
+## Fixed effects: LNSALES ~ PERPERHH + MEDSCHYR + MEDHVL + PRCRENT + PRC55P + HHMEDAGE +      MEDINC + POPULATN + NRETAIL 
+##                 Value Std.Error   DF    t-value p-value
+## (Intercept) 15.254535  7.005477 1699  2.1775157  0.0296
+## PERPERHH    -1.149312  0.842554   41 -1.3640808  0.1800
+## MEDSCHYR    -0.911242  0.360225   41 -2.5296504  0.0154
+## MEDHVL       0.011273  0.013960   41  0.8074825  0.4240
+## PRCRENT      0.030104  0.019652   41  1.5319015  0.1332
+## PRC55P      -0.071434  0.070515   41 -1.0130333  0.3170
+## HHMEDAGE     0.119779  0.110336   41  1.0855851  0.2840
+## MEDINC       0.044082  0.027916   41  1.5790867  0.1220
+## POPULATN     0.080430  0.029449   41  2.7311900  0.0093
+## NRETAIL      0.003887  0.019402 1699  0.2003424  0.8412
+##  Correlation: 
+##          (Intr) PERPER MEDSCH MEDHVL PRCREN PRC55P HHMEDA MEDINC POPULA
+## PERPERHH -0.632                                                        
+## MEDSCHYR -0.750  0.209                                                 
+## MEDHVL    0.286  0.097 -0.373                                          
+## PRCRENT  -0.204  0.403 -0.246  0.014                                   
+## PRC55P    0.144  0.236 -0.017  0.069  0.039                            
+## HHMEDAGE -0.457  0.049  0.108 -0.128  0.151 -0.898                     
+## MEDINC   -0.167 -0.014  0.077 -0.652  0.212  0.392 -0.200              
+## POPULATN  0.217 -0.042 -0.269 -0.196 -0.281 -0.035  0.032 -0.037       
+## NRETAIL  -0.245  0.097  0.285  0.185  0.112  0.017 -0.002 -0.031 -0.881
+## 
+## Standardized Within-Group Residuals:
+##         Min          Q1         Med          Q3         Max 
+## -1.87105785 -0.46121477 -0.26278521  0.04905521  6.55032232 
+## 
+## Number of Observations: 1750
+## Number of Groups: 50</code></pre>
 </div>
 <div id="model-4.-more-parsimonious-random-effects-model" class="section level3">
 <h3><span class="header-section-number">4.3.4</span> MODEL 4. More parsimonious random effects model</h3>
-<pre class="sourceCode r"><code class="sourceCode r">lme3&lt;-<span class="kw">lme</span>(LNSALES<span class="op">~</span>MEDSCHYR<span class="op">+</span>POPULATN, <span class="dt">data=</span>Lottery2, <span class="dt">random=</span><span class="op">~</span><span class="dv">1</span><span class="op">|</span>ZIP, <span class="dt">correlation=</span><span class="kw">corAR1</span>(<span class="dt">form=</span><span class="op">~</span>TIME<span class="op">|</span>ZIP))
-<span class="kw">summary</span>(lme3)</code></pre>
-<pre><code>Linear mixed-effects model fit by REML
- Data: Lottery2 
-       AIC      BIC    logLik
-  2291.584 2324.378 -1139.792
-
-Random effects:
- Formula: ~1 | ZIP
-        (Intercept)  Residual
-StdDev:    0.838855 0.5280303
-
-Correlation Structure: AR(1)
- Formula: ~TIME | ZIP 
- Parameter estimate(s):
-      Phi 
-0.5549028 
-Fixed effects: LNSALES ~ MEDSCHYR + POPULATN 
-                Value Std.Error   DF   t-value p-value
-(Intercept)  7.983814  3.407381 1700  2.343094  0.0192
-MEDSCHYR    -0.097917  0.273978   47 -0.357391  0.7224
-POPULATN     0.108468  0.013613   47  7.968097  0.0000
- Correlation: 
-         (Intr) MEDSCH
-MEDSCHYR -0.999       
-POPULATN  0.565 -0.590
-
-Standardized Within-Group Residuals:
-        Min          Q1         Med          Q3         Max 
--1.81585940 -0.45547600 -0.25704219  0.06499433  6.60925098 
-
-Number of Observations: 1750
-Number of Groups: 50 </code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#THE POOLED CROSS-SECTIONAL MODEL WITH AUTOCORRELATED ERRORS</span>
+<p>With fewer covariates:</p>
+<pre class="sourceCode r"><code class="sourceCode r">lme3&lt;-<span class="kw">lme</span>(LNSALES<span class="op">~</span>MEDSCHYR<span class="op">+</span>POPULATN, <span class="dt">data=</span>Lottery2, <span class="dt">random=</span><span class="op">~</span><span class="dv">1</span><span class="op">|</span>ZIP, <span class="dt">correlation=</span><span class="kw">corAR1</span>(<span class="dt">form=</span><span class="op">~</span>TIME<span class="op">|</span>ZIP))</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#The pooled cross-sectional model with autocorrelated errors</span>
 <span class="co">#Default method for gls is reml, gls can be viewed as an lme function without the argument random</span>
+<span class="kw">library</span>(nlme)
 gls1&lt;-<span class="kw">gls</span>(LNSALES<span class="op">~</span>PERPERHH<span class="op">+</span>MEDSCHYR<span class="op">+</span>MEDHVL<span class="op">+</span>PRCRENT<span class="op">+</span>PRC55P<span class="op">+</span>HHMEDAGE<span class="op">+</span>MEDINC<span class="op">+</span>POPULATN<span class="op">+</span>NRETAIL, <span class="dt">data=</span>Lottery2, <span class="dt">correlation=</span><span class="kw">corAR1</span>(<span class="dt">form=</span><span class="op">~</span>TIME<span class="op">|</span>ZIP)) 
-gls1</code></pre>
-<pre><code>Generalized least squares fit by REML
-  Model: LNSALES ~ PERPERHH + MEDSCHYR + MEDHVL + PRCRENT + PRC55P + HHMEDAGE +      MEDINC + POPULATN + NRETAIL 
-  Data: Lottery2 
-  Log-restricted-likelihood: -1240.823
-
-Coefficients:
-(Intercept)    PERPERHH    MEDSCHYR      MEDHVL     PRCRENT      PRC55P 
-13.59613280 -1.06322470 -0.82003019  0.01293351  0.03252353 -0.07218282 
-   HHMEDAGE      MEDINC    POPULATN     NRETAIL 
- 0.12285161  0.04322324  0.05898877  0.02014254 
-
-Correlation Structure: AR(1)
- Formula: ~TIME | ZIP 
- Parameter estimate(s):
-      Phi 
-0.8240088 
-Degrees of freedom: 1750 total; 1740 residual
-Residual standard error: 0.8427768 </code></pre>
+<span class="kw">summary</span>(gls1)</code></pre>
+<pre><code>## Generalized least squares fit by REML
+##   Model: LNSALES ~ PERPERHH + MEDSCHYR + MEDHVL + PRCRENT + PRC55P + HHMEDAGE +      MEDINC + POPULATN + NRETAIL 
+##   Data: Lottery2 
+##        AIC      BIC    logLik
+##   2505.647 2571.186 -1240.823
+## 
+## Correlation Structure: AR(1)
+##  Formula: ~TIME | ZIP 
+##  Parameter estimate(s):
+##       Phi 
+## 0.8240088 
+## 
+## Coefficients:
+##                 Value Std.Error   t-value p-value
+## (Intercept) 13.596133  3.858304  3.523863  0.0004
+## PERPERHH    -1.063225  0.461639 -2.303151  0.0214
+## MEDSCHYR    -0.820030  0.198788 -4.125146  0.0000
+## MEDHVL       0.012934  0.007667  1.686984  0.0918
+## PRCRENT      0.032524  0.010771  3.019630  0.0026
+## PRC55P      -0.072183  0.038596 -1.870207  0.0616
+## HHMEDAGE     0.122852  0.060391  2.034284  0.0421
+## MEDINC       0.043223  0.015281  2.828636  0.0047
+## POPULATN     0.058989  0.017339  3.402168  0.0007
+## NRETAIL      0.020143  0.011647  1.729449  0.0839
+## 
+##  Correlation: 
+##          (Intr) PERPER MEDSCH MEDHVL PRCREN PRC55P HHMEDA MEDINC POPULA
+## PERPERHH -0.633                                                        
+## MEDSCHYR -0.754  0.213                                                 
+## MEDHVL    0.275  0.101 -0.359                                          
+## PRCRENT  -0.208  0.405 -0.237  0.018                                   
+## PRC55P    0.142  0.237 -0.016  0.069  0.039                            
+## HHMEDAGE -0.454  0.049  0.107 -0.127  0.151 -0.898                     
+## MEDINC   -0.165 -0.014  0.075 -0.651  0.211  0.392 -0.200              
+## POPULATN  0.242 -0.056 -0.295 -0.212 -0.280 -0.035  0.029 -0.030       
+## NRETAIL  -0.267  0.107  0.310  0.202  0.124  0.018 -0.001 -0.033 -0.898
+## 
+## Standardized residuals:
+##         Min          Q1         Med          Q3         Max 
+## -2.26140351 -0.64050416 -0.02884818  0.69976712  5.08212114 
+## 
+## Residual standard error: 0.8427768 
+## Degrees of freedom: 1750 total; 1740 residual</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#getVarCov(gls1)</span>
+<span class="kw">anova</span>(gls1,lm1)</code></pre>
+<pre><code>##      Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+## gls1     1 12 2505.647 2571.186 -1240.823                        
+## lm1      2 11 4430.126 4490.204 -2204.063 1 vs 2 1926.479  &lt;.0001</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#using anova for the models with serial correlation and the pooled cross–sectional regression.</span></code></pre>
 </div>
 <div id="model-5.-fixed-effects-model-with-autocorrelated-errors" class="section level3">
 <h3><span class="header-section-number">4.3.5</span> MODEL 5. Fixed effects model with autocorrelated errors</h3>
 <pre class="sourceCode r"><code class="sourceCode r">Lottery2<span class="op">$</span>ZIPfac=<span class="kw">factor</span>(Lottery2<span class="op">$</span>ZIP)
 gls2&lt;-<span class="kw">gls</span>(LNSALES<span class="op">~</span>ZIPfac, <span class="dt">data=</span>Lottery2, <span class="dt">correlation=</span><span class="kw">corAR1</span>(<span class="dt">form=</span><span class="op">~</span>TIME<span class="op">|</span>ZIPfac)) 
 gls2</code></pre>
-<pre><code>Generalized least squares fit by REML
-  Model: LNSALES ~ ZIPfac 
-  Data: Lottery2 
-  Log-restricted-likelihood: -1073.063
+<pre><code>## Generalized least squares fit by REML
+##   Model: LNSALES ~ ZIPfac 
+##   Data: Lottery2 
+##   Log-restricted-likelihood: -1073.063
+## 
+## Coefficients:
+## (Intercept) ZIPfac53033 ZIPfac53038 ZIPfac53059 ZIPfac53072 ZIPfac53083 
+##  7.02034302  1.07644720  0.61877604 -0.01329196  2.45963633  1.97648544 
+## ZIPfac53095 ZIPfac53098 ZIPfac53104 ZIPfac53172 ZIPfac53211 ZIPfac53520 
+##  3.27341024  0.59051473  2.12004892  2.56764964  2.68989060  1.53954270 
+## ZIPfac53544 ZIPfac53563 ZIPfac53572 ZIPfac53574 ZIPfac53813 ZIPfac53924 
+## -1.22340317  1.68388653  0.81336415  0.64605315  0.79960910 -1.46385511 
+## ZIPfac53934 ZIPfac53943 ZIPfac53952 ZIPfac54115 ZIPfac54143 ZIPfac54153 
+##  0.65471544 -1.31041280  0.49735851  2.03324306  2.40463509  1.12075652 
+## ZIPfac54170 ZIPfac54205 ZIPfac54213 ZIPfac54220 ZIPfac54235 ZIPfac54241 
+## -0.09585752 -0.80190426 -0.69482488  3.22278219  2.21634671  1.96067334 
+## ZIPfac54302 ZIPfac54406 ZIPfac54436 ZIPfac54457 ZIPfac54470 ZIPfac54474 
+##  2.39541360  0.75120386 -1.31334267  1.60733345 -0.28003078  0.51088577 
+## ZIPfac54480 ZIPfac54531 ZIPfac54556 ZIPfac54614 ZIPfac54622 ZIPfac54634 
+## -1.62581025 -0.73327749 -0.37613230 -0.50434660 -0.79801244  0.49941189 
+## ZIPfac54650 ZIPfac54701 ZIPfac54724 ZIPfac54745 ZIPfac54758 ZIPfac54810 
+##  2.50724987  2.72121016  0.66159018 -0.99678783  0.71914194 -1.16821041 
+## ZIPfac54839 ZIPfac54956 
+## -2.00207902  2.57602144 
+## 
+## Correlation Structure: AR(1)
+##  Formula: ~TIME | ZIPfac 
+##  Parameter estimate(s):
+##     Phi 
+## 0.55476 
+## Degrees of freedom: 1750 total; 1700 residual
+## Residual standard error: 0.5279669</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#getVarCov(gls2) # Show the covariance matrix, the AR(1) structure</span>
 
-Coefficients:
-(Intercept) ZIPfac53033 ZIPfac53038 ZIPfac53059 ZIPfac53072 ZIPfac53083 
- 7.02034302  1.07644720  0.61877604 -0.01329196  2.45963633  1.97648544 
-ZIPfac53095 ZIPfac53098 ZIPfac53104 ZIPfac53172 ZIPfac53211 ZIPfac53520 
- 3.27341024  0.59051473  2.12004892  2.56764964  2.68989060  1.53954270 
-ZIPfac53544 ZIPfac53563 ZIPfac53572 ZIPfac53574 ZIPfac53813 ZIPfac53924 
--1.22340317  1.68388653  0.81336415  0.64605315  0.79960910 -1.46385511 
-ZIPfac53934 ZIPfac53943 ZIPfac53952 ZIPfac54115 ZIPfac54143 ZIPfac54153 
- 0.65471544 -1.31041280  0.49735851  2.03324306  2.40463509  1.12075652 
-ZIPfac54170 ZIPfac54205 ZIPfac54213 ZIPfac54220 ZIPfac54235 ZIPfac54241 
--0.09585752 -0.80190426 -0.69482488  3.22278219  2.21634671  1.96067334 
-ZIPfac54302 ZIPfac54406 ZIPfac54436 ZIPfac54457 ZIPfac54470 ZIPfac54474 
- 2.39541360  0.75120386 -1.31334267  1.60733345 -0.28003078  0.51088577 
-ZIPfac54480 ZIPfac54531 ZIPfac54556 ZIPfac54614 ZIPfac54622 ZIPfac54634 
--1.62581025 -0.73327749 -0.37613230 -0.50434660 -0.79801244  0.49941189 
-ZIPfac54650 ZIPfac54701 ZIPfac54724 ZIPfac54745 ZIPfac54758 ZIPfac54810 
- 2.50724987  2.72121016  0.66159018 -0.99678783  0.71914194 -1.16821041 
-ZIPfac54839 ZIPfac54956 
--2.00207902  2.57602144 
-
-Correlation Structure: AR(1)
- Formula: ~TIME | ZIPfac 
- Parameter estimate(s):
-    Phi 
-0.55476 
-Degrees of freedom: 1750 total; 1700 residual
-Residual standard error: 0.5279669 </code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Note the difference between R estimates and SAS estimates is because in SAS the estimate </span>
+<span class="co"># Note the difference between R estimates and SAS estimates is because in SAS the estimate </span>
 <span class="co"># for ZIP 54956 is restricted to be zero, in R the intercept and estimates for Zip are </span>
 <span class="co"># scaled differently, but both estimates should give us approximately the same answer#</span></code></pre>
 <p>The five models listed are summarized in Table 4.4 at Page 146.</p>

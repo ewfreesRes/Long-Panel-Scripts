@@ -1,0 +1,194 @@
+
+
+# Prediction and Bayesian Inference
+
+## Import Data
+
+```{r comment = ""}
+lottery  = read.table("TXTData/Lottery.txt", sep ="\t", quote = "",header=TRUE)
+
+#lottery=read.table(choose.files(), header=TRUE, sep="\t")
+```
+
+ State of Wisconsin lottery administrators provided weekly lottery sales data. We consider online lottery tickets that are sold by selected retail establishments in Wisconsin. These tickets are generally priced at \$1.00, so the number of tickets sold equals the lottery revenue. We analyze lottery sales (`OLSALES`) over a forty-week period, April, 1998 through January, 1999, from fifty randomly selected ZIP codes within the state of Wisconsin. We also consider the number of retailers within a ZIP code for each time (`NRETAIL`).
+ 
+ Variable| Description
+---- | --- 
+OLSALES | Online lottery sales to individual consumers
+NRETAIL | Number of listed retailers
+PERPERHH | Persons per household MEDSCHYR Median years of schooling 
+MEDHVL | Median home value in $1000s for owner-occupied homes PRCRENT | Percent of housing that is renter occupied 
+PRC55P | Percent of population that is 55 or older
+HHMEDAGE | Household median age 
+MEDINC | Estimated median household income, in $1000s
+POPULATN | Population, in thousands
+
+```{r comment = ""}
+#EXTRACT TIME - INVARIANT INFORMATION TO ANALYZE
+mzip=d=as.data.frame(t(sapply(split(lottery[, c("NRETAIL", "PERPERHH", "OLSALES", "MEDSCHYR", "MEDHVL", "PRCRENT", "PRC55P", "HHMEDAGE", "MEDINC", "POPULATN")], lottery$ZIP),function(x) colMeans(x))))
+ # Extract time invariant information to analyze
+# Notice: the code for this part on website is wrong.
+
+```
+
+## Example: Forecasting Wisconsin Lottery Sales (Page 138)
+
+In this section, we forecast the sale of state lottery tickets from 50 postal (ZIP) codes inWisconsin. Lottery sales are an important component of state revenues. Accurate forecasting helps in the budget-planning process. A model is useful in assessing the important determinants of lottery sales, and understanding the determinants of lottery sales is useful for improving the design of the lottery sales system. Additional details of this study are in Frees and Miller (2003O).
+
+### TABLE 4.2: Time - invariant summary statistics
+
+```{r comment = ""}
+summary(mzip[,c("NRETAIL", "PERPERHH", "OLSALES", "MEDSCHYR", "MEDHVL", "PRCRENT", "PRC55P", "HHMEDAGE", "MEDINC", "POPULATN")]) 
+```
+
+```{r comment = ""}
+# STANDARD DEVIATION
+sqrt(diag(var(mzip[,c("NRETAIL", "PERPERHH", "OLSALES", "MEDSCHYR", "MEDHVL", "PRCRENT", "PRC55P", "HHMEDAGE", "MEDINC", "POPULATN")]))) 
+
+```
+
+### FIGURE 4.2: Look at the relationship
+
+Figure 4.2 shows a positive relationship between average online sales and population. Further, the ZIP code corresponding to the city of Kenosha, Wisconsin, has unusually large average sales for its population size.
+
+```{r comment = ""}
+plot(OLSALES ~ POPULATN, data = mzip, xlab="", ylab="", xaxt="n", yaxt="n",pch="o", las=1, cex=1)
+
+axis(2, at=seq(0, 40000, by=10000), las=1, font=10, cex=0.005, tck=0.01)
+
+axis(2, at=seq(0, 40000, by=1000), lab=F, tck=0.005)
+
+axis(1, at=seq(0,40, by=10), font=10, cex=0.005, tck=0.01)
+
+axis(1, at=seq(0,40, by=1), lab=F, tck=0.005)
+
+mtext("Average Lottery Sales", side=2, line=-3.5, at=36000, font=10, cex=1, las=1)
+
+mtext("Population in Thousands", side=1, line=2, at=20, font=10, cex=1, las=1)
+```
+
+### Sorting the data by zip then combine vectors into another data.frame
+
+```{r comment = ""}
+lottery$logsales<-log10(lottery$OLSALES)
+m<-order(lottery$ZIP, lottery$TIME, lottery$OLSALES,lottery$logsales)
+
+index<-as.data.frame(cbind(lottery$ZIP[m],lottery$TIME[m],lottery$OLSALES[m],lottery$logsales[m]))
+
+names(index)<-c("ZIP", "TIME", "OLSALES", "LOGSALES")
+```
+
+### FIGURE 4.3: Lottery vs. week number
+
+Figure 4.3 presents a multiple time-series plot of (weekly) sales over time. Here, each line traces the sales patterns for a particular ZIP code. This figure shows the dramatic increase in sales for most ZIP codes, at approximately weeks 8 and 18.
+
+```{r comment = ""}
+plot(OLSALES ~ TIME, data = lottery, axes=F, ylab="", xlab="", xaxt="n", yaxt="n")
+for (i in index$ZIP) {
+     lines(OLSALES ~ TIME, data = subset(index, ZIP == i)) }
+axis(1, at=seq(0,40, by=1), labels=F, tck=0.005)
+axis(1, at=seq(0,40, by=10), cex=0.005, tck=0.01)
+mtext("Week Number", side=1, line=2.5, cex=1, font=10)
+axis(2, at=seq(0, 300000, by=10000), labels=F, tck=0.005)
+axis(2, at=seq(0, 305000, by=100000), las=1, cex=0.005, tck=0.01) 
+mtext("Lottery Sales", side=2, line=-3, at=310000, font=10, cex=1, las=1)
+```
+
+ Another way of producing multiple time series graph by using trellis xyplot:
+ 
+```{r comment = ""}
+
+library(lattice)
+trellis.device(color=F) # telling the trellis device to mimic 'black and white'
+xyplot(OLSALES ~ TIME, data=index, groups=ZIP, scales=list(y=list(at=seq(0, 300000,100000), tck=.01)), panel=panel.superpose, pch=16, lty=1,  type="b")
+
+#ChECK LOG VALUES
+lottery$logsales<-log10(lottery$OLSALES)
+lottery$lnsales<-log(lottery$OLSALES)
+```
+
+### FIGURE 4.4: Log lottery vs week number
+
+Figure 4.4 shows the same information as in Figure 4.3 but on a common (base 10) logarithmic scale. Here, we still see the effects of the PowerBall jackpots on sales. However, Figure 4.4 suggests a dynamic pattern that is common to all ZIP codes. Specifically, logarithmic sales for each ZIP code are relatively stable with the same approximate level of variability. Further, logarithmic sales for each ZIP code peak at the same time, corresponding to large PowerBall jackpots.
+
+```{r comment = ""}
+#FIGURE 4.4 LOG LOTTERY vs WEEK NUMBER
+plot(LOGSALES ~ TIME, data = index, type="p", axes=F, ylab="", xlab="", pch=16, mkh=0.0001, lwd=0.5)
+axis(1, at=seq(0,40, by=1), labels=F, tck=0.005)
+axis(1, at=seq(0,40, by=10), cex=0.4, tck=0.01)
+mtext("Week Number", side=1, line=2.5, cex=0.7, font=10)
+axis(2, at=seq(0, 6, by=0.1), labels=F, tck=0.005)
+axis(2, at=seq(0, 6, by=1), las=1, cex=0.4, tck=0.01) 
+mtext("Logarithmic Lottery Sales", side=2, line=-1, at=5.8, font=10, cex=0.7, las=1)
+	for (i in index$ZIP) {
+	lines(LOGSALES ~ TIME, data=subset(index, ZIP==i)) }
+
+```
+
+## Create model development sample
+
+```{r comment = ""}
+Lottery=lottery
+Lottery$LNSALES<-log(Lottery$OLSALES)
+Lottery2<-subset(Lottery, Lottery$TIME<36)
+```
+
+### MODEL 1. Pooled cross-setional model
+
+```{r comment = ""}
+lm1<-lm(LNSALES~PERPERHH+MEDSCHYR+MEDHVL+PRCRENT+PRC55P+HHMEDAGE+MEDINC+POPULATN+NRETAIL, data=Lottery2)
+summary(lm1)
+```
+
+### MODEL 2. Error components model
+
+```{r comment = ""}
+library(nlme)
+lme1<-lme(LNSALES~PERPERHH+MEDSCHYR+MEDHVL+PRCRENT+PRC55P+HHMEDAGE+MEDINC+POPULATN+NRETAIL, data=Lottery2, random=~1|ZIP, method="REML") 
+# NOTE* THE DEFAULT METHOD IN lme IS "REML"
+# Use REML method in estimating fixed effects beta coefficients 
+summary(lme1)
+```
+
+```{r comment = ""}
+# CHECK AUTOCORRELATION PATTERNS
+ACF(lme1, maxlag=10) #Obtain ACF of residuals from lme1
+lag.plot(lme1$residuals, lags=-1) #Autocorrelation patterns one lag, needs to refine
+```
+
+### MODEL 3. Error components model with autocorrelated errors
+
+```{r comment = ""}
+lme2<-update(lme1, correlation=corAR1(form=~TIME|ZIP))
+summary(lme2)
+
+```
+
+### MODEL 4. More parsimonious random effects model
+
+```{r comment = ""}
+lme3<-lme(LNSALES~MEDSCHYR+POPULATN, data=Lottery2, random=~1|ZIP, correlation=corAR1(form=~TIME|ZIP))
+summary(lme3)
+```
+
+```{r comment = ""}
+#THE POOLED CROSS-SECTIONAL MODEL WITH AUTOCORRELATED ERRORS
+#Default method for gls is reml, gls can be viewed as an lme function without the argument random
+gls1<-gls(LNSALES~PERPERHH+MEDSCHYR+MEDHVL+PRCRENT+PRC55P+HHMEDAGE+MEDINC+POPULATN+NRETAIL, data=Lottery2, correlation=corAR1(form=~TIME|ZIP)) 
+gls1
+```
+
+### MODEL 5. Fixed effects model with autocorrelated errors
+
+```{r comment = ""}
+Lottery2$ZIPfac=factor(Lottery2$ZIP)
+gls2<-gls(LNSALES~ZIPfac, data=Lottery2, correlation=corAR1(form=~TIME|ZIPfac)) 
+gls2
+# Note the difference between R estimates and SAS estimates is because in SAS the estimate 
+# for ZIP 54956 is restricted to be zero, in R the intercept and estimates for Zip are 
+# scaled differently, but both estimates should give us approximately the same answer#
+
+```
+
+The five models listed are summarized in Table 4.4 at Page 146.
+
