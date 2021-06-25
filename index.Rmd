@@ -18,7 +18,7 @@ description: "R scripts"
 *Date: `r format(Sys.Date(), "%d %B %Y")`*</p>
 
 
-This file contains `R` scripts for the book **Longitudinal and Panel Data** by Edward W. Frees. We will review these scripts in our [Panel and Copula Reading Group](https://sites.google.com/a/wisc.edu/copula-study-group/). To see the original scripts, go to the [book web site](https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Longitudinal%20and%20Panel%20Data/Book/PDataBook.htm). At the same place, you will find the [datasets](https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Longitudinal%20and%20Panel%20Data/Book/DataFiles.htm) that you can download. 
+This file contains `R` scripts for the book **Longitudinal and Panel Data** by Edward W. Frees. We  reviewed these scripts in our [Panel and Copula Reading Group](https://sites.google.com/a/wisc.edu/copula-study-group/). To see the original scripts, go to the [book web site](https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Longitudinal%20and%20Panel%20Data/Book/PDataBook.htm). At the same place, you will find the [datasets](https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Longitudinal%20and%20Panel%20Data/Book/DataFiles.htm) that you can download. 
 
 These scripts have been summarized by Yumo Dong into [R markdown](https://rmarkdown.rstudio.com/). Subsequently, Jed has put them together via [R bookdown](https://bookdown.org/yihui/bookdown/) and made them available to via [this Github respository](https://github.com/ewfreesRes/Long-Panel-Scripts). You may download the data from this site and view the code on the web [Github io site](https://ewfreesres.github.io/Long-Panel-Scripts/index.html).
 
